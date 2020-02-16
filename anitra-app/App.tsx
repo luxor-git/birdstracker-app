@@ -20,7 +20,7 @@ import Settings from './src/screens/in/Settings';
 const LoggedContainer = createDrawerNavigator({
   Dashboard: Dashboard,
   Map: MapScreen,
-  Devices: Devices,
+  //Devices: Devices,
   Trackings: Trackings,
   Settings: Settings
 });

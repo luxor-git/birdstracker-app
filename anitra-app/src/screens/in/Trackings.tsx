@@ -1,35 +1,54 @@
 import React from 'react';
-import { StyleSheet, Text, View, SectionList, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
 import Theme from "../../constants/Theme.js";
 import TrackingStore from "../../store/TrackingStore";
 import { Tracking } from '../../entities/Tracking.js';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
+import { ListItem, Header } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
+const pageTitle = 'Trackings';
+
+@observer
 export default class Trackings extends React.Component {
 
-  state = {
-    trackingList: [],
-    listLoaded: false,
-  }
+  @observable
+  trackingList: Tracking[] = [];
+
+  @observable
+  listLoaded: boolean = false;
 
   async componentDidMount() {
-    this.setState({
-      listLoaded: false
-    });
-
-    this.setState({
-      trackingList: await TrackingStore.getTrackingList(),
-      listLoaded: true
-    });
+      this.listLoaded = false;
+      TrackingStore.getTrackingList().then((data) => {
+        console.log(data);
+        this.trackingList = data.data;
+        this.listLoaded = true;
+      });
   }
 
   render () { 
       let contents;
+      let listItems = this.trackingList;
 
-      if (this.state.listLoaded) {
+      const keyExtractor = (item, index) => index.toString();
+
+      const renderItem = ({item}) => (
+        <ListItem
+            key={item.id}
+            title={item.getName()}
+            subtitle={"test"}
+            bottomDivider
+            chevron
+          />
+      )
+
+      if (this.listLoaded) {
         contents = <FlatList
-          data={ this.state.trackingList }
-          keyExtractor={ item => item.id }
-          renderItem={({item}) => <Text style={styles.item}>{ item.getName() }</Text>}
+          data={this.trackingList}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
         />
       } else {
         contents = <Text>Loading...</Text>
@@ -37,6 +56,11 @@ export default class Trackings extends React.Component {
 
       return (
         <View style={styles.container}>
+          <Header
+            placement="left"
+            centerComponent={{ text: pageTitle, style: { color: '#fff' } }}
+            rightComponent={{ icon: 'paw', type: 'font-awesome', color: '#fff' }}
+          />
           {contents}
         </View>
       );
@@ -75,5 +99,7 @@ const styles = StyleSheet.create({
   renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
   keyExtractor={(item, index) => index}
 />
+
+leftAvatar={{ source: { uri: l.avatar_url } }}
 
 */

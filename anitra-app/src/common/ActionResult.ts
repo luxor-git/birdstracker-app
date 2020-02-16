@@ -3,8 +3,14 @@ export class BaseActionResult {
 
     public messages: string[] = [];
 
+    public data: any = {};
+
     constructor(success: boolean) {
         this.success = success;
     }
+};
 
+export class ListActionResult<T> extends BaseActionResult
+{
+    public data: T[] = [];
 };

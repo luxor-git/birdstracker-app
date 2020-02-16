@@ -1,14 +1,17 @@
 import BaseStore from './BaseStore';
 import NetStore from './NetStore';
-import { ApiConstants, formatPostRequest } from "../common/ApiUtils";
+import { ApiConstants, formatPostRequest, apiRequest } from "../common/ApiUtils";
 import { BaseActionResult } from "../common/ActionResult";
 import { getString, ApiStrings } from "../common/ApiStrings";
 import { AsyncStorage } from 'react-native';
 import { observable } from "mobx";
+import User from '../entities/User';
 
 class AuthStore extends BaseStore
 {
     @observable public isAuthorized: boolean = false;
+
+    private user : User;
 
     public async awaitAuth() : Promise<void>
     {
@@ -24,41 +27,97 @@ class AuthStore extends BaseStore
             this.isAuthorized = false;
         }
 
+        if (this.isAuthorized) {
+            this.user = await this.getUser();
+        } else {
+            await this.logout();
+            // clear user data?
+        }
+
+        console.log(this.user);
+
         return;
     }
 
-    public async verifyToken(token: string) : Promise<boolean>
+    private async verifyToken(token: string) : Promise<boolean>
     {
         return false;
     }
 
-    public getAuthToken() : string
+    public async getAuthToken() : Promise<string>
     {
-        return "";
+        await this.awaitAuth();
+        return this.user.apiKey;
+    }
+
+    public async getUser() : Promise<User>
+    {
+        if (!this.user) {
+            const authKey = await AsyncStorage.getItem(STORAGE_KEY_INDEXES.AUTH_KEY);
+            const userName = await AsyncStorage.getItem(STORAGE_KEY_INDEXES.USER_NAME);
+            const firstName = await AsyncStorage.getItem(STORAGE_KEY_INDEXES.FIRST_NAME);
+            const lastName = await AsyncStorage.getItem(STORAGE_KEY_INDEXES.LAST_NAME);
+            const id = parseInt(await AsyncStorage.getItem(STORAGE_KEY_INDEXES.USER_ID));
+
+            this.user = new User(
+                id,
+                userName,
+                authKey,
+                firstName,
+                lastName
+            );
+        }
+
+        return this.user;
     }
 
     public async authenticate(username: string, password: string) : Promise<BaseActionResult>
     {
         let result = new BaseActionResult(false);
 
-        const data = {
-            'email': username,
-            'password': password
-        };
+        const data = new FormData();
+        data.append('email', username);
+        data.append('password', password);
+        let response;
 
         try {
-            let jsonResponse = await (await fetch(ApiConstants.API_URL + ApiConstants.API_AUTH_URL, formatPostRequest(data)).then()).json();
-        } catch {
+            response = await apiRequest(ApiConstants.API_AUTH_URL, formatPostRequest(data));
+        } catch (e) {
             result.success = false;
             result.messages.push(getString('API_RESPONSE_ERROR'));
+            return result;
         }
 
-        return result;
+        if (response.success) {
+            const apiKey = response.data.apiKey;
+            const userData = response.data.detail;
+
+            console.log('Api key', apiKey);
+            await AsyncStorage.setItem(STORAGE_KEY_INDEXES.AUTH_KEY, apiKey);
+            await AsyncStorage.setItem(STORAGE_KEY_INDEXES.USER_NAME, userData.Email);
+            await AsyncStorage.setItem(STORAGE_KEY_INDEXES.FIRST_NAME, userData.FirstName);
+            await AsyncStorage.setItem(STORAGE_KEY_INDEXES.LAST_NAME, userData.LastName);
+            await AsyncStorage.setItem(STORAGE_KEY_INDEXES.USER_ID, response.data.id);
+
+            await this.getUser();
+        }
+
+        return response;
     }
+
+    public async logout() : Promise<void>
+    {
+
+    }
+
 }
 
 const STORAGE_KEY_INDEXES = {
-    AUTH_KEY: 'AUTH_KEY'
+    AUTH_KEY: 'AUTH_KEY',
+    USER_NAME: 'USER_NAME',
+    FIRST_NAME: 'FIRST_NAME',
+    LAST_NAME: 'LAST_NAME',
+    USER_ID: 'USER_ID'
 };
 
 

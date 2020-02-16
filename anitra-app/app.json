@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Blank Template (TypeScript)",
+    "name": "Anitra",
     "slug": "anitra-app",
     "privacy": "public",
     "sdkVersion": "36.0.0",
@@ -28,6 +28,7 @@
     },
     "android": {
       "permissions": [
+        "INTERNET",
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
         "CAMERA",

@@ -6,7 +6,6 @@ import Theme from "../../constants/Theme.js";
 import AuthStore from "../../store/AuthStore";
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import Toast from 'react-native-simple-toast';
 
 // todo prefill e-mail from preferences if available
 
@@ -14,22 +13,23 @@ import Toast from 'react-native-simple-toast';
 export default class Login extends React.Component {
 
   @observable
-  email: string = "";
+  email: string = "info@anitra.cz";
   @observable
-  password: string = "";
+  password: string = "memos_admin";
 
   @observable
-  isLoading: bool = false;
+  isLoading: boolean = false;
 
   authenticate = async () => {
     this.isLoading = true;
     const reply = await AuthStore.authenticate(this.email, this.password);
-
+    console.log(reply);
     if (reply.success) {
       this.props.navigation.navigate('Dashboard');
     } else {
       reply.messages.forEach(x => {
-        Toast.show(x);
+        console.log(x);
+        //Toast.show(x);
       });
     }
 
@@ -65,7 +65,7 @@ export default class Login extends React.Component {
           <View style={styles.wrapperRow}>
             <Button 
               title="Login"
-              onPress={this.authenticate}
+              onPress={ this.authenticate }
               disabled={ this.isLoading }
               icon={
                 <Icon
