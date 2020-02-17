@@ -1,8 +1,10 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import { createSwitchNavigator, createAppContainer } from 'react-navigation';
+import { createSwitchNavigator, createAppContainer, NavigationContainerComponent, NavigationActions } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
+import { addInvalidTokenListener } from './src/common/ApiUtils';
+import AuthStore from './src/store/AuthStore';
 
 import AuthLoading from './src/screens/AuthLoading';
 
@@ -15,6 +17,7 @@ import MapScreen from './src/screens/in/Map';
 import Devices from './src/screens/in/Devices';
 import Trackings from './src/screens/in/Trackings';
 import Settings from './src/screens/in/Settings';
+import { Alert } from 'react-native';
 
 // container for logged-in users
 const LoggedContainer = createDrawerNavigator({
@@ -33,7 +36,7 @@ const AuthContainer = createStackNavigator({
 });
 
 // default application container
-const AppContainer = createSwitchNavigator({
+const AppNavigator = createSwitchNavigator({
   AuthLoading: AuthLoading,
   LoggedContainer: LoggedContainer,
   AuthContainer: AuthContainer
@@ -41,6 +44,39 @@ const AppContainer = createSwitchNavigator({
   "initialRouteName": "AuthLoading"
 });
 
-export default createAppContainer(
-  AppContainer
+let instanceRef: NavigationContainerComponent;
+
+function setNavigatorRef(instance: NavigationContainerComponent) {
+  instanceRef = instance;
+  console.log('set instance OK');
+  console.log(instanceRef);
+}
+// todo move this to own class
+function navigate(routeName, params) {
+  console.log(instanceRef);
+  instanceRef.dispatch(
+    NavigationActions.navigate({
+      routeName,
+      params,
+    })
+  );
+}
+
+const AppContainer = createAppContainer(
+  AppNavigator
 );
+
+export default class App extends React.Component
+{
+  render () {
+    return (
+      <AppContainer ref = { setNavigatorRef }/>
+    )
+  }
+}
+
+addInvalidTokenListener(async () => {
+  await AuthStore.logout();
+  Alert.alert("User credentials expired, please sign in again.");
+  navigate("AuthLoading", {});
+});

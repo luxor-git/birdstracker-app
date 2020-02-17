@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { BaseActionResult } from './ActionResult';
 
+let invalidTokenListeners: Function[] = [];
+
 export const ApiConstants = {
     API_URL: 'https://app.anitra.cz/api/v1/',
     API_AUTH_URL: 'login',
@@ -33,6 +35,9 @@ export function formatGetRequest(apiKey?: string) : any {
     return obj;
 };
 
+export function addInvalidTokenListener(callback: Function) : void {
+    invalidTokenListeners.push(callback);
+}
 
 export async function apiRequest(url: string, options: any) : Promise<BaseActionResult>
 {
@@ -47,15 +52,20 @@ export async function apiRequest(url: string, options: any) : Promise<BaseAction
         options
     );
 
-    //todo pre-process hooks, for invalid tokens
-
-    let baseResponse = new BaseActionResult( apiResponse.data.statusCode === "OK" );
-    baseResponse.data = apiResponse.data;
-
-    if (apiResponse.data.message) {
-        baseResponse.messages.push(apiResponse.data.message);
+    // todo - fix this in the API
+    if (apiResponse.data["STATUS_CODE"] === "ERROR" && apiResponse.data.MESSAGE === "Api key is invalid.") {
+        console.log('Invalid API key!');
+        invalidTokenListeners.forEach( async x => await x() );
     }
 
+    //console.log(apiResponse.data);
+
+    let baseResponse = new BaseActionResult( apiResponse.data["STATUS_CODE"] === "OK" );
+    baseResponse.data = apiResponse.data;
+
+    if (apiResponse.data.MESSAGE) {
+        baseResponse.messages.push(apiResponse.data.MESSAGE);
+    }
 
     return baseResponse;
 };

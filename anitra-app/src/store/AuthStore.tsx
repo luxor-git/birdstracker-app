@@ -93,11 +93,13 @@ class AuthStore extends BaseStore
             const userData = response.data.detail;
 
             console.log('Api key', apiKey);
+            console.log(response.data.id);
+
             await AsyncStorage.setItem(STORAGE_KEY_INDEXES.AUTH_KEY, apiKey);
             await AsyncStorage.setItem(STORAGE_KEY_INDEXES.USER_NAME, userData.Email);
             await AsyncStorage.setItem(STORAGE_KEY_INDEXES.FIRST_NAME, userData.FirstName);
             await AsyncStorage.setItem(STORAGE_KEY_INDEXES.LAST_NAME, userData.LastName);
-            await AsyncStorage.setItem(STORAGE_KEY_INDEXES.USER_ID, response.data.id);
+            await AsyncStorage.setItem(STORAGE_KEY_INDEXES.USER_ID, response.data.id.toString());
 
             await this.getUser();
         }
@@ -107,7 +109,8 @@ class AuthStore extends BaseStore
 
     public async logout() : Promise<void>
     {
-
+        await AsyncStorage.clear();
+        this.user = null;
     }
 
 }
