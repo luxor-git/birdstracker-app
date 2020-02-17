@@ -13,9 +13,9 @@ import { observer } from 'mobx-react';
 export default class Login extends React.Component {
 
   @observable
-  email: string = "info@anitra.cz";
+  email: string = "";
   @observable
-  password: string = "memos_admin";
+  password: string = "";
 
   @observable
   isLoading: boolean = false;
