@@ -36,6 +36,15 @@ export default class Login extends React.Component {
     this.isLoading = false;
   }
 
+  componentDidMount = async () => {
+    let credentials = await AuthStore.getStoredCredentials();
+
+    if (credentials) {
+      this.email = credentials.email;
+      this.password = credentials.password;
+    }
+  }
+
   render () {
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>

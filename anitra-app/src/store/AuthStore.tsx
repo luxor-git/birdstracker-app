@@ -5,6 +5,7 @@ import { BaseActionResult } from "../common/ActionResult";
 import { getString, ApiStrings } from "../common/ApiStrings";
 import { AsyncStorage } from 'react-native';
 import { observable } from "mobx";
+import * as SecureStore from 'expo-secure-store';
 import User from '../entities/User';
 
 class AuthStore extends BaseStore
@@ -93,18 +94,34 @@ class AuthStore extends BaseStore
             const userData = response.data.detail;
 
             console.log('Api key', apiKey);
-            console.log(response.data.id);
-
             await AsyncStorage.setItem(STORAGE_KEY_INDEXES.AUTH_KEY, apiKey);
             await AsyncStorage.setItem(STORAGE_KEY_INDEXES.USER_NAME, userData.Email);
             await AsyncStorage.setItem(STORAGE_KEY_INDEXES.FIRST_NAME, userData.FirstName);
             await AsyncStorage.setItem(STORAGE_KEY_INDEXES.LAST_NAME, userData.LastName);
             await AsyncStorage.setItem(STORAGE_KEY_INDEXES.USER_ID, response.data.id.toString());
 
+            await SecureStore.setItemAsync(STORAGE_KEY_INDEXES.USER_NAME, username);
+            await SecureStore.setItemAsync(STORAGE_KEY_INDEXES.PASSWORD, password);
+
             await this.getUser();
         }
 
         return response;
+    }
+
+    public async getStoredCredentials() : Promise<any>
+    {
+        try {
+            let userName = await SecureStore.getItemAsync(STORAGE_KEY_INDEXES.USER_NAME);
+            let password = await SecureStore.getItemAsync(STORAGE_KEY_INDEXES.PASSWORD);
+
+            return {
+                userName: userName,
+                password: password
+            };
+        } catch {
+            return {};
+        }
     }
 
     public async logout() : Promise<void>
@@ -120,7 +137,8 @@ const STORAGE_KEY_INDEXES = {
     USER_NAME: 'USER_NAME',
     FIRST_NAME: 'FIRST_NAME',
     LAST_NAME: 'LAST_NAME',
-    USER_ID: 'USER_ID'
+    USER_ID: 'USER_ID',
+    PASSWORD: 'PASSWORD'
 };
 
 

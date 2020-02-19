@@ -4,14 +4,30 @@ import AuthStore from './AuthStore';
 import { ApiConstants, formatGetRequest, apiRequest, formatDate } from "../common/ApiUtils";
 import { ListActionResult } from "../common/ActionResult";
 import { getString, ApiStrings } from "../common/ApiStrings";
+import Storage, { FILE_MAPPING } from '../common/Storage';
 
 class TrackingStore extends BaseStore
 {
+    private trackings: Map<number, Tracking> = new Map();
 
     public async getTrackingList() : Promise<ListActionResult<Tracking>>
     {
-        const apiToken = await AuthStore.getAuthToken();
+        // todo - TIMEOUT & NET CHECK
         let result = new ListActionResult<Tracking>(false);
+
+        let fromCache = await Storage.fileExists(FILE_MAPPING.TRACKINGS);
+
+        if (fromCache) {
+            console.log('yes');
+            let collection = await Storage.loadCollection(FILE_MAPPING.TRACKINGS, Tracking);
+            console.log(collection);
+            console.log('...');
+            result.success = true;
+            //result.data = collection;
+            return result;
+        }
+
+        const apiToken = await AuthStore.getAuthToken();
 
         let response = await apiRequest(
             ApiConstants.API_TRACKED_OBJECT + '/' + ApiConstants.API_LIST,
@@ -30,23 +46,13 @@ class TrackingStore extends BaseStore
                 });
             }
 
+            console.log('Saving file');
+            await Storage.saveCollection(FILE_MAPPING.TRACKINGS, trackingData);
+            console.log('Saved file');
+
             result.success = true;
             result.data = trackingData;
         }
-
-        //CurrentAge
-        //CustomerName
-        //Description
-        //DeviceId
-        //DeviceStatusName
-        
-        //LastPositionTime
-        //StartGpsTime
-        //MortalityDate
-        //SpeciesName_English
-        //SpeciesName_Scientific
-        //TrackedObjectId
-        //SpeciesID
 
         return result;
     }

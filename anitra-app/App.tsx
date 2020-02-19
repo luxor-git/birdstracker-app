@@ -5,6 +5,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { addInvalidTokenListener } from './src/common/ApiUtils';
 import AuthStore from './src/store/AuthStore';
+import Storage from './src/common/Storage';
 
 import AuthLoading from './src/screens/AuthLoading';
 
@@ -48,12 +49,9 @@ let instanceRef: NavigationContainerComponent;
 
 function setNavigatorRef(instance: NavigationContainerComponent) {
   instanceRef = instance;
-  console.log('set instance OK');
-  console.log(instanceRef);
 }
 // todo move this to own class
 function navigate(routeName, params) {
-  console.log(instanceRef);
   instanceRef.dispatch(
     NavigationActions.navigate({
       routeName,
@@ -65,6 +63,8 @@ function navigate(routeName, params) {
 const AppContainer = createAppContainer(
   AppNavigator
 );
+
+Storage.init();
 
 export default class App extends React.Component
 {

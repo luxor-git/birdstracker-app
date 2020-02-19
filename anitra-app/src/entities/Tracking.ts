@@ -1,6 +1,6 @@
-import { IEntity } from './IEntity';
+import { IEntity, ISerializableEntity } from './IEntity';
 
-export class Tracking implements IEntity
+export class Tracking implements ISerializableEntity
 {
     id: number;
     name: string;
@@ -16,7 +16,7 @@ export class Tracking implements IEntity
     species?: Species;
 
     synchronized: boolean = false;
-    lastSynchronized?: Date;
+    lastSynchronized?: Date = new Date();
 
     public getName():string {
         if (this.name && this.code) {
@@ -26,6 +26,41 @@ export class Tracking implements IEntity
         return this.name??this.code;
     }
 
+    toJson(): object {
+        return {
+            id: this.id,
+            name: this.name,
+            code: this.code,
+            note: this.note,
+            deviceId: this.deviceId,
+            deviceStatusName: this.deviceStatusName,
+            firstPosition: this.firstPosition,
+            lastPosition: this.lastPosition,
+            species: this.species, // todo save only id - this is not needed
+            lastSynchronized: this.lastSynchronized
+        };
+    }
+
+    toJsonString(): string {
+        return JSON.stringify(this.toJson());
+    }
+
+    fromJson(json: any): IEntity {
+        let trk = new Tracking();
+        let obj = json;
+
+        trk.id = obj.id;
+        trk.name = obj.name;
+        trk.code = obj.code;
+        trk.deviceId = obj.deviceId;
+        trk.deviceStatusName = obj.deviceStatusName;
+        trk.firstPosition = obj.firstPosition;
+        trk.lastPosition = obj.lastPosition;
+        trk.species = obj.species;
+        trk.lastSynchronized = obj.lastSynchronized;
+
+        return trk;
+    }
 };
 
 export class LocalizedPosition
@@ -49,15 +84,5 @@ export class Species implements IEntity
     englishName: string;
     
     synchronized: boolean;
-    lastSynchronized?: Date;
-
-    constructor(id: number, scientificName: string, englishName: string) {
-        this.id = id;
-        
-        this.scientificName = scientificName;
-        this.englishName = englishName;
-
-        this.synchronized = true;
-        this.lastSynchronized = new Date();
-    }
+    lastSynchronized?: Date = new Date();
 };
