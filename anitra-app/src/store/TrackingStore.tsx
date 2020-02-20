@@ -10,20 +10,19 @@ class TrackingStore extends BaseStore
 {
     private trackings: Map<number, Tracking> = new Map();
 
-    public async getTrackingList() : Promise<ListActionResult<Tracking>>
+    public async getTrackingList(forceRefresh: boolean = false) : Promise<ListActionResult<Tracking>>
     {
         // todo - TIMEOUT & NET CHECK
         let result = new ListActionResult<Tracking>(false);
 
         let fromCache = await Storage.fileExists(FILE_MAPPING.TRACKINGS);
 
-        if (fromCache) {
+        if (fromCache && !forceRefresh) {
             console.log('yes');
             let collection = await Storage.loadCollection(FILE_MAPPING.TRACKINGS, Tracking);
             console.log(collection);
-            console.log('...');
+            result.data = collection;
             result.success = true;
-            //result.data = collection;
             return result;
         }
 

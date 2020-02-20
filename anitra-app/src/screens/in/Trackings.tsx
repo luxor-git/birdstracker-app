@@ -19,6 +19,9 @@ export default class Trackings extends React.Component {
   @observable
   listLoaded: boolean = false;
 
+  @observable
+  listLoading: boolean = false;
+
   async componentDidMount() {
       this.listLoaded = false;
       TrackingStore.getTrackingList().then((data) => {
@@ -26,6 +29,18 @@ export default class Trackings extends React.Component {
         this.trackingList = data.data;
         this.listLoaded = true;
       });
+  }
+
+  async reloadList() {
+    this.listLoaded = false;
+    this.listLoading = true;
+    TrackingStore.getTrackingList(true).then((data) => {
+      if (data.success) {
+        this.trackingList = data.data;
+      }
+      this.listLoaded = true;
+      this.listLoading = false;
+    });
   }
 
   render () { 
@@ -47,6 +62,8 @@ export default class Trackings extends React.Component {
       if (this.listLoaded) {
         contents = <FlatList
           data={this.trackingList}
+          refreshing={this.listLoading}
+          onRefresh={() => { this.reloadList() }}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
         />

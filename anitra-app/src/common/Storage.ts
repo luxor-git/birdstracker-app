@@ -48,23 +48,16 @@ class PersistentStorage
     {
         console.log("Loading from", path);
         let res = await FileSystem.readAsStringAsync(path);
-        console.log("Loaded", res);
         let json = JSON.parse(res);
-
-        console.log('Parsing ok');
 
         let arr: ISerializableEntity[] = [];
 
-        console.log('Creating arr ok');
-
         for (let i = 0; i < json.data.length; i++) {
-            console.log(i);
             let ent : ISerializableEntity = EntityFactory.create(type, json.data[i]);
             arr.push(ent);
-            console.log(ent);
         }
 
-        return [];
+        return arr;
     }
 
     public async load(type: { new() : ISerializableEntity }, path: string) : Promise<ISerializableEntity>

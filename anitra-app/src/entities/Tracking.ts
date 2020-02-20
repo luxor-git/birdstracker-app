@@ -46,20 +46,17 @@ export class Tracking implements ISerializableEntity
     }
 
     fromJson(json: any): IEntity {
-        let trk = new Tracking();
         let obj = json;
 
-        trk.id = obj.id;
-        trk.name = obj.name;
-        trk.code = obj.code;
-        trk.deviceId = obj.deviceId;
-        trk.deviceStatusName = obj.deviceStatusName;
-        trk.firstPosition = obj.firstPosition;
-        trk.lastPosition = obj.lastPosition;
-        trk.species = obj.species;
-        trk.lastSynchronized = obj.lastSynchronized;
-
-        return trk;
+        this.id = obj.id;
+        this.name = obj.name;
+        this.code = obj.code;
+        this.deviceId = obj.deviceId;
+        this.deviceStatusName = obj.deviceStatusName;
+        this.firstPosition = obj.firstPosition;
+        this.lastPosition = obj.lastPosition;
+        this.species = obj.species;
+        this.lastSynchronized = obj.lastSynchronized;
     }
 };
 

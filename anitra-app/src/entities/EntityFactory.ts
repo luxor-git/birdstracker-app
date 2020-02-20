@@ -5,7 +5,7 @@ class EntityFactory {
     public create<T extends ISerializableEntity>(type: { new() : T; }, data : any) : ISerializableEntity
     {
         let obj = new type();
-        
+
         obj.fromJson(
             data
         );
