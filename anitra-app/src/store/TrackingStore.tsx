@@ -18,9 +18,7 @@ class TrackingStore extends BaseStore
         let fromCache = await Storage.fileExists(FILE_MAPPING.TRACKINGS);
 
         if (fromCache && !forceRefresh) {
-            console.log('yes');
             let collection = await Storage.loadCollection(FILE_MAPPING.TRACKINGS, Tracking);
-            console.log(collection);
             result.data = collection;
             result.success = true;
             return result;

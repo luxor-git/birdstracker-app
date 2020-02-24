@@ -57,6 +57,8 @@ export class Tracking implements ISerializableEntity
         this.lastPosition = obj.lastPosition;
         this.species = obj.species;
         this.lastSynchronized = obj.lastSynchronized;
+
+        return this;
     }
 };
 
