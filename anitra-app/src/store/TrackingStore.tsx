@@ -2,13 +2,13 @@ import BaseStore from './BaseStore';
 import { Tracking, LocalizedPosition, Species } from '../entities/Tracking';
 import AuthStore from './AuthStore';
 import { ApiConstants, formatGetRequest, apiRequest, formatDate } from "../common/ApiUtils";
-import { ListActionResult } from "../common/ActionResult";
+import { ListActionResult, EntityActionResult } from "../common/ActionResult";
 import { getString, ApiStrings } from "../common/ApiStrings";
 import Storage, { FILE_MAPPING } from '../common/Storage';
 
 class TrackingStore extends BaseStore
 {
-    private trackings: Map<number, Tracking> = new Map();
+    //private trackings: Map<number, Tracking> = new Map();
 
     public async getTrackingList(forceRefresh: boolean = false) : Promise<ListActionResult<Tracking>>
     {
@@ -54,10 +54,29 @@ class TrackingStore extends BaseStore
         return result;
     }
 
+    public async getTracking(id :number, forceRefresh: boolean = false) : Promise<EntityActionResult<Tracking>>
+    {
+        let res = new EntityActionResult<Tracking>(false);
+
+        const allTrackings = await this.getTrackingList(forceRefresh);
+
+        if (allTrackings.data) {
+            for (let i = 0; i < allTrackings.data.length; i++) {
+                if (allTrackings.data[i].id == id) {
+                    res.data = allTrackings.data[i];
+                    res.success = true;
+                    break;
+                }
+            }
+        }
+
+        return res;
+    }
+
     private trackingFromList(trackingRow: any) : Tracking {
         let tracking = new Tracking();
 
-        tracking.id = tracking["TrackedObjectId"];
+        tracking.id = trackingRow["TrackedObjectId"];
         tracking.code = trackingRow["TrackedObjectCode"];
         tracking.name = trackingRow["TrackedObjectName"];
         tracking.note = trackingRow["TrackedObjectNote"];

@@ -17,6 +17,7 @@ import Dashboard from './src/screens/in/Dashboard';
 import MapScreen from './src/screens/in/Map';
 import Devices from './src/screens/in/Devices';
 import Trackings from './src/screens/in/Trackings';
+import TrackingDetail from './src/screens/in/TrackingDetail';
 import Settings from './src/screens/in/Settings';
 import { Alert } from 'react-native';
 
@@ -24,7 +25,6 @@ import { Alert } from 'react-native';
 const LoggedContainer = createDrawerNavigator({
   Dashboard: Dashboard,
   Map: MapScreen,
-  //Devices: Devices,
   Trackings: Trackings,
   Settings: Settings
 });
@@ -35,6 +35,15 @@ const AuthContainer = createStackNavigator({
   Login: Login,
   Register: Register
 });
+
+const detailScreens = createStackNavigator({
+  TrackingDetail: {
+    screen: TrackingDetail,
+    params: {
+      id: null,
+    }
+  }
+})
 
 // default application container
 const AppNavigator = createSwitchNavigator({

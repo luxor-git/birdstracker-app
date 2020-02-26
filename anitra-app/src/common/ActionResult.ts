@@ -14,3 +14,9 @@ export class ListActionResult<T> extends BaseActionResult
 {
     public data: T[] = [];
 };
+
+
+export class EntityActionResult<T> extends BaseActionResult
+{
+    public data: T;
+};

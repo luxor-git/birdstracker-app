@@ -40,9 +40,9 @@ export default class Map extends React.Component {
             />
             <View>
 
-                <MapView style={styles.mapStyle}>
+                <MapView style={styles.mapStyle} rotateEnabled={false} mapType="none">
                     <UrlTile urlTemplate={this.tileUrl} zIndex={1} />
-                    {this.trackings.filter(tracking => {
+                    {/*this.trackings.filter(tracking => {
                       console.log(JSON.stringify(tracking.lastPosition));
                       if (tracking.lastPosition) {
                           console.log(tracking);
@@ -56,7 +56,7 @@ export default class Map extends React.Component {
                           title={tracking.getName()}
                           description={tracking.note}
                         />
-                    ))}
+                    ))*/}
                 </MapView>
             </View>
         </View>

@@ -56,6 +56,14 @@ export default class Trackings extends React.Component {
             subtitle={"test"}
             bottomDivider
             chevron
+            onPress={() => {
+              console.log('pressed');
+              console.log(item);
+              console.log(item.id);
+              this.props.navigation.navigate('TrackingDetail', {
+                  id: item.id
+              });
+            }}
           />
       )
 

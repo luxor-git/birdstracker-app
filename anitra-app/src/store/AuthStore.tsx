@@ -110,7 +110,7 @@ class AuthStore extends BaseStore
             await AsyncStorage.setItem(STORAGE_KEY_INDEXES.LAST_NAME, userData.LastName);
             await AsyncStorage.setItem(STORAGE_KEY_INDEXES.USER_ID, response.data.id.toString());
 
-            await SecureStore.setItemAsync(STORAGE_KEY_INDEXES.USER_NAME, username);
+            await SecureStore.setItemAsync(STORAGE_KEY_INDEXES.USER_NAME, userData.Email);
             await SecureStore.setItemAsync(STORAGE_KEY_INDEXES.PASSWORD, password);
 
             await this.getUser();

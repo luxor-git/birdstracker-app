@@ -6,7 +6,8 @@ export default {
         },
         default: {
             background: '#EEEEEE',
-            light: '#fff'
+            light: '#fff',
+            header: '#91C040'
         }
     }
 };

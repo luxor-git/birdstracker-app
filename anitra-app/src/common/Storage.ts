@@ -13,6 +13,7 @@ class PersistentStorage
         if (exists) {
             console.log('Directiores already exist');
         } else {
+            // todo Object.keys...
             await FileSystem.makeDirectoryAsync(PATH_MAPPING.DATA);
             await FileSystem.makeDirectoryAsync(PATH_MAPPING.TRACKING);
             await FileSystem.makeDirectoryAsync(PATH_MAPPING.SPECIES);
@@ -89,12 +90,15 @@ const PATH_MAPPING = {
     DATA:     FileSystem.documentDirectory + "data",
     TRACKING: FileSystem.documentDirectory + 'data/tracking',
     SPECIES:  FileSystem.documentDirectory + 'data/species',
+    COMMON:   FileSystem.documentDirectory + 'data/common',
     TILE:     FileSystem.documentDirectory + 'tile' // cache dir?
 };
 
 
 const FILE_MAPPING = {
-    TRACKINGS: PATH_MAPPING.TRACKING + '/tracking.json'
+    TRACKINGS: PATH_MAPPING.TRACKING + '/tracking.json',
+    SYNC: PATH_MAPPING.COMMON + '/sync.json',
+    PREFERENCES: PATH_MAPPING.COMMON + '/pref.json',
 };
 
 const Storage = new PersistentStorage();
