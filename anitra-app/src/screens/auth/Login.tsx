@@ -25,7 +25,7 @@ export default class Login extends React.Component {
     const reply = await AuthStore.authenticate(this.email, this.password);
     console.log(reply);
     if (reply.success) {
-      this.props.navigation.navigate('Dashboard');
+      this.props.navigation.navigate('Map');
     } else {
       reply.messages.forEach(x => {
         console.log(x);

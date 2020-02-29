@@ -23,9 +23,9 @@ import { Alert } from 'react-native';
 
 // container for logged-in users
 const LoggedContainer = createDrawerNavigator({
-  Dashboard: Dashboard,
+  //Dashboard: Dashboard,
   Map: MapScreen,
-  Trackings: Trackings,
+  //Trackings: Trackings,
   Settings: Settings
 });
 
@@ -35,15 +35,6 @@ const AuthContainer = createStackNavigator({
   Login: Login,
   Register: Register
 });
-
-const detailScreens = createStackNavigator({
-  TrackingDetail: {
-    screen: TrackingDetail,
-    params: {
-      id: null,
-    }
-  }
-})
 
 // default application container
 const AppNavigator = createSwitchNavigator({

@@ -9,7 +9,7 @@ export default class AuthLoading extends React.Component {
    verifyAuth = async () => {
       await AuthStore.awaitAuth();
       if (AuthStore.isAuthorized) {
-        this.props.navigation.navigate("Dashboard");
+        this.props.navigation.navigate("Map");
       } else {
         this.props.navigation.navigate("AuthContainer");
       }
