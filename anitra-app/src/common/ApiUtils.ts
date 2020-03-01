@@ -52,8 +52,11 @@ export async function apiRequest(url: string, options: any) : Promise<BaseAction
         options
     );
 
+    console.log(apiResponse.data["STATUS_CODE"]);
+    console.log(apiResponse.data.MESSAGE);
+
     // todo - fix this in the API
-    if (apiResponse.data["STATUS_CODE"] === "ERROR" && apiResponse.data.MESSAGE === "Api key is invalid.") {
+    if (apiResponse.data["STATUS_CODE"] === "ERROR" && apiResponse.data.MESSAGE === "API key is invalid") {
         console.log('Invalid API key!');
         invalidTokenListeners.forEach( async x => await x() );
     }
@@ -72,11 +75,5 @@ export async function apiRequest(url: string, options: any) : Promise<BaseAction
 
 export function formatDate(date: any) : Date 
 {
-    if (typeof date === "object") {
-        if (date.date) {
-            return new Date(date.data);
-        }
-    }
-
-    return null;
+    return date;
 }

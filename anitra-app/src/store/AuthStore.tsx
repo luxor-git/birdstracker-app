@@ -51,9 +51,9 @@ class AuthStore extends BaseStore
         return this.user.apiKey;
     }
 
-    public async getUser() : Promise<User>
+    public async getUser(forceRefresh: boolean = false) : Promise<User>
     {
-        if (!this.user) {
+        if (!this.user || forceRefresh) {
             const authKey = await AsyncStorage.getItem(STORAGE_KEY_INDEXES.AUTH_KEY);
             const userName = await AsyncStorage.getItem(STORAGE_KEY_INDEXES.USER_NAME);
             const firstName = await AsyncStorage.getItem(STORAGE_KEY_INDEXES.FIRST_NAME);
@@ -113,7 +113,7 @@ class AuthStore extends BaseStore
             await SecureStore.setItemAsync(STORAGE_KEY_INDEXES.USER_NAME, userData.Email);
             await SecureStore.setItemAsync(STORAGE_KEY_INDEXES.PASSWORD, password);
 
-            await this.getUser();
+            await this.getUser(true);
         }
 
         return response;

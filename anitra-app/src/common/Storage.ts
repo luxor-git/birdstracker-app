@@ -33,7 +33,7 @@ class PersistentStorage
     {
         let arr = []; //wrapper?
 
-        await data.forEach((x) => {
+        data.forEach((x) => {
             arr.push(x.toJson());
         });
 
@@ -42,7 +42,13 @@ class PersistentStorage
             synchronized: new Date()
         };
 
-        await FileSystem.writeAsStringAsync(path, JSON.stringify(wrapper));
+        const saveData = JSON.stringify(wrapper);
+
+        console.log("Writing collection to", path, "of length", saveData.length);
+        console.log(saveData.substr(0, 100));
+        console.log('Filesize:', encodeURI(saveData).split(/%..|./).length - 1);
+
+        await FileSystem.writeAsStringAsync(path, saveData);
     }
 
     public async loadCollection(path: string, type: { new() : ISerializableEntity }) : Promise<ISerializableEntity[]>

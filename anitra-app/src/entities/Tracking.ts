@@ -9,6 +9,10 @@ export class Tracking implements ISerializableEntity
 
     deviceId: number;
     deviceStatusName?: string;
+    deviceCode: string = "";
+
+    sex: string = "Not determined";
+    age: string = "1CY";
 
     firstPosition?: LocalizedPosition;
     lastPosition?: LocalizedPosition;
@@ -24,6 +28,25 @@ export class Tracking implements ISerializableEntity
         }
 
         return this.name??this.code;
+    }
+
+    public getIconName() : string {
+        if (this.lastPosition) {
+            if (this.lastPosition.date) {
+                let date = +new Date(this.lastPosition.date);
+                let now = +new Date();
+                let diff = now - date;
+                if (diff < 86400 * 1000) {
+                    return "marker24h";
+                } else if (diff < 7 * 86400 * 1000) {
+                    return "marker7d";
+                } else if (diff < 30 * 86400 * 1000) {
+                    return "marker30d";
+                }
+            }
+        }
+
+        return "markerElse";
     }
 
     toJson(): object {

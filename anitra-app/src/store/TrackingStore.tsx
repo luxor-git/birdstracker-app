@@ -19,6 +19,7 @@ class TrackingStore extends BaseStore
 
         if (fromCache && !forceRefresh) {
             let collection = await Storage.loadCollection(FILE_MAPPING.TRACKINGS, Tracking);
+            console.log('Loading from store');
             result.data = collection;
             result.success = true;
             return result;
@@ -35,12 +36,12 @@ class TrackingStore extends BaseStore
             let trackingData : Tracking[] = [];
 
             if (response.data.list) {
-                await response.data.list.forEach((x) => {
-                    let t = this.trackingFromList(x);
+                for (let i = 0; i < response.data.list.length; i++) {
+                    let t = this.trackingFromList(response.data.list[i]);
                     if (t) {
                         trackingData.push(t);
                     }
-                });
+                }
             }
 
             console.log('Saving file');
@@ -90,9 +91,9 @@ class TrackingStore extends BaseStore
             pos.country = trackingRow["LastPositionCountry"];
             pos.settlement = trackingRow["LastPositionSettlement"];
             pos.lat = parseFloat(trackingRow["LastPositionLatitude"]);
-            pos.lat = parseFloat(trackingRow["LastPositionSettlement"]);
+            pos.lng = parseFloat(trackingRow["LastPositionLongitude"]);
             pos.date = formatDate(trackingRow["LastPositionTime"]);
-            tracking.firstPosition = pos;
+            tracking.lastPosition = pos;
         }
 
         if (trackingRow["FirstPositionAdmin1"]) {
@@ -102,7 +103,7 @@ class TrackingStore extends BaseStore
             pos.country = trackingRow["FirstPositionCountry"];
             pos.settlement = trackingRow["LastPositionSettlement"];
             pos.lat = parseFloat(trackingRow["FirstPositionLatitude"]);
-            pos.lat = parseFloat(trackingRow["FirstPositionLongitude"]);
+            pos.lng = parseFloat(trackingRow["FirstPositionLongitude"]);
             pos.date = formatDate(trackingRow["StartGpsTime"]);
             tracking.firstPosition = pos;
         }
