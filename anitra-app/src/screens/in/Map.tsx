@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions, Picker, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Picker, TextInput, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
 import Theme from "../../constants/Theme.js";
 import MapView, { Callout } from 'react-native-maps';
 import { SearchBar, Button, Icon } from 'react-native-elements';
@@ -149,149 +149,154 @@ export default class Map extends React.Component {
 
   render () {
       return (
-        <View style={styles.container}>
-            {this.loading && <LoadingOverlay loadingText={this.loadingText}/>}
-            {this.showLayersOverlay && <LayersOverlay selectedLayer={this.layer} setLayer={this.selectLayer.bind(this)} />}
-            {this.showTrackingOverlay && <TrackingOverlay selectedTracking={this.trackingOverlayTracking} loadTrackingTrack={this.loadTrackingTrack.bind(this)} close={this.unselectTracking.bind(this)}/>}
+        <KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
+          <View style={styles.container}>
+              {this.loading && <LoadingOverlay loadingText={this.loadingText}/>}
+              {this.showLayersOverlay && <LayersOverlay selectedLayer={this.layer} setLayer={this.selectLayer.bind(this)} />}
+              {this.showTrackingOverlay && <TrackingOverlay selectedTracking={this.trackingOverlayTracking} loadTrackingTrack={this.loadTrackingTrack.bind(this)} close={this.unselectTracking.bind(this)}/>}
 
-            <MapView style={styles.mapStyle} rotateEnabled={false} mapType="none">
-                {this.layer && <UrlTile urlTemplate={this.layer.getTileUrl()} zIndex={1} />}
-                    {this.mapTrackings.map(tracking => {
-                      let marker = this.markers[tracking.getIconName()];
-                      return (
-                        <Marker
-                          key={tracking.id}
-                          coordinate={ { latitude: tracking.lastPosition.lat, longitude: tracking.lastPosition.lng } }
-                          title={tracking.getName()}
-                          description={tracking.note}
-                          icon={marker}
-                        >
-                          <Callout onPress={() => this.selectTracking(tracking)}>
-                            <View>
-                              <Text>
-                                {tracking.getName()}
-                              </Text>
+              <MapView style={styles.mapStyle} rotateEnabled={false} mapType="none" loadingEnabled={true} showsUserLocation={true} showsCompass={true}>
+                  {this.layer && <UrlTile urlTemplate={this.layer.getTileUrl()} zIndex={1} />}
+                      {this.mapTrackings.map(tracking => {
+                        let marker = this.markers[tracking.getIconName()];
+                        return (
+                          <Marker
+                            key={tracking.id}
+                            coordinate={ { latitude: tracking.lastPosition.lat, longitude: tracking.lastPosition.lng } }
+                            title={tracking.getName()}
+                            description={tracking.note}
+                            icon={marker}
+                            image={marker}
+                          >
+                            <Callout onPress={() => this.selectTracking(tracking)}>
+                              <View>
+                                <Text>
+                                  {tracking.getName()}
+                                </Text>
 
-                              <Text>
-                                {tracking.species?.scientificName}
-                                {tracking.sex}
-                                {tracking.age}
-                              </Text>
+                                <Text>
+                                  {tracking.species?.scientificName}
+                                  {tracking.sex}
+                                  {tracking.age}
+                                </Text>
 
-                              <Text>
-                                Device: {tracking.deviceCode}
-                              </Text>
-                            </View>
-                          </Callout>
-                        </Marker>
-                    )}
-                    )}
-            </MapView>
-            
-            
-            {/*<ActionButton buttonColor="rgba(231,76,60,1)" position="right">
-              <ActionButton.Item buttonColor='#9b59b6' title="New Task" onPress={() => console.log("notes tapped!")}>
-                <Icon
-                    name='map'
-                    type='font-awesome'
-                    color='#f50'
-                />
-              </ActionButton.Item>
-              <ActionButton.Item buttonColor='#3498db' title="Notifications" onPress={() => {}}>
-                <Icon
-                  name='map'
-                  type='font-awesome'
-                  color='#f50'
-                />
-              </ActionButton.Item>
-              <ActionButton.Item buttonColor='#1abc9c' title="All Tasks" onPress={() => {}}>
-                <Icon
-                  name='map'
-                  type='font-awesome'
-                  color='#f50'
-                />
-              </ActionButton.Item>
-                  </ActionButton>*/}
-
-            <SlidingUpPanel
-              ref={c => (this.panel = c)}
-              draggableRange={{top: height / 1.75, bottom: 40}}
-              animatedValue={this.draggedValue}
-              showBackdrop={false}
-              containerStyle={{ backgroundColor: "transparent" }}
-            >
-              <View style={styles.panel}>
-                <View style={styles.panelHeader}>
-                    <View style={{ height: 2, backgroundColor: "#fff", width: 60}}>
-                    </View>
-                </View>
-                <View style={styles.container}>
-                  <View style={styles.inputWrapper}>
-                      <SearchBar
-                        containerStyle={{ backgroundColor: "transparent", borderWidth: 0, borderColor: "#fff", borderTopColor: "transparent", borderBottomColor: "transparent" }}
-                        inputContainerStyle={{ backgroundColor: "#fff", borderWidth: 0, borderColor: "#fff", borderRadius: 0 }}
-                        inputStyle={{ color: "#000" }}
-                        onChangeText={(text) => { this.updateSearch(text) }}
-                        value={this.searchText}
-                      />
-                  </View>
-
-                  <View style={styles.inputWrapperOffset}>
-                    <Text style={{marginBottom: 5}}>
-                      Species
-                    </Text>
-                    <Picker
-                        style={{height: 40, width: "auto", backgroundColor: "#fff" }}
-                        onValueChange={(itemValue, itemIndex) => {}}
-                        
-                    >
-                      <Picker.Item label="birb" value="birb" />
-                    </Picker>
-                  </View>
-
-                  <View style={styles.inputWrapperOffset}>
-                    <View style={{ display: "flex", flexDirection: "row" }}>
-                      <View style={{ flexGrow: 1 }}>
-                        <Text style={styles.inputLabel}>
-                          From
-                        </Text>
-
-                        <TextInput
-                          style={styles.textInput}
-                          keyboardType={'numeric'}
-                        />
-                      </View>
-
-                      <View style={{ width: 15 }}>
-
-                      </View>
-
-                      <View style={{ flexGrow: 1 }}>
-                        <Text style={styles.inputLabel}>
-                          To
-                        </Text>
-
-                        <TextInput
-                          style={styles.textInput}
-                          keyboardType={'numeric'}
-                        />
-                      </View>
-                    </View>
-                  </View>
-
-                  <View>
-                    <Icon
-                      raised
+                                <Text>
+                                  Device: {tracking.deviceCode}
+                                </Text>
+                              </View>
+                            </Callout>
+                          </Marker>
+                      )}
+                      )}
+              </MapView>
+              
+              
+              {/*<ActionButton buttonColor="rgba(231,76,60,1)" position="right">
+                <ActionButton.Item buttonColor='#9b59b6' title="New Task" onPress={() => console.log("notes tapped!")}>
+                  <Icon
                       name='map'
                       type='font-awesome'
                       color='#f50'
-                      onPress={() => { this.showLayersOverlay = true }}
-                    />
+                  />
+                </ActionButton.Item>
+                <ActionButton.Item buttonColor='#3498db' title="Notifications" onPress={() => {}}>
+                  <Icon
+                    name='map'
+                    type='font-awesome'
+                    color='#f50'
+                  />
+                </ActionButton.Item>
+                <ActionButton.Item buttonColor='#1abc9c' title="All Tasks" onPress={() => {}}>
+                  <Icon
+                    name='map'
+                    type='font-awesome'
+                    color='#f50'
+                  />
+                </ActionButton.Item>
+                    </ActionButton>*/}
+
+              <SlidingUpPanel
+                ref={c => (this.panel = c)}
+                draggableRange={{top: height / 1.75, bottom: 80}}
+                animatedValue={this.draggedValue}
+                showBackdrop={false}
+                containerStyle={{ backgroundColor: "transparent" }}
+              >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                  <View style={styles.panel}>
+                    <View style={styles.panelHeader}>
+                        <View style={{ height: 2, backgroundColor: "#000", width: 60}}>
+                        </View>
+                    </View>
+                    <View style={styles.container}>
+                      <View style={styles.inputWrapper}>
+                          <SearchBar
+                            containerStyle={{ backgroundColor: "transparent", borderWidth: 0, borderColor: "#fff", borderTopColor: "transparent", borderBottomColor: "transparent" }}
+                            inputContainerStyle={{ backgroundColor: "#fff", borderWidth: 0, borderColor: "#fff", borderRadius: 0 }}
+                            inputStyle={{ color: "#000" }}
+                            onChangeText={(text) => { this.updateSearch(text) }}
+                            value={this.searchText}
+                          />
+                      </View>
+
+                      <View style={styles.inputWrapperOffset}>
+                        <Text style={{marginBottom: 5}}>
+                          Species
+                        </Text>
+                        <Picker
+                            style={{height: 40, width: "auto", backgroundColor: "#fff" }}
+                            onValueChange={(itemValue, itemIndex) => {}}
+                            
+                        >
+                          <Picker.Item label="birb" value="birb" />
+                        </Picker>
+                      </View>
+
+                      <View style={styles.inputWrapperOffset}>
+                        <View style={{ display: "flex", flexDirection: "row" }}>
+                          <View style={{ flexGrow: 1 }}>
+                            <Text style={styles.inputLabel}>
+                              From
+                            </Text>
+
+                            <TextInput
+                              style={styles.textInput}
+                              keyboardType={'number-pad'}
+                            />
+                          </View>
+
+                          <View style={{ width: 15 }}>
+
+                          </View>
+
+                          <View style={{ flexGrow: 1 }}>
+                            <Text style={styles.inputLabel}>
+                              To
+                            </Text>
+
+                            <TextInput
+                              style={styles.textInput}
+                              keyboardType={'number-pad'}
+                            />
+                          </View>
+                        </View>
+                      </View>
+
+                      <View>
+                        <Icon
+                          raised
+                          name='map'
+                          type='font-awesome'
+                          color='#f50'
+                          onPress={() => { this.showLayersOverlay = true }}
+                        />
+                      </View>
+                    </View>
                   </View>
-                </View>
-              </View>
-            </SlidingUpPanel>
-        </View>
+                </TouchableWithoutFeedback>
+              </SlidingUpPanel>
+          </View>
+        </KeyboardAvoidingView>
       );
   }
 }
@@ -299,7 +304,7 @@ export default class Map extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Theme.colors.brand.primary
+    backgroundColor: '#f6f6f6'
   },
   buttonPad: {
     padding: 2,
@@ -326,8 +331,8 @@ const styles = StyleSheet.create({
     color: "#000"
   },
   panelHeader: {
-    height: 40,
-    backgroundColor: Theme.colors.brand.primary,
+    height: 80,
+    backgroundColor: '#f6f6f6',
     alignItems: 'center',
     justifyContent: 'center',
     borderTopLeftRadius: 60,

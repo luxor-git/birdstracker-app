@@ -66,6 +66,7 @@ export default class TrackingOverlay extends React.Component {
                 isVisible={true}
                 windowBackgroundColor="rgba(255, 255, 255, .5)"
                 overlayStyle={{display: "flex", backgroundColor: "#fff", flexDirection: "column", alignItems: "center", alignContent: "center", padding: 0}}
+                onBackdropPress={() => { this.closeFunction() }}
               >
               {this.loading && <View><MaterialIndicator color={ Theme.colors.brand.primary }/></View>}
               {!this.loading &&
@@ -83,12 +84,6 @@ export default class TrackingOverlay extends React.Component {
                         <Text style={{ color: "#fff" }}>
                             {this.tracking.age}
                         </Text>
-
-                        <View style={{ flexGrow: 1 }}>
-                            <Button title={"x"} onPress={() => { this.closeFunction() }} buttonStyle={{ backgroundColor: "red", padding: 0, margin: 0, width: 30, height: 30 }}>
-                                
-                            </Button>
-                        </View>
                     </View>
                   </View>
 

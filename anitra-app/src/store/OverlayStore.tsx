@@ -21,7 +21,7 @@ class OverlayStore extends BaseStore
     constructor()
     {
         super();
-        this.defaultLayer = new Layer("Seznam Tourist", "https://mapserver.mapy.cz/base-m/retina/{z}-{x}-{y}", "");
+        this.defaultLayer = new Layer("Seznam Tourist", "https://mapserver.mapy.cz/turist-m/{z}-{x}-{y}", "");
         this.layers.set(LAYER_IDENTIFIERS.LAYER_SEZNAM_AERIAL_MAPS, this.defaultLayer);
         this.layers.set(LAYER_IDENTIFIERS.LAYER_SEZNAM_TOURIST_MAPS, new Layer("Seznam Aerial", "https://mapserver.mapy.cz/bing/{z}-{x}-{y}", ""));
     }
