@@ -75,7 +75,7 @@ class AuthStore extends BaseStore
     public async authenticateFromStoredCredentials() : Promise<boolean>
     {
         const credentials = await this.getStoredCredentials();
-        if (!credentials) {
+        if (credentials) {
             return (await this.authenticate(credentials.username, credentials.password)).success;
         } else {
             return false;
