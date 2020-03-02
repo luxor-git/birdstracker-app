@@ -120,18 +120,20 @@ export default class Map extends React.Component {
     if (searchText || this.searchSpeciesId !== null) {
       for (let i = 0; i < this.trackings.length; i++) {
         if (this.trackings[i].lastPosition) {
-          if (searchText) {
-            let lcName = this.trackings[i].getName().toLowerCase();
-            if (lcName.indexOf(searchText) >= 0) {
-              deduplicationMap[this.trackings[i].id] = this.trackings[i];
+          if (this.trackings[i].species && this.searchSpeciesId) {
+            if (this.trackings[i].species.id != this.searchSpeciesId) {
+              continue;
             }
           }
 
-          if (this.trackings[i].species && this.searchSpeciesId) {
-            if (this.trackings[i].species.id == this.searchSpeciesId) {
-              deduplicationMap[this.trackings[i].id] = this.trackings[i];
+          if (searchText) {
+            let lcName = this.trackings[i].getName().toLowerCase();
+            if (lcName.indexOf(searchText) === -1) {
+              continue;
             }
           }
+
+          deduplicationMap[this.trackings[i].id] = this.trackings[i];
         }
       }
   
