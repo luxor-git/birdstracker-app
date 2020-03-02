@@ -34,6 +34,8 @@ const AuthContainer = createStackNavigator({
   Welcome: Welcome,
   Login: Login,
   Register: Register
+}, {
+  headerMode: 'none'
 });
 
 // default application container

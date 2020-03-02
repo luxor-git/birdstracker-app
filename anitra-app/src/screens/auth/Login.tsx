@@ -1,11 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, KeyboardAvoidingView , Image} from 'react-native';
+import { StyleSheet, Text, View, KeyboardAvoidingView , Image, TouchableWithoutFeedback, Keyboard, Dimensions } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Theme from "../../constants/Theme.js";
 import AuthStore from "../../store/AuthStore";
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import { LinearGradient } from 'expo-linear-gradient';
+const {height, width} = Dimensions.get('window');
 
 // todo prefill e-mail from preferences if available
 
@@ -48,54 +50,52 @@ export default class Login extends React.Component {
   render () {
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={{flex: 1, height: height, width: width}}>
+            <LinearGradient start={{x: 1, y: 0.25}} end={{x: 0, y: 0.75}} colors={['#91C040', '#568f3d']} style={{flex: 1}}>
+            <Image source={require('../../assets/images/logo.png')}></Image>
 
-        <Image source={require('../../assets/images/logo.png')}></Image>
+            <View style={styles.loginWrapper}>
+            <View style={styles.wrapperRow}>
+              <Input
+                value={this.email}
+                onChangeText={ (text) => { this.email = text; } }
+                placeholder='E-mail'
+              />
+            </View>
 
-        <View style={styles.loginWrapper}>
-          <View style={styles.wrapperRow}>
-            <Input
-              value={this.email}
-              onChangeText={ (text) => { this.email = text; } }
-              placeholder='E-mail'
-            />
+            <View style={styles.wrapperRow}>
+              <Input 
+                style={styles.input}
+                value={this.password}
+                onChangeText={ (text) => { this.password = text; } }
+                secureTextEntry={true}
+                placeholder="Password"
+              />
+
+            </View>
+
+            <View style={styles.wrapperRow}>
+              <Button 
+                title="Login"
+                onPress={ this.authenticate }
+                disabled={ this.isLoading }
+                icon={
+                  <Icon
+                    name="user"
+                    size={15}
+                    color="white"
+                    style={{ marginRight: 5 }}
+                  />
+                }
+                loading={ this.isLoading }
+              />
+            </View>
+
           </View>
-
-          <View style={styles.wrapperRow}>
-            <Input 
-              style={styles.input}
-              value={this.password}
-              onChangeText={ (text) => { this.password = text; } }
-              secureTextEntry={true}
-              placeholder="Password"
-            />
-
+            </LinearGradient>
           </View>
-
-          <View style={styles.wrapperRow}>
-            <Button 
-              title="Login"
-              onPress={ this.authenticate }
-              disabled={ this.isLoading }
-              icon={
-                <Icon
-                  name="user"
-                  size={15}
-                  color="white"
-                  style={{ marginRight: 5 }}
-                />
-              }
-              loading={ this.isLoading }
-            />
-          </View>
-
-        </View>
-
-        {/*<View>
-          <Button 
-            title="Sign with Google"
-            onPress={() => this.authenticate}
-          />
-        </View>*/}
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     );
   }
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     marginBottom: 15
   },
   input: {
-    borderBottomColor: Theme.colors.brand.secondary,
+    borderBottomColor: Theme.colors.brand.primary,
     padding: 1,
     flex: 1,
     marginBottom: 10
