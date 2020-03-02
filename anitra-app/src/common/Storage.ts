@@ -103,6 +103,7 @@ const PATH_MAPPING = {
 
 const FILE_MAPPING = {
     TRACKINGS: PATH_MAPPING.TRACKING + '/tracking.json',
+    SPECIES: PATH_MAPPING.TRACKING + '/species.json',
     SYNC: PATH_MAPPING.COMMON + '/sync.json',
     PREFERENCES: PATH_MAPPING.COMMON + '/pref.json',
 };

@@ -68,149 +68,151 @@ export default class TrackingOverlay extends React.Component {
                 overlayStyle={{display: "flex", backgroundColor: "#fff", flexDirection: "column", alignItems: "center", alignContent: "center", padding: 0}}
                 onBackdropPress={() => { this.closeFunction() }}
               >
-              {this.loading && <View><MaterialIndicator color={ Theme.colors.brand.primary }/></View>}
-              {!this.loading &&
               <View>
-                  <View style={{ backgroundColor: Theme.colors.brand.primary }}>
-                    <View style={{ display: "flex", flexDirection: "row", padding: 10 }}>
-                        <Text style={{ color: "#fff" }}>
-                            {this.tracking.getName()}
-                        </Text>
-
-                        <Text style={{ color: "#fff" }}>
-                            {this.tracking.sex}
-                        </Text>
-
-                        <Text style={{ color: "#fff" }}>
-                            {this.tracking.age}
-                        </Text>
-                    </View>
-                  </View>
-
-                  <View style={{ padding: 10 }}>
-                        <View>
-                            <Text>
-                                Species
-                            </Text>
-                            <Text>
-                                {this.tracking.species?.scientificName}
-                            </Text>
-                        </View>
-
-                        <View>
-                            <Text>
-                                Last position
-                            </Text>
-                            <Text>
-                                {this.tracking.lastPosition?.admin1}
-                                {this.tracking.lastPosition?.admin2}
-                                {this.tracking.lastPosition?.settlement}
-                                {this.tracking.lastPosition?.country}
-                            </Text>
-                        </View>
-
-                        <View>
-                            <Text>
-                                Note
-                            </Text>
-                            <Text>
-                                {this.tracking.note}
-                            </Text>
-                        </View>
-
-                  </View>
-
-                  <View style={{ height: 140 }}>
-                    <View>
-                        <View style={{ backgroundColor: Theme.colors.brand.primary, padding: 10 }}>
+                {this.loading && <View><MaterialIndicator color={ Theme.colors.brand.primary }/></View>}
+                {!this.loading &&
+                <View>
+                    <View style={{ backgroundColor: Theme.colors.brand.primary }}>
+                        <View style={{ display: "flex", flexDirection: "row", padding: 10 }}>
                             <Text style={{ color: "#fff" }}>
-                                Gallery
+                                {this.tracking.getName()}
                             </Text>
-                        </View>
-                        <ScrollView horizontal={true} style={{ height: 100 }}>
-                            <View style={{ display: "flex", flexDirection: "row"}}>
-                                <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10 }}>
-                                </View>
-                                <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
-                                </View>
-                                <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
-                                </View>
-                                <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
-                                </View>
-                                <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
-                                </View>
-                                <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
-                                </View>
-                            </View>
-                        </ScrollView>
-                    </View>
-                  </View>
 
-                  <View>
-                    <View>
-                        <View style={{ backgroundColor: Theme.colors.brand.primary, padding: 10 }}>
                             <Text style={{ color: "#fff" }}>
-                                Actions
+                                {this.tracking.sex}
+                            </Text>
+
+                            <Text style={{ color: "#fff" }}>
+                                {this.tracking.age}
                             </Text>
                         </View>
+                    </View>
 
-                        <View style={{ display: "flex", flexDirection: "row" }}>
-                            <View style={styles.iconColumn}>
-                                <Icon
-                                    raised
-                                    name='sticky-note'
-                                    type='font-awesome'
-                                    color={Theme.colors.brand.primary}
-                                    onPress={() => {  }}
-                                />
-                                <Text style={{ textAlign: "center" }}>
-                                    Add note
+                    <View style={{ padding: 10 }}>
+                            <View>
+                                <Text>
+                                    Species
+                                </Text>
+                                <Text>
+                                    {this.tracking.species?.scientificName}
                                 </Text>
                             </View>
 
-                            <View style={styles.iconColumn}>
-                                <Icon
-                                    raised
-                                    name='camera'
-                                    type='font-awesome'
-                                    color={Theme.colors.brand.primary}
-                                    onPress={async () => { await this.addPhoto() }}
-                                />
-                                <Text style={{ textAlign: "center" }}>
-                                    Add photo
+                            <View>
+                                <Text>
+                                    Last position
+                                </Text>
+                                <Text>
+                                    {this.tracking.lastPosition?.admin1}
+                                    {this.tracking.lastPosition?.admin2}
+                                    {this.tracking.lastPosition?.settlement}
+                                    {this.tracking.lastPosition?.country}
                                 </Text>
                             </View>
 
-                            <View style={styles.iconColumn}>
-                                <Icon
-                                    raised
-                                    name='map-marker'
-                                    type='font-awesome'
-                                    color={Theme.colors.brand.primary}
-                                    onPress={() => { this.loadTrackingTrack() }}
-                                />
-                                <Text style={{ textAlign: "center" }}>
-                                    Load track
+                            <View>
+                                <Text>
+                                    Note
+                                </Text>
+                                <Text>
+                                    {this.tracking.note}
                                 </Text>
                             </View>
 
-                            <View style={styles.iconColumn}>
-                                <Icon
-                                    raised
-                                    name='wifi'
-                                    type='font-awesome'
-                                    color={Theme.colors.brand.primary}
-                                    onPress={() => {  }}
-                                />
-                                <Text style={{ textAlign: "center" }}>
-                                    Offline
+                    </View>
+
+                    <View style={{ height: 140 }}>
+                        <View>
+                            <View style={{ backgroundColor: Theme.colors.brand.primary, padding: 10 }}>
+                                <Text style={{ color: "#fff" }}>
+                                    Gallery
                                 </Text>
+                            </View>
+                            <ScrollView horizontal={true} style={{ height: 100 }}>
+                                <View style={{ display: "flex", flexDirection: "row"}}>
+                                    <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10 }}>
+                                    </View>
+                                    <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
+                                    </View>
+                                    <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
+                                    </View>
+                                    <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
+                                    </View>
+                                    <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
+                                    </View>
+                                    <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
+                                    </View>
+                                </View>
+                            </ScrollView>
+                        </View>
+                    </View>
+
+                    <View>
+                        <View>
+                            <View style={{ backgroundColor: Theme.colors.brand.primary, padding: 10 }}>
+                                <Text style={{ color: "#fff" }}>
+                                    Actions
+                                </Text>
+                            </View>
+
+                            <View style={{ display: "flex", flexDirection: "row" }}>
+                                <View style={styles.iconColumn}>
+                                    <Icon
+                                        raised
+                                        name='sticky-note'
+                                        type='font-awesome'
+                                        color={Theme.colors.brand.primary}
+                                        onPress={() => {  }}
+                                    />
+                                    <Text style={{ textAlign: "center" }}>
+                                        Add note
+                                    </Text>
+                                </View>
+
+                                <View style={styles.iconColumn}>
+                                    <Icon
+                                        raised
+                                        name='camera'
+                                        type='font-awesome'
+                                        color={Theme.colors.brand.primary}
+                                        onPress={async () => { await this.addPhoto() }}
+                                    />
+                                    <Text style={{ textAlign: "center" }}>
+                                        Add photo
+                                    </Text>
+                                </View>
+
+                                <View style={styles.iconColumn}>
+                                    <Icon
+                                        raised
+                                        name='map-marker'
+                                        type='font-awesome'
+                                        color={Theme.colors.brand.primary}
+                                        onPress={() => { this.loadTrackingTrack() }}
+                                    />
+                                    <Text style={{ textAlign: "center" }}>
+                                        Load track
+                                    </Text>
+                                </View>
+
+                                <View style={styles.iconColumn}>
+                                    <Icon
+                                        raised
+                                        name='wifi'
+                                        type='font-awesome'
+                                        color={Theme.colors.brand.primary}
+                                        onPress={() => {  }}
+                                    />
+                                    <Text style={{ textAlign: "center" }}>
+                                        Offline
+                                    </Text>
+                                </View>
                             </View>
                         </View>
                     </View>
-                  </View>
+                </View>
+                }
               </View>
-              }
 
             </Overlay>
         )

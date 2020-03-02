@@ -7,7 +7,8 @@ export const ApiConstants = {
     API_URL: 'https://app.anitra.cz/api/v1/',
     API_AUTH_URL: 'login',
     API_TRACKED_OBJECT: 'tracked-object',
-    API_LIST: 'list'
+    API_LIST: 'list',
+    API_SPECIES: 'species'
 };
 
 export function formatPostRequest(formData: FormData, apiKey?: string) : any {

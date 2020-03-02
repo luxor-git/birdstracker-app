@@ -11,8 +11,8 @@ export class Tracking implements ISerializableEntity
     deviceStatusName?: string;
     deviceCode: string = "";
 
-    sex: string = "Not determined";
-    age: string = "1CY";
+    sex: string = "";
+    age: string = "";
 
     firstPosition?: LocalizedPosition;
     lastPosition?: LocalizedPosition;
@@ -27,7 +27,19 @@ export class Tracking implements ISerializableEntity
             return this.name + ' (' + this.code + ')';
         }
 
-        return this.name??this.code;
+        if (this.name) {
+            return this.name;
+        }
+
+        if (this.code) {
+            return this.code;
+        }
+
+        if (this.deviceCode) {
+            return this.deviceCode;
+        }
+
+        return 'Error';
     }
 
     public getIconName() : string {
@@ -98,7 +110,7 @@ export class LocalizedPosition
     date?: Date;
 };
 
-export class Species implements IEntity
+export class Species implements IEntity, ISerializableEntity
 {
     id?: number;
 
@@ -107,4 +119,24 @@ export class Species implements IEntity
     
     synchronized: boolean;
     lastSynchronized?: Date = new Date();
+
+    toJson(): object {
+        return {
+            id: this.id,
+            scientificName: this.scientificName,
+            englishName: this.englishName
+        }
+    }
+
+    fromJson(json: any): IEntity {
+        this.id = json.id;
+        this.scientificName = json.scientificName;
+        this.englishName = json.englishName;
+        return this;
+    }
+
+    toJsonString(): string {
+        return JSON.stringify(this.toJson());
+    }
+
 };

@@ -10,10 +10,11 @@ import LoadingOverlay from '../../components/LoadingOverlay';
 import LayersOverlay from '../../components/LayersOverlay';
 import TrackingOverlay from '../../components/TrackingOverlay';
 import TrackingStore from "../../store/TrackingStore";
-import { Tracking } from '../../entities/Tracking.js';
+import { Tracking, Species } from '../../entities/Tracking.js';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import OverlayStore from "../../store/OverlayStore";
 import Layer from '../../entities/Layer.js';
+import RNPickerSelect from 'react-native-picker-select';
 import ActionButton from 'react-native-circular-action-menu';
 
 const {height} = Dimensions.get('window');
@@ -53,6 +54,15 @@ export default class Map extends React.Component {
   @observable
   searchText: string = "";
 
+  @observable
+  searchSpeciesId: number = null;
+
+  @observable
+  species: Species[] = [];
+
+  @observable
+  selectSpecies: any[] = [];
+
   private searchTimeout;
 
   private draggedValue: number;
@@ -75,6 +85,17 @@ export default class Map extends React.Component {
 
       this.loadingText = "Loading map";
       this.layer = await OverlayStore.getDefaultLayer();
+
+      this.loadingText = "Loading species";
+      this.species = await (await (TrackingStore.getSpecies())).data;
+
+      this.selectSpecies = this.species.map((x) => {
+        return {
+          label: x.scientificName,
+          value: x.id
+        }
+      });
+
       this.loading = false;
   }
 
@@ -96,12 +117,18 @@ export default class Map extends React.Component {
     let searchText = this.searchText.toLowerCase();
     let deduplicationMap = {};
     
-    if (searchText) {
+    if (searchText || this.searchSpeciesId !== null) {
       for (let i = 0; i < this.trackings.length; i++) {
         if (this.trackings[i].lastPosition) {
           if (searchText) {
             let lcName = this.trackings[i].getName().toLowerCase();
             if (lcName.indexOf(searchText) >= 0) {
+              deduplicationMap[this.trackings[i].id] = this.trackings[i];
+            }
+          }
+
+          if (this.trackings[i].species && this.searchSpeciesId) {
+            if (this.trackings[i].species.id == this.searchSpeciesId) {
               deduplicationMap[this.trackings[i].id] = this.trackings[i];
             }
           }
@@ -113,10 +140,8 @@ export default class Map extends React.Component {
       await this.showAllMarkers();
     }
   }
-  
-  async updateSearch(text) {
-    this.searchText = text;
 
+  async reloadSearch() {
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
@@ -124,6 +149,11 @@ export default class Map extends React.Component {
     this.searchTimeout = setTimeout(async () => {
       await this.loadMapMarkers();
     }, 2000);
+  }
+  
+  async updateSearchText(text) {
+    this.searchText = text;
+    this.reloadSearch();
   }
 
   async selectLayer (layer: Layer) {
@@ -234,7 +264,7 @@ export default class Map extends React.Component {
                             containerStyle={{ backgroundColor: "transparent", borderWidth: 0, borderColor: "#fff", borderTopColor: "transparent", borderBottomColor: "transparent" }}
                             inputContainerStyle={{ backgroundColor: "#fff", borderWidth: 0, borderColor: "#fff", borderRadius: 0 }}
                             inputStyle={{ color: "#000" }}
-                            onChangeText={(text) => { this.updateSearch(text) }}
+                            onChangeText={(text) => { this.updateSearchText(text) }}
                             value={this.searchText}
                           />
                       </View>
@@ -243,13 +273,11 @@ export default class Map extends React.Component {
                         <Text style={{marginBottom: 5}}>
                           Species
                         </Text>
-                        <Picker
-                            style={{height: 40, width: "auto", backgroundColor: "#fff" }}
-                            onValueChange={(itemValue, itemIndex) => {}}
-                            
-                        >
-                          <Picker.Item label="birb" value="birb" />
-                        </Picker>
+                        <RNPickerSelect
+                          onValueChange={(value) => { this.searchSpeciesId = value; console.log(this.searchSpeciesId); this.reloadSearch(); }}
+                          style={{height: 40, width: "auto", backgroundColor: "#fff" }}
+                          items={this.selectSpecies}>
+                        </RNPickerSelect>
                       </View>
 
                       <View style={styles.inputWrapperOffset}>

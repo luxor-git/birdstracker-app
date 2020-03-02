@@ -10,6 +10,8 @@ class TrackingStore extends BaseStore
 {
     //private trackings: Map<number, Tracking> = new Map();
 
+    private species: Map<number, Species> = new Map();
+
     public async getTrackingList(forceRefresh: boolean = false) : Promise<ListActionResult<Tracking>>
     {
         // todo - TIMEOUT & NET CHECK
@@ -20,7 +22,7 @@ class TrackingStore extends BaseStore
         if (fromCache && !forceRefresh) {
             let collection = await Storage.loadCollection(FILE_MAPPING.TRACKINGS, Tracking);
             console.log('Loading from store');
-            result.data = collection;
+            result.data = collection as Tracking[];
             result.success = true;
             return result;
         }
@@ -37,7 +39,7 @@ class TrackingStore extends BaseStore
 
             if (response.data.list) {
                 for (let i = 0; i < response.data.list.length; i++) {
-                    let t = this.trackingFromList(response.data.list[i]);
+                    let t = await this.trackingFromList(response.data.list[i]);
                     if (t) {
                         trackingData.push(t);
                     }
@@ -74,13 +76,17 @@ class TrackingStore extends BaseStore
         return res;
     }
 
-    private trackingFromList(trackingRow: any) : Tracking {
+    private async trackingFromList(trackingRow: any) : Promise<Tracking> {
         let tracking = new Tracking();
 
         tracking.id = trackingRow["TrackedObjectId"];
         tracking.code = trackingRow["TrackedObjectCode"];
         tracking.name = trackingRow["TrackedObjectName"];
         tracking.note = trackingRow["TrackedObjectNote"];
+        tracking.sex = trackingRow["IndividualSex"];
+        tracking.age = trackingRow["CurrentAge"];
+        tracking.deviceCode = trackingRow["DeviceCode"];
+        tracking.species = await this.getSpeciesById(parseInt(trackingRow["SpeciesID"]));
 
         tracking.deviceId = trackingRow["DeviceId"];
 
@@ -109,6 +115,69 @@ class TrackingStore extends BaseStore
         }
 
         return tracking;
+    }
+
+    public async getSpecies(): Promise<ListActionResult<Species>> {
+        let result = new ListActionResult<Species>(false);
+        let fromCache = await Storage.fileExists(FILE_MAPPING.SPECIES);
+
+        if (fromCache) {
+            let collection = await Storage.loadCollection(FILE_MAPPING.SPECIES, Species);
+
+            if (collection.length) {
+                for (let i = 0; i < collection.length; i++) {
+                    this.species.set(collection[i].id, collection[i] as Species);
+                }
+    
+                result.data = collection as Species[];
+    
+                result.success = true;
+    
+                return result;
+            }
+        }
+
+        const apiToken = await AuthStore.getAuthToken();
+
+        let response = await apiRequest(
+            ApiConstants.API_LIST + '/' + ApiConstants.API_SPECIES,
+            formatGetRequest(apiToken)
+        );
+
+        if (response.success) {
+            console.log(response);
+            let speciesData : Species[] = [];
+
+            if (response.data) {
+                let data = response.data.data;
+                for (let i = 0; i < data.length; i++) {
+                    let species = new Species();
+                    species.id = parseInt(data[i].Id);
+                    species.scientificName = data[i]["SpeciesName_Scientific"];
+                    species.englishName = data[i]["SpeciesName_English"];
+                    speciesData.push(species);
+                    this.species.set(species.id, species);
+                }
+            }
+
+            console.log('Saving file');
+            await Storage.saveCollection(FILE_MAPPING.SPECIES, speciesData);
+            console.log('Saved file');
+
+            result.success = true;
+            result.data = speciesData;
+        }
+
+        return result;
+    }
+
+    public async getSpeciesById(id: number) : Promise<Species>
+    {
+        if (this.species.size === 0) {
+            await this.getSpecies();
+        }
+
+        return this.species.get(id);
     }
 
 }
