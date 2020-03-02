@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions, Picker, TextInput, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Alert, TextInput, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
 import Theme from "../../constants/Theme.js";
 import MapView, { Callout } from 'react-native-maps';
 import { SearchBar, Button, Icon } from 'react-native-elements';
@@ -9,6 +9,7 @@ import { observer } from 'mobx-react';
 import LoadingOverlay from '../../components/LoadingOverlay';
 import LayersOverlay from '../../components/LayersOverlay';
 import TrackingOverlay from '../../components/TrackingOverlay';
+import ContextMenu from '../../components/ContextMenu';
 import TrackingStore from "../../store/TrackingStore";
 import { Tracking, Species } from '../../entities/Tracking.js';
 import SlidingUpPanel from 'rn-sliding-up-panel';
@@ -16,6 +17,8 @@ import OverlayStore from "../../store/OverlayStore";
 import Layer from '../../entities/Layer.js';
 import RNPickerSelect from 'react-native-picker-select';
 import ActionButton from 'react-native-circular-action-menu';
+import ContextMenuActions from '../../common/ContextMenuActions';
+import AuthStore from "../../store/AuthStore";
 
 const {height} = Dimensions.get('window');
 
@@ -63,6 +66,9 @@ export default class Map extends React.Component {
   @observable
   selectSpecies: any[] = [];
 
+  @observable
+  contextMenuVisible: boolean = false;
+
   private searchTimeout;
 
   private draggedValue: number;
@@ -79,7 +85,7 @@ export default class Map extends React.Component {
   async componentDidMount () {
       this.loading = true;
       this.loadingText = "Loading trackings";
-      this.trackings = await (await TrackingStore.getTrackingList(true)).data;
+      this.trackings = await (await TrackingStore.getTrackingList()).data;
 
       await this.loadMapMarkers();
 
@@ -179,6 +185,39 @@ export default class Map extends React.Component {
     console.log("Loading track for:", tracking);
   }
 
+  async openMenu(mapEvent: any) {
+    this.contextMenuVisible = true;
+  }
+
+  getContextMenuActions() : ContextMenuActions {
+    return {
+      closeMenu: async () => {
+        this.contextMenuVisible = false;
+      },
+
+      signOut: async () => {
+        Alert.alert(
+          'Sign out',
+          'Are you sure you wish to sign out?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => {},
+              style: 'cancel',
+            },
+            {text: 'OK', onPress: async () => {
+              await AuthStore.logout();
+              this.props.navigation.navigate('Welcome');
+            }},
+          ],
+          {cancelable: false},
+        );
+      }
+    } as ContextMenuActions;
+  }
+
+  // loadingEnabled={true} showsUserLocation={true} showsCompass={true}
+
   render () {
       return (
         <KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
@@ -186,8 +225,9 @@ export default class Map extends React.Component {
               {this.loading && <LoadingOverlay loadingText={this.loadingText}/>}
               {this.showLayersOverlay && <LayersOverlay selectedLayer={this.layer} setLayer={this.selectLayer.bind(this)} />}
               {this.showTrackingOverlay && <TrackingOverlay selectedTracking={this.trackingOverlayTracking} loadTrackingTrack={this.loadTrackingTrack.bind(this)} close={this.unselectTracking.bind(this)}/>}
+              {this.contextMenuVisible && <ContextMenu actions={this.getContextMenuActions()}/>}
 
-              <MapView style={styles.mapStyle} rotateEnabled={false} mapType="none" loadingEnabled={true} showsUserLocation={true} showsCompass={true}>
+              <MapView style={styles.mapStyle} rotateEnabled={false} mapType="none" onLongPress={(event) => { console.log(event); this.openMenu(event); }}>
                   {this.layer && <UrlTile urlTemplate={this.layer.getTileUrl()} zIndex={1} />}
                       {this.mapTrackings.map(tracking => {
                         let marker = this.markers[tracking.getIconName()];
