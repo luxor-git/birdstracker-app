@@ -207,7 +207,7 @@ export default class Map extends React.Component {
             },
             {text: 'OK', onPress: async () => {
               await AuthStore.logout();
-              this.props.navigation.navigate('Welcome');
+              this.props.navigation.navigate('AuthLoading');
             }},
           ],
           {cancelable: false},

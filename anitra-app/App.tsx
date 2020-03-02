@@ -21,14 +21,6 @@ import TrackingDetail from './src/screens/in/TrackingDetail';
 import Settings from './src/screens/in/Settings';
 import { Alert } from 'react-native';
 
-// container for logged-in users
-const LoggedContainer = createDrawerNavigator({
-  //Dashboard: Dashboard,
-  Map: MapScreen,
-  //Trackings: Trackings,
-  Settings: Settings
-});
-
 // authentication flow container
 const AuthContainer = createStackNavigator({
   Welcome: Welcome,
@@ -41,7 +33,7 @@ const AuthContainer = createStackNavigator({
 // default application container
 const AppNavigator = createSwitchNavigator({
   AuthLoading: AuthLoading,
-  LoggedContainer: LoggedContainer,
+  Map: MapScreen,
   AuthContainer: AuthContainer
 }, {
   "initialRouteName": "AuthLoading"

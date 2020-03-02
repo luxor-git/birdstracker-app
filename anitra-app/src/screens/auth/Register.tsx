@@ -1,12 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Theme from "../../constants/Theme.js";
+import { WebView } from 'react-native-webview';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Register page</Text>
-    </View>
+    <WebView source={{ uri: 'https://app.anitra.cz/sign/up' }} style={{ marginTop: 20 }} />
   );
 }
 
