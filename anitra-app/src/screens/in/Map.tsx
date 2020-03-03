@@ -185,6 +185,20 @@ export default class Map extends React.Component {
     console.log("Loading track for:", tracking);
   }
 
+  async forceReloadTrackingTracks() {
+    this.loading = true;
+    this.loadingText = "Loading trackings";
+    try {
+      this.trackings = await (await TrackingStore.getTrackingList(true)).data;
+    } catch (e) {
+      console.log(e);
+      this.loading = false;
+      return;
+    }
+    await this.loadMapMarkers();
+    this.loading = false;
+  }
+
   async openMenu(mapEvent: any) {
     this.contextMenuVisible = true;
   }
@@ -212,6 +226,11 @@ export default class Map extends React.Component {
           ],
           {cancelable: false},
         );
+      },
+
+      refreshTrackings: async () => {
+        this.contextMenuVisible = false;
+        this.forceReloadTrackingTracks();
       }
     } as ContextMenuActions;
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableHighlight, TouchableOpacity  } from 'react-native';
 import { MaterialIndicator } from 'react-native-indicators';
-import { Overlay } from 'react-native-elements';
+import { Overlay, ListItem } from 'react-native-elements';
 import Theme from "../constants/Theme.js";
 import OverlayStore from "../store/OverlayStore";
 import { observable } from 'mobx';
@@ -32,17 +32,17 @@ export default class ContextMenu extends React.Component<ContextMenuProps> {
     button(icon, text, onPress) {
         return (
             <TouchableOpacity style={{flex: 1}} onPress={onPress}>
-                <View style={styles.rowButton}>
-                    <Icon
-                        name={icon}
-                        type='font-awesome'
-                        color={ Theme.colors.brand.primary }
-                    />
-                    
-                    <Text>
-                        {text}
-                    </Text>
-                </View>
+                <ListItem
+                    leftAvatar={
+                        <Icon
+                            name={icon}
+                            type='font-awesome'
+                            color={ Theme.colors.brand.primary }
+                        />
+                    }
+                    title={text}
+                    bottomDivider
+                />
             </TouchableOpacity>
         )
     }
@@ -52,15 +52,15 @@ export default class ContextMenu extends React.Component<ContextMenuProps> {
             <Overlay
                 isVisible={true}
                 windowBackgroundColor="rgba(255, 255, 255, .5)"
-                overlayStyle={{display: "flex", backgroundColor: "#fff", flexDirection: "column", alignItems: "center", alignContent: "center"}}
+                overlayStyle={{display: "flex", backgroundColor: "#fff", flexDirection: "column", alignItems: "center", alignContent: "center", padding: 0}}
                 onBackdropPress={() => { this.actions.closeMenu() }}
               >
               <View>
                 {this.loading && <MaterialIndicator color={ Theme.colors.brand.primary }/>}
                 {!this.loading &&
                 <View style={{flex: 1}}>
-                    <ScrollView style={{flex: 1}}>
-                        {this.button('heartbeat', 'Test', () => { console.log('hello'); })}
+                    <ScrollView style={{flex: 1, width: 300}}>
+                        {this.button('retweet', 'Refresh', async () => { await this.actions.refreshTrackings(); })}
                         {this.button('user', 'Sign out', async () => { await this.actions.signOut(); })}
                     </ScrollView>
                 </View>
