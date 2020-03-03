@@ -31,7 +31,7 @@
 
 % Studijní program a obor
 \def\StudijniProgram{Aplikovaná informatika}
-\def\StudijniObor{Aplikovaná informtika}
+\def\StudijniObor{Aplikovaná informatika}
 
 % Text čestného prohlášení pro MUŽE pro bakalářskou prácí
 \def\Prohlaseni{Prohlašuji, že jsem bakalářskou práci \textit{\NazevPrace} vypracoval samostatně za použití v práci uvedených pramenů a literatury.}
@@ -57,8 +57,8 @@ Abstract.
 }
 
 % 3 až 5 klíčových slov (doporučeno)
-\def\KlicovaSlova{klíčové slovo, další pojem, jiný důležitý termín, a ještě jeden}
-\def\KlicovaSlovaEN{keyword, important term, another topic, and another one}
+\def\KlicovaSlova{animal tracking, mobilní aplikace, react native, expo}
+\def\KlicovaSlovaEN{animal tracking, mobile app, react native, expo}
 
 %% Titulní strana a různé povinné informační strany
 \begin{document}
@@ -82,12 +82,11 @@ Abstract.
 \pagestyle{fancy}
 %%% Jednotlivé kapitoly práce jsou pro přehlednost uloženy v samostatných souborech
 \include{uvod}
-\include{kap01}
-\include{kap02}
-\include{kap03}
-\include{kap04}
-% \include{...}
-% \include{...}
+\include{kap_problem}
+\include{kap_pozadavky}
+\include{kap_existujici}
+\include{kap_technologie}
+\include{kap_implementace}
 \include{zaver}
 
 %%% Seznam použité literatury
