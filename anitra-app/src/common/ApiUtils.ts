@@ -8,7 +8,8 @@ export const ApiConstants = {
     API_AUTH_URL: 'login',
     API_TRACKED_OBJECT: 'tracked-object',
     API_LIST: 'list',
-    API_SPECIES: 'species'
+    API_SPECIES: 'species',
+    API_GALLERY: 'gallery'
 };
 
 export function formatPostRequest(formData: FormData, apiKey?: string) : any {

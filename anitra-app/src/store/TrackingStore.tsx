@@ -5,6 +5,7 @@ import { ApiConstants, formatGetRequest, apiRequest, formatDate } from "../commo
 import { ListActionResult, EntityActionResult } from "../common/ActionResult";
 import { getString, ApiStrings } from "../common/ApiStrings";
 import Storage, { FILE_MAPPING } from '../common/Storage';
+import Photo from '../entities/Photo';
 
 class TrackingStore extends BaseStore
 {
@@ -178,6 +179,42 @@ class TrackingStore extends BaseStore
         }
 
         return this.species.get(id);
+    }
+
+    public async getPhotos(id: number) : Promise<ListActionResult<Photo>>
+    {
+        ///api/v1/tracked-object/gallery/1591
+        const apiToken = await AuthStore.getAuthToken();
+
+        let response = await apiRequest(
+            ApiConstants.API_TRACKED_OBJECT + '/' + ApiConstants.API_GALLERY + '/' + id,
+            formatGetRequest(apiToken)
+        );
+
+        let photos: Photo[] = [];
+
+        if (response.success) {
+            if (response.data.galleries) {
+                for (let i = 0; i < response.data.galleries.length; i++) {
+                    for (let j = 0; j < response.data.galleries[i].photos.length; i++) {
+                        let photo = new Photo();
+                        let json = response.data.galleries[i].photos[j];
+                        console.log(json);
+                        photo.id = json.fileId;
+                        photo.fileCreateDate = new Date(json.fileCreateDate);
+                        photo.thumbPath = json.thumbPath;
+                        photo.fullPath = json.relativePath;
+                        photo.uploaderName = [json.uploaderFirstName, json.uploaderLastName].join(' ');
+                        photos.push(photo);
+                    }
+                }
+            }
+        }
+
+        let ret = new ListActionResult<Photo>(true);
+        ret.data = photos;
+
+        return ret;
     }
 
 }

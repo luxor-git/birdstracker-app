@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableHighlight, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { MaterialIndicator } from 'react-native-indicators';
 import { Overlay, Icon, Button } from 'react-native-elements';
 import Theme from "../constants/Theme.js";
@@ -11,6 +11,9 @@ import { Tracking } from '../entities/Tracking.js';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
+import TrackingStore from '../store/TrackingStore';
+import Photo from '../entities/Photo.js';
+import ImageView from 'react-native-image-view';
 
 @observer
 export default class TrackingOverlay extends React.Component {
@@ -21,11 +24,28 @@ export default class TrackingOverlay extends React.Component {
     @observable
     private tracking: Tracking;
 
+    @observable
+    private photos: Photo[] = [];
+
+    @observable
+    private componentPhotos: any[] = [];
+
+    @observable
+    private isImageViewVisible: boolean = false;
+
     private closeFunction;
     private loadTrackingTrack;
 
     async getPhotos() {
-
+        this.photos = await (await TrackingStore.getPhotos(this.tracking.id)).data;
+        this.componentPhotos = this.photos.map(x => {
+            return {
+                source: {
+                    uri: x.getUrl()
+                },
+                title: x.uploaderName
+            }
+        });
     }
 
     async addPhoto() {
@@ -67,8 +87,10 @@ export default class TrackingOverlay extends React.Component {
                 windowBackgroundColor="rgba(255, 255, 255, .5)"
                 overlayStyle={{display: "flex", backgroundColor: "#fff", flexDirection: "column", alignItems: "center", alignContent: "center", padding: 0}}
                 onBackdropPress={() => { this.closeFunction() }}
+                width="auto"
+                height="auto"
               >
-              <View>
+              <View style={{  }}>
                 {this.loading && <View><MaterialIndicator color={ Theme.colors.brand.primary }/></View>}
                 {!this.loading &&
                 <View>
@@ -89,28 +111,28 @@ export default class TrackingOverlay extends React.Component {
                     </View>
 
                     <View style={{ padding: 10 }}>
-                            <View>
-                                <Text>
-                                    Species
-                                </Text>
-                                <Text>
-                                    {this.tracking.species?.scientificName}
-                                </Text>
-                            </View>
+                        <View>
+                            <Text>
+                                Species
+                            </Text>
+                            <Text>
+                                {this.tracking.species?.scientificName}
+                            </Text>
+                        </View>
 
-                            <View>
-                                <Text>
-                                    Last position
-                                </Text>
-                                <Text>
-                                    {this.tracking.lastPosition?.admin1}
-                                    {this.tracking.lastPosition?.admin2}
-                                    {this.tracking.lastPosition?.settlement}
-                                    {this.tracking.lastPosition?.country}
-                                </Text>
-                            </View>
+                        <View>
+                            <Text>
+                                Last position
+                            </Text>
+                            <Text>
+                                {this.tracking.lastPosition?.admin1}
+                                {this.tracking.lastPosition?.admin2}
+                                {this.tracking.lastPosition?.settlement}
+                                {this.tracking.lastPosition?.country}
+                            </Text>
+                        </View>
 
-                            <View>
+                        <View>
                                 <Text>
                                     Note
                                 </Text>
@@ -118,7 +140,6 @@ export default class TrackingOverlay extends React.Component {
                                     {this.tracking.note}
                                 </Text>
                             </View>
-
                     </View>
 
                     <View style={{ height: 140 }}>
@@ -129,20 +150,29 @@ export default class TrackingOverlay extends React.Component {
                                 </Text>
                             </View>
                             <ScrollView horizontal={true} style={{ height: 100 }}>
-                                <View style={{ display: "flex", flexDirection: "row"}}>
-                                    <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10 }}>
-                                    </View>
-                                    <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
-                                    </View>
-                                    <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
-                                    </View>
-                                    <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
-                                    </View>
-                                    <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
-                                    </View>
-                                    <View style={{ height: 80, width: 80, backgroundColor: '#000', margin: 10}}>
-                                    </View>
-                                </View>
+                                <TouchableOpacity 
+                                    style={{ display: "flex", flexDirection: "row", padding: 10, backgroundColor: 'red' }} 
+                                    onPress={() => { this.isImageViewVisible = true; }}
+                                >
+                                    <ImageView
+                                        images={this.componentPhotos}
+                                        imageIndex={0}
+                                        isVisible={this.isImageViewVisible}
+                                        renderFooter={(currentImage) => (<View><Text>My footer</Text></View>)}
+                                        onClose={() => { this.isImageViewVisible = false; }}
+                                    />
+                                    {this.photos.map(x => {
+                                        return (
+                                            <View key={x.id} style={{ height: 80, width: 80 }}>
+                                                <Image
+                                                    style={{ width: 80, height: 80 }}
+                                                    source={{ uri: x.getThumbUrl() }}
+                                                    resizeMode="cover"
+                                                />
+                                            </View>
+                                        )
+                                    })}
+                                </TouchableOpacity>
                             </ScrollView>
                         </View>
                     </View>

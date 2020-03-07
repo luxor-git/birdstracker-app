@@ -6,6 +6,7 @@ import { SearchBar, Button, Icon } from 'react-native-elements';
 import { UrlTile, Marker, LatLng } from 'react-native-maps';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import { ScreenOrientation } from 'expo';
 import LoadingOverlay from '../../components/LoadingOverlay';
 import LayersOverlay from '../../components/LayersOverlay';
 import TrackingOverlay from '../../components/TrackingOverlay';
@@ -446,4 +447,8 @@ const styles = StyleSheet.create({
     height: 22,
     color: 'white',
   }
+});
+
+ScreenOrientation.addOrientationChangeListener((orientation) => {
+  console.log(orientation);
 });
