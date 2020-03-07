@@ -3,8 +3,8 @@ import { StyleSheet, Text, View, Dimensions, Alert, TextInput, Keyboard, Touchab
 import Theme from "../../constants/Theme.js";
 import MapView, { Callout } from 'react-native-maps';
 import { SearchBar, Button, Icon } from 'react-native-elements';
-import { UrlTile, Marker, LatLng } from 'react-native-maps';
-import { observable } from 'mobx';
+import { UrlTile, Marker, Polyline } from 'react-native-maps';
+import { observable, ObservableMap } from 'mobx';
 import { observer } from 'mobx-react';
 import { ScreenOrientation } from 'expo';
 import LoadingOverlay from '../../components/LoadingOverlay';
@@ -12,7 +12,7 @@ import LayersOverlay from '../../components/LayersOverlay';
 import TrackingOverlay from '../../components/TrackingOverlay';
 import ContextMenu from '../../components/ContextMenu';
 import TrackingStore from "../../store/TrackingStore";
-import { Tracking, Species } from '../../entities/Tracking.js';
+import { Tracking, Species, Track } from '../../entities/Tracking.js';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import OverlayStore from "../../store/OverlayStore";
 import Layer from '../../entities/Layer.js';
@@ -20,10 +20,10 @@ import RNPickerSelect from 'react-native-picker-select';
 import ActionButton from 'react-native-circular-action-menu';
 import ContextMenuActions from '../../common/ContextMenuActions';
 import AuthStore from "../../store/AuthStore";
+import TrackingList, { TrackingListActions } from '../../components/TrackingList';
+import TrackingDataSlider from '../../components/TrackingDataSlider';
 
-const {height} = Dimensions.get('window');
-
-const pageTitle = "Map";
+const {height, width} = Dimensions.get('window');
 
 @observer
 export default class Map extends React.Component {
@@ -41,6 +41,9 @@ export default class Map extends React.Component {
   mapTrackings: Tracking[] = [];
 
   @observable
+  loadedTrackingTracks: Track[] = [];
+
+  @observable
   loading: boolean = false;
 
   @observable
@@ -48,6 +51,9 @@ export default class Map extends React.Component {
 
   @observable
   showTrackingOverlay: boolean = false;
+
+  @observable
+  showTrackingDataSlider: boolean = false;
 
   @observable
   trackingOverlayTracking: Tracking;
@@ -69,6 +75,9 @@ export default class Map extends React.Component {
 
   @observable
   contextMenuVisible: boolean = false;
+
+  @observable
+  isOrientationLandscape: boolean = false;
 
   private searchTimeout;
 
@@ -103,6 +112,18 @@ export default class Map extends React.Component {
         }
       });
 
+      this.isOrientationLandscape = (await ScreenOrientation.getOrientationAsync()).orientation.startsWith('LANDSCAPE');
+      
+      ScreenOrientation.addOrientationChangeListener((orientation) => {
+        console.log(orientation);
+        if (orientation) {
+          if (orientation.orientationInfo) {
+            this.isOrientationLandscape = orientation.orientationInfo.orientation.startsWith('LANDSCAPE');
+            console.log('Is landscape:', this.isOrientationLandscape);
+          }
+        }
+      });
+
       this.loading = false;
   }
 
@@ -125,6 +146,7 @@ export default class Map extends React.Component {
     let deduplicationMap = {};
     
     if (searchText || this.searchSpeciesId !== null) {
+      console.log('Search not empty');
       for (let i = 0; i < this.trackings.length; i++) {
         if (this.trackings[i].lastPosition) {
           if (this.trackings[i].species && this.searchSpeciesId) {
@@ -184,6 +206,28 @@ export default class Map extends React.Component {
 
   async loadTrackingTrack(tracking: Tracking) {
     console.log("Loading track for:", tracking);
+    await this.unselectTracking();
+    this.loading = true;
+    this.loadingText = "Loading track...";
+    let track = await TrackingStore.getTrack(tracking.id, 100);
+    this.loadedTrackingTracks.push(track);
+    tracking.trackLoaded = true;
+    this.loading = false;
+  }
+
+  async unloadTrackingTrack(tracking: Tracking)
+  {
+    console.log(this.loadedTrackingTracks);
+
+    for (let i = 0; i < this.loadedTrackingTracks.length; i++) {
+      if (this.loadedTrackingTracks[i]?.id == tracking.id) {
+        this.loadedTrackingTracks.splice(i, 1);
+        tracking.trackLoaded = false;
+        break;
+      }
+    }
+
+    await this.unselectTracking();
   }
 
   async forceReloadTrackingTracks() {
@@ -236,19 +280,56 @@ export default class Map extends React.Component {
     } as ContextMenuActions;
   }
 
-  // loadingEnabled={true} showsUserLocation={true} showsCompass={true}
+  getTrackingListActions() : TrackingListActions {
+    return {
+      refresh: async () => {
+        await this.forceReloadTrackingTracks();
+      },
+      openDetail: async (tracking : Tracking) => {
+        this.trackingOverlayTracking = tracking;
+        this.showTrackingOverlay = true;
+      }
+    } as TrackingListActions;
+  }
 
   render () {
       return (
         <KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
-          <View style={styles.container}>
+          <View style={[styles.container, this.isOrientationLandscape && styles.containerLandscape]}>
               {this.loading && <LoadingOverlay loadingText={this.loadingText}/>}
               {this.showLayersOverlay && <LayersOverlay selectedLayer={this.layer} setLayer={this.selectLayer.bind(this)} />}
-              {this.showTrackingOverlay && <TrackingOverlay selectedTracking={this.trackingOverlayTracking} loadTrackingTrack={this.loadTrackingTrack.bind(this)} close={this.unselectTracking.bind(this)}/>}
+              {this.showTrackingOverlay && 
+                <TrackingOverlay
+                  selectedTracking={this.trackingOverlayTracking}
+                  loadTrackingTrack={this.loadTrackingTrack.bind(this)}
+                  unloadTrackingTrack={this.unloadTrackingTrack.bind(this)}
+                  close={this.unselectTracking.bind(this)}
+                />
+              }
               {this.contextMenuVisible && <ContextMenu actions={this.getContextMenuActions()}/>}
+              {this.showTrackingDataSlider &&
+                <TrackingDataSlider
+                  close={() => { this.showTrackingDataSlider = false; }}
+                  onSuccess={(value) => { console.log(value); }}
+                  maxDaysBack={30}
+                />
+              }
 
-              <MapView style={styles.mapStyle} rotateEnabled={false} mapType="none" onLongPress={(event) => { console.log(event); this.openMenu(event); }}>
-                  {this.layer && <UrlTile urlTemplate={this.layer.getTileUrl()} zIndex={1} />}
+              <MapView style={[styles.mapStyle, this.isOrientationLandscape && styles.mapStyleLandscape]} rotateEnabled={false} mapType="none" onLongPress={(event) => { console.log(event); this.openMenu(event); }}>
+                      {this.loadedTrackingTracks.map(track => {
+                        return (
+                          <Polyline
+                            key={track.id}
+                            coordinates={
+                              track.getPolyLine()
+                            }
+                            strokeWidth={5}
+                            strokeColor="#f00"
+                            zIndex={1}
+                          />
+                        )
+                      })}
+                      {this.layer && <UrlTile urlTemplate={this.layer.getTileUrl()} zIndex={-1} />}
                       {this.mapTrackings.map(tracking => {
                         let marker = this.markers[tracking.getIconName()];
                         return (
@@ -280,32 +361,14 @@ export default class Map extends React.Component {
                           </Marker>
                       )}
                       )}
+                    
               </MapView>
-              
-              
-              {/*<ActionButton buttonColor="rgba(231,76,60,1)" position="right">
-                <ActionButton.Item buttonColor='#9b59b6' title="New Task" onPress={() => console.log("notes tapped!")}>
-                  <Icon
-                      name='map'
-                      type='font-awesome'
-                      color='#f50'
-                  />
-                </ActionButton.Item>
-                <ActionButton.Item buttonColor='#3498db' title="Notifications" onPress={() => {}}>
-                  <Icon
-                    name='map'
-                    type='font-awesome'
-                    color='#f50'
-                  />
-                </ActionButton.Item>
-                <ActionButton.Item buttonColor='#1abc9c' title="All Tasks" onPress={() => {}}>
-                  <Icon
-                    name='map'
-                    type='font-awesome'
-                    color='#f50'
-                  />
-                </ActionButton.Item>
-                    </ActionButton>*/}
+
+              {this.isOrientationLandscape &&
+                <View style={{ height: height, width: width / 3 }}>
+                  <TrackingList actions={this.getTrackingListActions()} trackings={this.mapTrackings}/>
+                </View>
+              }
 
               <SlidingUpPanel
                 ref={c => (this.panel = c)}
@@ -396,6 +459,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f6f6f6'
   },
+  containerLandscape: {
+    flexDirection: "row"
+  },
   buttonPad: {
     padding: 2,
   },
@@ -406,6 +472,9 @@ const styles = StyleSheet.create({
   mapStyle: {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
+  },
+  mapStyleLandscape: {
+    width: 2 * (Dimensions.get('window').width / 3),
   },
   buttonControl: {
     borderRadius: 100,
@@ -447,8 +516,4 @@ const styles = StyleSheet.create({
     height: 22,
     color: 'white',
   }
-});
-
-ScreenOrientation.addOrientationChangeListener((orientation) => {
-  console.log(orientation);
 });

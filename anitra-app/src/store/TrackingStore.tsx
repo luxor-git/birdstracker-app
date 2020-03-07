@@ -1,17 +1,20 @@
 import BaseStore from './BaseStore';
-import { Tracking, LocalizedPosition, Species } from '../entities/Tracking';
+import { Tracking, LocalizedPosition, Species, Track, Position } from '../entities/Tracking';
 import AuthStore from './AuthStore';
 import { ApiConstants, formatGetRequest, apiRequest, formatDate } from "../common/ApiUtils";
 import { ListActionResult, EntityActionResult } from "../common/ActionResult";
 import { getString, ApiStrings } from "../common/ApiStrings";
 import Storage, { FILE_MAPPING } from '../common/Storage';
 import Photo from '../entities/Photo';
+import { ObservableMap } from 'mobx';
 
 class TrackingStore extends BaseStore
 {
     //private trackings: Map<number, Tracking> = new Map();
 
     private species: Map<number, Species> = new Map();
+
+    //private loadedTrackings: ObservableMap<number, Tracking> = new ObservableMap();
 
     public async getTrackingList(forceRefresh: boolean = false) : Promise<ListActionResult<Tracking>>
     {
@@ -215,6 +218,35 @@ class TrackingStore extends BaseStore
         ret.data = photos;
 
         return ret;
+    }
+
+    public async getTrack(id: number, count: number) : Promise<Track>
+    {
+        //last-days
+        //data
+        const apiToken = await AuthStore.getAuthToken();
+
+        let response = await apiRequest(
+            ApiConstants.API_TRACKED_OBJECT + '/' + ApiConstants.API_TRACK + '/' + id,
+            formatGetRequest(apiToken)
+        );
+
+        let positions : Position[] = [];
+
+        if (response.data?.data) {
+            let posArr = response.data?.data;
+
+            for (let i = 0; i < posArr.length; i++) {
+                positions.push({ lat: posArr[i].lat, lng: posArr[i].lng, timestamp: posArr[i].time } as Position);
+            }
+        }
+
+        let track = new Track();
+
+        track.id = id;
+        track.positions = positions;
+
+        return track;
     }
 
 }

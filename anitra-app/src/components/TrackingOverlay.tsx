@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableHighlight, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, ScrollView, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { MaterialIndicator } from 'react-native-indicators';
 import { Overlay, Icon, Button } from 'react-native-elements';
 import Theme from "../constants/Theme.js";
@@ -14,9 +14,20 @@ import * as Permissions from 'expo-permissions';
 import TrackingStore from '../store/TrackingStore';
 import Photo from '../entities/Photo.js';
 import ImageView from 'react-native-image-view';
+import Flag from 'react-native-flags';
+
+const {height, width} = Dimensions.get('window');
+
+interface TrackingOverlayProps
+{
+    selectedTracking: Tracking,
+    close: Function;
+    loadTrackingTrack: Function;
+    unloadTrackingTrack: Function;
+}
 
 @observer
-export default class TrackingOverlay extends React.Component {
+export default class TrackingOverlay extends React.Component<TrackingOverlayProps> {
 
     @observable
     loading: boolean = true;
@@ -35,17 +46,22 @@ export default class TrackingOverlay extends React.Component {
 
     private closeFunction;
     private loadTrackingTrack;
+    private unloadTrackingTrack;
 
     async getPhotos() {
-        this.photos = await (await TrackingStore.getPhotos(this.tracking.id)).data;
-        this.componentPhotos = this.photos.map(x => {
-            return {
-                source: {
-                    uri: x.getUrl()
-                },
-                title: x.uploaderName
-            }
-        });
+        try {
+            this.photos = await (await TrackingStore.getPhotos(this.tracking.id)).data;
+            this.componentPhotos = this.photos.map(x => {
+                return {
+                    source: {
+                        uri: x.getUrl()
+                    },
+                    title: x.uploaderName
+                }
+            });
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     async addPhoto() {
@@ -76,6 +92,7 @@ export default class TrackingOverlay extends React.Component {
         this.tracking = this.props.selectedTracking;
         this.closeFunction = this.props.close;
         this.loadTrackingTrack = this.props.loadTrackingTrack;
+        this.unloadTrackingTrack = this.props.unloadTrackingTrack;
         await this.getPhotos();
         this.loading = false;
     }
@@ -85,12 +102,22 @@ export default class TrackingOverlay extends React.Component {
             <Overlay
                 isVisible={true}
                 windowBackgroundColor="rgba(255, 255, 255, .5)"
-                overlayStyle={{display: "flex", backgroundColor: "#fff", flexDirection: "column", alignItems: "center", alignContent: "center", padding: 0}}
+                overlayStyle={
+                    {
+                        display: "flex",
+                        backgroundColor: "#fff",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        alignContent: "center",
+                        padding: 0,
+                        minWidth: width / 2
+                    }
+                }
                 onBackdropPress={() => { this.closeFunction() }}
                 width="auto"
                 height="auto"
               >
-              <View style={{  }}>
+              <View style={{ minWidth: width / 2 }}>
                 {this.loading && <View><MaterialIndicator color={ Theme.colors.brand.primary }/></View>}
                 {!this.loading &&
                 <View>
@@ -112,7 +139,7 @@ export default class TrackingOverlay extends React.Component {
 
                     <View style={{ padding: 10 }}>
                         <View>
-                            <Text>
+                            <Text style={styles.label}>
                                 Species
                             </Text>
                             <Text>
@@ -121,25 +148,28 @@ export default class TrackingOverlay extends React.Component {
                         </View>
 
                         <View>
-                            <Text>
+                            <Text style={styles.label}>
                                 Last position
                             </Text>
                             <Text>
-                                {this.tracking.lastPosition?.admin1}
-                                {this.tracking.lastPosition?.admin2}
-                                {this.tracking.lastPosition?.settlement}
-                                {this.tracking.lastPosition?.country}
+                                {this.tracking.lastPosition?.country && 
+                                    <Flag
+                                        code={this.tracking.lastPosition?.country.toUpperCase()}
+                                        size={16}
+                                    />
+                                }
+                                {this.tracking.getLastPositionText()}
                             </Text>
                         </View>
 
                         <View>
-                                <Text>
-                                    Note
-                                </Text>
-                                <Text>
-                                    {this.tracking.note}
-                                </Text>
-                            </View>
+                            <Text style={styles.label}>
+                                Note
+                            </Text>
+                            <Text>
+                                {this.tracking.note}
+                            </Text>
+                        </View>
                     </View>
 
                     <View style={{ height: 140 }}>
@@ -193,7 +223,7 @@ export default class TrackingOverlay extends React.Component {
                             </View>
 
                             <View style={{ display: "flex", flexDirection: "row" }}>
-                                <View style={styles.iconColumn}>
+                                {/*<View style={styles.iconColumn}>
                                     <Icon
                                         raised
                                         name='sticky-note'
@@ -204,9 +234,9 @@ export default class TrackingOverlay extends React.Component {
                                     <Text style={{ textAlign: "center" }}>
                                         Add note
                                     </Text>
-                                </View>
+                                </View>*/}
 
-                                <View style={styles.iconColumn}>
+                                {/*<View style={styles.iconColumn}>
                                     <Icon
                                         raised
                                         name='camera'
@@ -218,32 +248,38 @@ export default class TrackingOverlay extends React.Component {
                                         Add photo
                                     </Text>
                                 </View>
+                                */}
 
-                                <View style={styles.iconColumn}>
-                                    <Icon
-                                        raised
-                                        name='map-marker'
-                                        type='font-awesome'
-                                        color={Theme.colors.brand.primary}
-                                        onPress={() => { this.loadTrackingTrack() }}
-                                    />
-                                    <Text style={{ textAlign: "center" }}>
-                                        Load track
-                                    </Text>
-                                </View>
+                                {!this.tracking.trackLoaded && 
+                                    <View style={styles.iconColumn}>
+                                        <Icon
+                                            raised
+                                            name='map-marker'
+                                            type='font-awesome'
+                                            color={Theme.colors.brand.primary}
+                                            onPress={() => { this.loadTrackingTrack(this.tracking) }}
+                                        />
+                                        <Text style={{ textAlign: "center" }}>
+                                            Load track
+                                        </Text>
+                                    </View>
+                                }
 
-                                <View style={styles.iconColumn}>
-                                    <Icon
-                                        raised
-                                        name='wifi'
-                                        type='font-awesome'
-                                        color={Theme.colors.brand.primary}
-                                        onPress={() => {  }}
-                                    />
-                                    <Text style={{ textAlign: "center" }}>
-                                        Offline
-                                    </Text>
-                                </View>
+                                {this.tracking.trackLoaded && 
+                                    <View style={styles.iconColumn}>
+                                        <Icon
+                                            raised
+                                            name='map-marker'
+                                            type='font-awesome'
+                                            color={Theme.colors.brand.primary}
+                                            onPress={() => { this.unloadTrackingTrack(this.tracking) }}
+                                        />
+                                        <Text style={{ textAlign: "center" }}>
+                                            Unload track
+                                        </Text>
+                                    </View>
+                                }
+
                             </View>
                         </View>
                     </View>
@@ -273,6 +309,11 @@ const styles = StyleSheet.create({
     iconColumn: {
         padding: 5,
         textAlign: "center"
+    },
+    label: {
+        fontWeight: 'bold',
+        marginBottom: 5,
+        marginTop: 5
     }
   });
   

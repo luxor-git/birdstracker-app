@@ -9,7 +9,8 @@ export const ApiConstants = {
     API_TRACKED_OBJECT: 'tracked-object',
     API_LIST: 'list',
     API_SPECIES: 'species',
-    API_GALLERY: 'gallery'
+    API_GALLERY: 'gallery',
+    API_TRACK: 'data'
 };
 
 export function formatPostRequest(formData: FormData, apiKey?: string) : any {

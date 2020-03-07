@@ -8,8 +8,14 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import Layer from '../entities/Layer.js';
 
+interface LayersOverlayProps
+{
+    setLayer: Function;
+    selectedLayer: Layer;
+}
+
 @observer
-export default class LayersOverlay extends React.Component {
+export default class LayersOverlay extends React.Component<LayersOverlayProps> {
 
     @observable
     loading: boolean = false;

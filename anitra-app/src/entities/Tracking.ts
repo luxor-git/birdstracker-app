@@ -22,6 +22,14 @@ export class Tracking implements ISerializableEntity
     synchronized: boolean = false;
     lastSynchronized?: Date = new Date();
 
+    /**
+     * Whether the tracking is checked, used for UI synchronization.
+     *
+     * @type {boolean}
+     * @memberof Tracking
+     */
+    public trackLoaded: boolean = false;
+
     public getName():string {
         if (this.name && this.code) {
             return this.name + ' (' + this.code + ')';
@@ -59,6 +67,14 @@ export class Tracking implements ISerializableEntity
         }
 
         return "markerElse";
+    }
+
+    public getLastPositionText() : string {
+        return [
+            this.lastPosition.settlement,
+            this.lastPosition.admin2,
+            this.lastPosition.admin1
+        ].filter((x) => !!x).join(', ');
     }
 
     toJson(): object {
@@ -140,3 +156,50 @@ export class Species implements IEntity, ISerializableEntity
     }
 
 };
+
+export class Position
+{
+    lat: number;
+    lng: number;
+
+    timestamp?: number;
+}
+
+export class Track implements ISerializableEntity
+{
+    toJson(): object {
+        return {
+            id: this.id,
+            synchronized: this.synchronized,
+            lastSynchronized: this.lastSynchronized,
+            positions: this.positions
+        };
+    }
+    
+    toJsonString(): string {
+        return JSON.stringify(this.toJson());
+    }
+
+    fromJson(json: any): IEntity {
+        this.id = json.id;
+        this.synchronized = false;
+        this.lastSynchronized = json.lastSynchronized;
+        this.positions = json.positions;
+        return this;
+    }
+
+    getPolyLine() : any {
+        return this.positions.map(x => {
+            return {
+                latitude: x.lat,
+                longitude: x.lng
+            }
+        })
+    }
+
+    id?: number;
+    synchronized: boolean;
+    lastSynchronized?: Date;
+
+    positions: Position[] = [];
+}
