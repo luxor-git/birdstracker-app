@@ -54,6 +54,7 @@ export default class ContextMenu extends React.Component<ContextMenuProps> {
                 windowBackgroundColor="rgba(255, 255, 255, .5)"
                 overlayStyle={{display: "flex", backgroundColor: "#fff", flexDirection: "column", alignItems: "center", alignContent: "center", padding: 0}}
                 onBackdropPress={() => { this.actions.closeMenu() }}
+                width="auto"
               >
               <View>
                 {this.loading && <MaterialIndicator color={ Theme.colors.brand.primary }/>}

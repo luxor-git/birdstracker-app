@@ -151,16 +151,23 @@ export default class TrackingOverlay extends React.Component {
                             </View>
                             <ScrollView horizontal={true} style={{ height: 100 }}>
                                 <TouchableOpacity 
-                                    style={{ display: "flex", flexDirection: "row", padding: 10, backgroundColor: 'red' }} 
+                                    style={{ display: "flex", flexDirection: "row", padding: 10 }} 
                                     onPress={() => { this.isImageViewVisible = true; }}
                                 >
+                                    {this.componentPhotos.length > 0 &&
                                     <ImageView
                                         images={this.componentPhotos}
                                         imageIndex={0}
                                         isVisible={this.isImageViewVisible}
-                                        renderFooter={(currentImage) => (<View><Text>My footer</Text></View>)}
+                                        renderFooter={(currentImage) => (
+                                            <View>
+                                                <Text style={{ color: '#fff' }}>
+                                                    Uploaded by: {currentImage.title}
+                                                </Text>
+                                            </View>
+                                        )}
                                         onClose={() => { this.isImageViewVisible = false; }}
-                                    />
+                                    />}
                                     {this.photos.map(x => {
                                         return (
                                             <View key={x.id} style={{ height: 80, width: 80 }}>
