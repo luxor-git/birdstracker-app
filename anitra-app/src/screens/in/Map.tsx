@@ -28,9 +28,6 @@ const {height, width} = Dimensions.get('window');
 @observer
 export default class Map extends React.Component {
 
-  //@observable
-  //tileUrl : string = 'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png';
-
   @observable
   layer: Layer = null;
 
@@ -315,7 +312,7 @@ export default class Map extends React.Component {
                 />
               }
 
-              <MapView style={[styles.mapStyle, this.isOrientationLandscape && styles.mapStyleLandscape]} rotateEnabled={false} mapType="none" onLongPress={(event) => { console.log(event); this.openMenu(event); }}>
+              <MapView style={[styles.mapStyle, this.isOrientationLandscape && styles.mapStyleLandscape, !this.isOrientationLandscape && styles.mapStyleLandscapePortrait]} rotateEnabled={false} mapType="none" onLongPress={(event) => { console.log(event); this.openMenu(event); }}>
                       {this.loadedTrackingTracks.map(track => {
                         return (
                           <Polyline
@@ -372,7 +369,7 @@ export default class Map extends React.Component {
 
               <SlidingUpPanel
                 ref={c => (this.panel = c)}
-                draggableRange={{top: height / 1.75, bottom: 80}}
+                draggableRange={{top: height / 1.75, bottom: 60}}
                 animatedValue={this.draggedValue}
                 showBackdrop={false}
                 containerStyle={{ backgroundColor: "transparent" }}
@@ -405,7 +402,7 @@ export default class Map extends React.Component {
                         </RNPickerSelect>
                       </View>
 
-                      <View style={styles.inputWrapperOffset}>
+                      {/*<View style={styles.inputWrapperOffset}>
                         <View style={{ display: "flex", flexDirection: "row" }}>
                           <View style={{ flexGrow: 1 }}>
                             <Text style={styles.inputLabel}>
@@ -433,7 +430,7 @@ export default class Map extends React.Component {
                             />
                           </View>
                         </View>
-                      </View>
+                      </View>*/}
 
                       <View>
                         <Icon
@@ -470,11 +467,14 @@ const styles = StyleSheet.create({
     margin: 10
   },
   mapStyle: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    flex: 1,
+    flexGrow: 1
   },
   mapStyleLandscape: {
     width: 2 * (Dimensions.get('window').width / 3),
+  },
+  mapStyleLandscapePortrait: {
+    width: Dimensions.get('window').width,
   },
   buttonControl: {
     borderRadius: 100,
@@ -485,17 +485,17 @@ const styles = StyleSheet.create({
     position: 'relative'
   },
   textInput: {
-    height: 40,
+    height: 20,
     backgroundColor: "#fff",
     color: "#000"
   },
   panelHeader: {
-    height: 80,
+    height: 40,
     backgroundColor: '#f6f6f6',
     alignItems: 'center',
     justifyContent: 'center',
-    borderTopLeftRadius: 60,
-    borderTopRightRadius: 60,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
     borderColor: "transparent"
   },
   inputWrapper: {

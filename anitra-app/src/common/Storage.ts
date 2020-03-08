@@ -2,6 +2,7 @@
 import * as FileSystem from 'expo-file-system';
 import { ISerializableEntity } from '../entities/IEntity';
 import EntityFactory from '../entities/EntityFactory';
+import NetStore from '../store/NetStore';
 
 class PersistentStorage
 {

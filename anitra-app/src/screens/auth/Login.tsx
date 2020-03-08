@@ -24,6 +24,7 @@ export default class Login extends React.Component {
 
   authenticate = async () => {
     this.isLoading = true;
+    Keyboard.dismiss();
     const reply = await AuthStore.authenticate(this.email, this.password);
     console.log(reply);
     if (reply.success) {
@@ -53,46 +54,43 @@ export default class Login extends React.Component {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View style={{flex: 1, height: height, width: width}}>
             <LinearGradient start={{x: 1, y: 0.25}} end={{x: 0, y: 0.75}} colors={['#91C040', '#568f3d']} style={{flex: 1}}>
-            <Image source={require('../../assets/images/logo.png')}></Image>
-
-            <View style={styles.loginWrapper}>
-            <View style={styles.wrapperRow}>
-              <Input
-                value={this.email}
-                onChangeText={ (text) => { this.email = text; } }
-                placeholder='E-mail'
-              />
-            </View>
-
-            <View style={styles.wrapperRow}>
-              <Input 
-                style={styles.input}
-                value={this.password}
-                onChangeText={ (text) => { this.password = text; } }
-                secureTextEntry={true}
-                placeholder="Password"
-              />
-
-            </View>
-
-            <View style={styles.wrapperRow}>
-              <Button 
-                title="Login"
-                onPress={ this.authenticate }
-                disabled={ this.isLoading }
-                icon={
-                  <Icon
-                    name="user"
-                    size={15}
-                    color="white"
-                    style={{ marginRight: 5 }}
+              <View style={styles.loginWrapper}>
+                <View style={styles.wrapperRow}>
+                  <Input
+                    value={this.email}
+                    onChangeText={ (text) => { this.email = text; } }
+                    placeholder='E-mail'
                   />
-                }
-                loading={ this.isLoading }
-              />
-            </View>
+                </View>
 
-          </View>
+                <View style={styles.wrapperRow}>
+                  <Input 
+                    style={styles.input}
+                    value={this.password}
+                    onChangeText={ (text) => { this.password = text; } }
+                    secureTextEntry={true}
+                    placeholder="Password"
+                  />
+
+                </View>
+
+                <View style={styles.wrapperRow}>
+                  <Button 
+                    title="Login"
+                    onPress={ this.authenticate }
+                    disabled={ this.isLoading }
+                    icon={
+                      <Icon
+                        name="user"
+                        size={15}
+                        color="white"
+                        style={{ marginRight: 5 }}
+                      />
+                    }
+                    loading={ this.isLoading }
+                  />
+                </View>
+              </View>
             </LinearGradient>
           </View>
         </TouchableWithoutFeedback>
@@ -109,11 +107,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loginWrapper: {
-    alignSelf: 'stretch',
     margin: 30,
     backgroundColor: Theme.colors.default.light,
     padding: 15,
-    borderRadius: 10
+    borderRadius: 10,
+    marginTop: height / 3
   },
   wrapperRow: {
     marginBottom: 15

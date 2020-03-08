@@ -102,7 +102,7 @@ export default class TrackingList extends React.Component<TrackingListProps> {
 
 const styles = StyleSheet.create({
     fullList: {
-        height: height
+        height: height,
     },
     sectionHeaderText: {
         backgroundColor: Theme.colors.brand.primary,

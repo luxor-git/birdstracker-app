@@ -6,17 +6,45 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import { ScreenOrientation } from 'expo';
 
 const {height, width} = Dimensions.get('window');
 
 const sliderData = [
   {
-    text: 'Onboarding text 123',
-  }, {
-    text: 'Onboarding text 124'
-  }, {
-    text: 'It looks better when there are tons of them'
-  }
+    component:  (
+        <View style={{ display: "flex",  flex: 1, flexDirection: 'column' }}>
+          <Text style={{ textAlign: 'center', alignContent: 'center', color: Theme.colors.brand.secondary, fontSize: 20 }}>
+            Welcome to Anitra!
+          </Text>
+
+          <View style={{ flexGrow: 1 }}>
+
+          </View>
+
+          <Text style={{ textAlign: 'center', alignSelf: 'baseline' }}>
+            Please sign in or sign up below.
+          </Text>
+        </View>
+      )
+  },
+  {
+    component: (
+        <View style={{ display: "flex",  flex: 1, flexDirection: 'column' }}>
+          <Text style={{ textAlign: 'center', alignContent: 'center', color: Theme.colors.brand.secondary, fontSize: 20 }}>
+            Welcome to Anitra!
+          </Text>
+
+          <View style={{ flexGrow: 1 }}>
+
+          </View>
+
+          <Text style={{ textAlign: 'center', alignSelf: 'baseline' }}>
+            Please sign in or sign up below.
+          </Text>
+        </View>
+      )
+  },
 ];
 
 @observer
@@ -25,10 +53,8 @@ export default class Welcome extends React.Component {
   @observable
   activeSlide = 0;
 
-  componentDidMount() {
-    this.setState({
-      activeSlide: 0
-    })
+  async componentDidMount() {
+    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
   }
 
   render() {
@@ -48,13 +74,8 @@ export default class Welcome extends React.Component {
               renderItem={
                 (item) => {
                   return (
-                    <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.5)', margin: 20, marginTop: 50, alignContent: "center", alignItems: 'center' }}>
-                      <Text>
-                        {item.text}
-                      </Text>
-                      <Text>
-                        Welcome to Anitra application
-                      </Text>
+                    <View style={{ flex: 1, borderRadius: 30, padding: 10, backgroundColor: 'rgba(255,255,255,1)', margin: 20, marginTop: 50, alignContent: "center", alignItems: 'center' }}>
+                      {item.item.component}
                     </View>
                   )
                 }

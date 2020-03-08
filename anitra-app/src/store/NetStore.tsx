@@ -1,4 +1,4 @@
-//import NetInfo from "@react-native-community/netinfo";
+import NetInfo from "@react-native-community/netinfo";
 
 class NetStore {
     
@@ -15,10 +15,10 @@ class NetStore {
 }
 
 const netStore = new NetStore();
-/*
+
 const unsubscribe = NetInfo.addEventListener(state => {
     console.log("Connection event, connected:", state.isConnected);
     netStore.setOnline(state.isConnected);
 });
-*/
+
 export default netStore;
