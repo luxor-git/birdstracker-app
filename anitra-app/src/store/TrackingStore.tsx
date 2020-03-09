@@ -23,12 +23,15 @@ class TrackingStore extends BaseStore
 
         let fromCache = await Storage.fileExists(FILE_MAPPING.TRACKINGS);
 
-        if (fromCache && !forceRefresh) {
-            let collection = await Storage.loadCollection(FILE_MAPPING.TRACKINGS, Tracking);
-            console.log('Loading from store');
-            result.data = collection as Tracking[];
-            result.success = true;
-            return result;
+        try {
+            if (fromCache && !forceRefresh) {
+                let collection = await Storage.loadCollection(FILE_MAPPING.TRACKINGS, Tracking, true);
+                result.data = collection as Tracking[];
+                result.success = true;
+                return result;
+            }
+        } catch {
+
         }
 
         const apiToken = await AuthStore.getAuthToken();
@@ -222,8 +225,6 @@ class TrackingStore extends BaseStore
 
     public async getTrack(id: number, count: number) : Promise<Track>
     {
-        //last-days
-        //data
         const apiToken = await AuthStore.getAuthToken();
 
         let response = await apiRequest(

@@ -42,7 +42,7 @@ class AuthStore extends BaseStore
 
     private async verifyToken(token: string) : Promise<boolean>
     {
-        return false;
+        return true;
     }
 
     public async getAuthToken() : Promise<string>

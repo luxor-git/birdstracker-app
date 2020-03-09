@@ -41,9 +41,8 @@ export default class Login extends React.Component {
 
   componentDidMount = async () => {
     let credentials = await AuthStore.getStoredCredentials();
-
     if (credentials) {
-      this.email = credentials.email;
+      this.email = credentials.userName;
       this.password = credentials.password;
     }
   }
@@ -71,7 +70,6 @@ export default class Login extends React.Component {
                     secureTextEntry={true}
                     placeholder="Password"
                   />
-
                 </View>
 
                 <View style={styles.wrapperRow}>
@@ -87,6 +85,7 @@ export default class Login extends React.Component {
                         style={{ marginRight: 5 }}
                       />
                     }
+                    buttonStyle={{ backgroundColor: Theme.colors.brand.primary }}
                     loading={ this.isLoading }
                   />
                 </View>

@@ -3,6 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import { ISerializableEntity } from '../entities/IEntity';
 import EntityFactory from '../entities/EntityFactory';
 import NetStore from '../store/NetStore';
+import Constants from '../constants/Constants';
 
 class PersistentStorage
 {
@@ -52,11 +53,18 @@ class PersistentStorage
         await FileSystem.writeAsStringAsync(path, saveData);
     }
 
-    public async loadCollection(path: string, type: { new() : ISerializableEntity }) : Promise<ISerializableEntity[]>
+    public async loadCollection(path: string, type: { new() : ISerializableEntity }, expireCache: boolean = false) : Promise<ISerializableEntity[]>
     {
         console.log("Loading from", path);
         let res = await FileSystem.readAsStringAsync(path);
         let json = JSON.parse(res);
+
+        if (json.synchronized && NetStore.getOnline() && expireCache) {
+            let lastSynchronized = new Date(json.synchronized);
+            if ((+new Date() - +lastSynchronized) > Constants.CACHE_TIMEOUT) {
+                throw new Error("Cache timeout exceeded.");
+            }
+        }
 
         let arr: ISerializableEntity[] = [];
 
