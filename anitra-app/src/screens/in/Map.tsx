@@ -22,6 +22,7 @@ import ContextMenuActions from '../../common/ContextMenuActions';
 import AuthStore from "../../store/AuthStore";
 import TrackingList, { TrackingListActions } from '../../components/TrackingList';
 import TrackingDataSlider from '../../components/TrackingDataSlider';
+import TrackingMarker from '../../components/TrackingMarker';
 
 const {height, width} = Dimensions.get('window');
 
@@ -339,21 +340,7 @@ export default class Map extends React.Component {
                             image={marker}
                           >
                             <Callout onPress={() => this.selectTracking(tracking)}>
-                              <View>
-                                <Text>
-                                  {tracking.getName()}
-                                </Text>
-
-                                <Text>
-                                  {tracking.species?.scientificName}
-                                  {tracking.sex}
-                                  {tracking.age}
-                                </Text>
-
-                                <Text>
-                                  Device: {tracking.deviceCode}
-                                </Text>
-                              </View>
+                              <TrackingMarker tracking={tracking}/>
                             </Callout>
                           </Marker>
                       )}

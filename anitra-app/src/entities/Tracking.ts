@@ -83,12 +83,15 @@ export class Tracking implements ISerializableEntity
             name: this.name,
             code: this.code,
             note: this.note,
+            age: this.age,
+            sex: this.sex,
             deviceId: this.deviceId,
             deviceStatusName: this.deviceStatusName,
             firstPosition: this.firstPosition,
             lastPosition: this.lastPosition,
             species: this.species, // todo save only id - this is not needed
-            lastSynchronized: this.lastSynchronized
+            lastSynchronized: this.lastSynchronized,
+            deviceCode: this.deviceCode
         };
     }
 
@@ -108,6 +111,9 @@ export class Tracking implements ISerializableEntity
         this.lastPosition = obj.lastPosition;
         this.species = obj.species;
         this.lastSynchronized = obj.lastSynchronized;
+        this.age = obj.age;
+        this.sex = obj.sex;
+        this.deviceCode = obj.deviceCode;
 
         return this;
     }

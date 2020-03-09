@@ -152,7 +152,6 @@ class TrackingStore extends BaseStore
         );
 
         if (response.success) {
-            console.log(response);
             let speciesData : Species[] = [];
 
             if (response.data) {
