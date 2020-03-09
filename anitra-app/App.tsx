@@ -4,6 +4,13 @@ import { createSwitchNavigator, createAppContainer, NavigationContainerComponent
 import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { addInvalidTokenListener } from './src/common/ApiUtils';
+
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
+
+import BackgroundSync from './src/common/BackgroundSync';
+import { TASK_NAMES } from './src/common/BackgroundSync';
+
 import AuthStore from './src/store/AuthStore';
 import Storage from './src/common/Storage';
 
@@ -20,6 +27,10 @@ import Trackings from './src/screens/in/Trackings';
 import TrackingDetail from './src/screens/in/TrackingDetail';
 import Settings from './src/screens/in/Settings';
 import { Alert } from 'react-native';
+
+TaskManager.defineTask(TASK_NAMES.TASK_UPDATE_TRACKINGS, async () => {
+  await BackgroundSync.syncTrackings();
+});
 
 // authentication flow container
 const AuthContainer = createStackNavigator({
@@ -74,3 +85,10 @@ addInvalidTokenListener(async () => {
   Alert.alert("User credentials expired, please sign in again.");
   navigate("AuthLoading", {});
 });
+
+BackgroundFetch.registerTaskAsync(
+  TASK_NAMES.TASK_UPDATE_TRACKINGS,
+  {
+      minimumInterval: 10
+  }
+);

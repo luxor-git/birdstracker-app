@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions, Alert, TextInput, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Alert, TextInput, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, AppState } from 'react-native';
 import Theme from "../../constants/Theme.js";
 import MapView, { Callout } from 'react-native-maps';
 import { SearchBar, Button, Icon } from 'react-native-elements';
@@ -122,6 +122,12 @@ export default class Map extends React.Component {
         }
       });
 
+      AppState.addEventListener('change', (state) => {
+        if (state === "active") {
+          this.loadMapMarkers();
+        }
+      });
+
       this.loading = false;
   }
 
@@ -138,8 +144,6 @@ export default class Map extends React.Component {
   }
 
   async loadMapMarkers() {
-    console.log('reloading search');
-    console.log('Search text', this.searchText);
     let searchText = this.searchText.toLowerCase();
     let deduplicationMap = {};
     
