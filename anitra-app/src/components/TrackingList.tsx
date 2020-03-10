@@ -13,6 +13,8 @@ const {height} = Dimensions.get('window');
 export interface TrackingListActions {
     refresh: Function;
     openDetail: Function;
+    loadTracking: Function;
+    unloadTracking: Function;
 };
 
 interface TrackingListProps {
@@ -26,12 +28,10 @@ export default class TrackingList extends React.Component<TrackingListProps> {
     @observable
     loading: boolean = false;
 
-    //private actions : ContextMenuActions;
-
-    /*@observable
-    private trackings: Tracking[];*/
-
     private actions : TrackingListActions;
+    
+    @observable
+    loadingRow: number = null;
 
     @computed get trackings() : Trackings[]
     {
@@ -56,6 +56,13 @@ export default class TrackingList extends React.Component<TrackingListProps> {
 
         return Object.values(speciesMap);
     }
+
+    @computed get checkedTrackings() : Trackings[]
+    {
+        let trackings = this.props.trackings;
+        return trackings.filter(x => x.trackLoaded).map(x => x.id);
+    }
+
 
     async componentDidMount() {
         this.loading = true;
@@ -86,6 +93,20 @@ export default class TrackingList extends React.Component<TrackingListProps> {
                                     onLongPress={() => {
                                         this.actions.openDetail(item)
                                     }}
+                                    checkBox={
+                                        {
+                                            checked: this.checkedTrackings.indexOf(item.id) >= 0,
+                                            onPress: async () => {
+                                                this.loadingRow = item.id;
+                                                if (item.trackLoaded) {
+                                                    await this.actions.unloadTracking(item);
+                                                } else {
+                                                    await this.actions.loadTracking(item);
+                                                }
+                                                this.loadingRow = null;
+                                            }
+                                        }
+                                    }
                                 >
                                 </ListItem>
                             )

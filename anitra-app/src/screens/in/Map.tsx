@@ -77,6 +77,9 @@ export default class Map extends React.Component {
   @observable
   isOrientationLandscape: boolean = false;
 
+  @observable
+  displayLastPositions: boolean = true;
+
   private searchTimeout;
 
   private draggedValue: number;
@@ -148,7 +151,6 @@ export default class Map extends React.Component {
     let deduplicationMap = {};
     
     if (searchText || this.searchSpeciesId !== null) {
-      console.log('Search not empty');
       for (let i = 0; i < this.trackings.length; i++) {
         if (this.trackings[i].lastPosition) {
           if (this.trackings[i].species && this.searchSpeciesId) {
@@ -195,8 +197,6 @@ export default class Map extends React.Component {
   }
 
   async selectTracking (tracking: Tracking) {
-    console.log('Selected tracking', tracking);
-    // todo launch tracking overview
     this.showTrackingOverlay = true;
     this.trackingOverlayTracking = tracking;
   }
@@ -214,6 +214,7 @@ export default class Map extends React.Component {
     let track = await TrackingStore.getTrack(tracking.id, 100);
     this.loadedTrackingTracks.push(track);
     tracking.trackLoaded = true;
+    this.displayLastPositions = false;
     this.loading = false;
   }
 
@@ -227,6 +228,10 @@ export default class Map extends React.Component {
         tracking.trackLoaded = false;
         break;
       }
+    }
+
+    if (this.loadedTrackingTracks.length === 0) {
+      this.displayLastPositions = true;
     }
 
     await this.unselectTracking();
@@ -290,6 +295,12 @@ export default class Map extends React.Component {
       openDetail: async (tracking : Tracking) => {
         this.trackingOverlayTracking = tracking;
         this.showTrackingOverlay = true;
+      },
+      loadTracking: async (tracking: Tracking) => {
+        await this.loadTrackingTrack(tracking);
+      },
+      unloadTracking: async (tracking: Tracking) => {
+        await this.unloadTrackingTrack(tracking);
       }
     } as TrackingListActions;
   }
@@ -320,36 +331,58 @@ export default class Map extends React.Component {
               <MapView style={[styles.mapStyle, this.isOrientationLandscape && styles.mapStyleLandscape, !this.isOrientationLandscape && styles.mapStyleLandscapePortrait]} rotateEnabled={false} mapType="none" onLongPress={(event) => { console.log(event); this.openMenu(event); }}>
                       {this.loadedTrackingTracks.map(track => {
                         return (
-                          <Polyline
-                            key={track.id}
-                            coordinates={
-                              track.getPolyLine()
-                            }
-                            strokeWidth={5}
-                            strokeColor="#f00"
-                            zIndex={1}
-                          />
+                          <React.Fragment key={track.id}>
+                            <Polyline
+                              coordinates={
+                                track.getPolyLine()
+                              }
+                              strokeWidth={5}
+                              strokeColor="#f00"
+                              zIndex={1}
+                              onPress={async () => {
+                                let result = await TrackingStore.getTracking(track.id);
+                                if (result.success) {
+                                  this.selectTracking(result.data);
+                                }
+                              }}
+                            />
+                            {track.getPoints().map(point => {
+                              return (
+                                <Marker
+                                  key={point.id}
+                                  coordinate={ { latitude: point.lat, longitude: point.lng } }
+                                  title={"Test"}
+                                  description={"Test"}
+                                  icon={this.markers.markerElse}
+                                  image={this.markers.markerElse}
+                                >
+                                  <Callout onPress={() => { console.log(point); }}>
+                                    <Text>Load this from the non-existing API! Yay!</Text>
+                                  </Callout>
+                                </Marker>
+                              )
+                            })}
+                          </React.Fragment>
                         )
                       })}
                       {this.layer && <UrlTile urlTemplate={this.layer.getTileUrl()} zIndex={-1} />}
-                      {this.mapTrackings.map(tracking => {
+                      {this.displayLastPositions && this.mapTrackings.map(tracking => {
                         let marker = this.markers[tracking.getIconName()];
                         return (
-                          <Marker
-                            key={tracking.id}
-                            coordinate={ { latitude: tracking.lastPosition.lat, longitude: tracking.lastPosition.lng } }
-                            title={tracking.getName()}
-                            description={tracking.note}
-                            icon={marker}
-                            image={marker}
-                          >
-                            <Callout onPress={() => this.selectTracking(tracking)}>
-                              <TrackingMarker tracking={tracking}/>
-                            </Callout>
-                          </Marker>
+                            <Marker
+                              key={tracking.id}
+                              coordinate={ { latitude: tracking.lastPosition.lat, longitude: tracking.lastPosition.lng } }
+                              title={tracking.getName()}
+                              description={tracking.note}
+                              icon={marker}
+                              image={marker}
+                            >
+                              <Callout onPress={() => this.selectTracking(tracking)}>
+                                <TrackingMarker tracking={tracking}/>
+                              </Callout>
+                            </Marker>
+                        )}
                       )}
-                      )}
-                    
               </MapView>
 
               {this.isOrientationLandscape &&

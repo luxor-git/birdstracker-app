@@ -237,7 +237,7 @@ class TrackingStore extends BaseStore
             let posArr = response.data?.data;
 
             for (let i = 0; i < posArr.length; i++) {
-                positions.push({ lat: posArr[i].lat, lng: posArr[i].lng, timestamp: posArr[i].time } as Position);
+                positions.push({ lat: posArr[i].lat, lng: posArr[i].lng, timestamp: posArr[i].time, id: posArr[i].Id } as Position);
             }
         }
 

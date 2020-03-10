@@ -165,6 +165,8 @@ export class Species implements IEntity, ISerializableEntity
 
 export class Position
 {
+    id: number;
+    
     lat: number;
     lng: number;
 
@@ -201,6 +203,11 @@ export class Track implements ISerializableEntity
                 longitude: x.lng
             }
         })
+    }
+
+    getPoints() : Position[] 
+    {
+        return this.positions;
     }
 
     id?: number;
