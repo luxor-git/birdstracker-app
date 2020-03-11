@@ -23,6 +23,7 @@ import AuthStore from "../../store/AuthStore";
 import TrackingList, { TrackingListActions } from '../../components/TrackingList';
 import TrackingDataSlider from '../../components/TrackingDataSlider';
 import TrackingMarker from '../../components/TrackingMarker';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const {height, width} = Dimensions.get('window');
 
@@ -113,7 +114,9 @@ export default class Map extends React.Component {
         }
       });
 
-      this.isOrientationLandscape = (await ScreenOrientation.getOrientationAsync()).orientation.startsWith('LANDSCAPE');
+      console.log((await ScreenOrientation.getOrientationAsync()).orientation);
+      let orientation = (await ScreenOrientation.getOrientationAsync()).orientation;
+      this.isOrientationLandscape = orientation.startsWith('LANDSCAPE') || orientation.startsWith('UNKNOWN');
       
       ScreenOrientation.addOrientationChangeListener((orientation) => {
         console.log(orientation);

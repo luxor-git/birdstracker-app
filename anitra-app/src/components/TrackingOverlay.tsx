@@ -4,7 +4,7 @@ import { MaterialIndicator } from 'react-native-indicators';
 import { Overlay, Icon, Button } from 'react-native-elements';
 import Theme from "../constants/Theme.js";
 import OverlayStore from "../store/OverlayStore";
-import { observable } from 'mobx';
+import { observable, computed } from 'mobx';
 import { observer } from 'mobx-react';
 import Layer from '../entities/Layer.js';
 import { Tracking } from '../entities/Tracking.js';
@@ -39,9 +39,6 @@ export default class TrackingOverlay extends React.Component<TrackingOverlayProp
     private photos: Photo[] = [];
 
     @observable
-    private componentPhotos: any[] = [];
-
-    @observable
     private isImageViewVisible: boolean = false;
 
     private closeFunction;
@@ -51,17 +48,21 @@ export default class TrackingOverlay extends React.Component<TrackingOverlayProp
     async getPhotos() {
         try {
             this.photos = await (await TrackingStore.getPhotos(this.tracking.id)).data;
-            this.componentPhotos = this.photos.map(x => {
-                return {
-                    source: {
-                        uri: x.getUrl()
-                    },
-                    title: x.uploaderName
-                }
-            });
         } catch (e) {
             console.log(e);
         }
+    }
+
+    @computed get componentPhotos()
+    {
+        return this.photos.map(x => {
+            return {
+                source: {
+                    uri: x.getUrl()
+                },
+                title: x.uploaderName
+            }
+        });
     }
 
     async addPhoto() {

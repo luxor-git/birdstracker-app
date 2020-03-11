@@ -7,6 +7,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { ScreenOrientation } from 'expo';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const {height, width} = Dimensions.get('window');
 
@@ -99,11 +100,10 @@ export default class Welcome extends React.Component {
               inactiveDotOpacity={0.4}
               inactiveDotScale={0.6}
             />
-
           </View>
 
           <SafeAreaView style={styles.loginWrapper}>
-            <View style={styles.buttonPad}>
+            <View style={[styles.buttonPad, styles.buttonTopMargin]}>
               <Button buttonStyle={styles.button} title="Log in" onPress={() => this.props.navigation.navigate('Login') }/>
             </View>
 
@@ -125,9 +125,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'stretch',
   },
+  buttonTopMargin: {
+    marginTop: 20
+  },
   buttonPad: {
     padding: 2,
-    marginBottom: 5
+    marginBottom: 5,
+    marginLeft: wp('5%'),
+    marginRight: wp('5%')
   },
   onboardingWrapper: {
     width: width,
@@ -138,7 +143,7 @@ const styles = StyleSheet.create({
     height: height / 5,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    padding: 20,
+    padding: 30,
     backgroundColor: '#fff'
   },
   button: {
