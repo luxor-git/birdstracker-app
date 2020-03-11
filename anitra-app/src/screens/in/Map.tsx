@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, Dimensions, Alert, TextInput, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, AppState } from 'react-native';
 import Theme from "../../constants/Theme.js";
-import MapView, { Callout } from 'react-native-maps';
+import MapView, { Callout, MapEvent, LatLng, Polygon } from 'react-native-maps';
 import { SearchBar, Button, Icon } from 'react-native-elements';
 import { UrlTile, Marker, Polyline } from 'react-native-maps';
-import { observable, ObservableMap } from 'mobx';
+import { observable, ObservableMap, computed } from 'mobx';
 import { observer } from 'mobx-react';
 import { ScreenOrientation } from 'expo';
 import LoadingOverlay from '../../components/LoadingOverlay';
@@ -80,6 +80,26 @@ export default class Map extends React.Component {
 
   @observable
   displayLastPositions: boolean = true;
+
+  @observable
+  selectingOfflineRegion: boolean = true;
+  
+  @observable
+  selectingPolygonLeadingPoints: LatLng[] = [];
+
+  @computed get selectedPolygon() : LatLng[] 
+  {
+    if (this.selectingPolygonLeadingPoints.length === 2) {
+      return [
+        { latitude: this.selectingPolygonLeadingPoints[0].latitude, longitude: this.selectingPolygonLeadingPoints[0].longitude },
+        { latitude: this.selectingPolygonLeadingPoints[0].latitude, longitude: this.selectingPolygonLeadingPoints[1].longitude },
+        { latitude: this.selectingPolygonLeadingPoints[1].latitude, longitude: this.selectingPolygonLeadingPoints[1].longitude },
+        { latitude: this.selectingPolygonLeadingPoints[1].latitude, longitude: this.selectingPolygonLeadingPoints[0].longitude }
+      ]
+    }
+
+    return [];
+  }
 
   private searchTimeout;
 
@@ -258,6 +278,17 @@ export default class Map extends React.Component {
     this.contextMenuVisible = true;
   }
 
+  async onMapClick( event : MapEvent ) {
+    if (this.selectingOfflineRegion) {
+      if (this.selectingPolygonLeadingPoints.length === 2) {
+        return; // no more need to be selected
+      }
+
+      let coord : LatLng = event.nativeEvent.coordinate;
+      this.selectingPolygonLeadingPoints.push(coord);
+    }
+  }
+
   getContextMenuActions() : ContextMenuActions {
     return {
       closeMenu: async () => {
@@ -331,61 +362,84 @@ export default class Map extends React.Component {
                 />
               }
 
-              <MapView style={[styles.mapStyle, this.isOrientationLandscape && styles.mapStyleLandscape, !this.isOrientationLandscape && styles.mapStyleLandscapePortrait]} rotateEnabled={false} mapType="none" onLongPress={(event) => { console.log(event); this.openMenu(event); }}>
-                      {this.loadedTrackingTracks.map(track => {
+              <MapView style={[styles.mapStyle, this.isOrientationLandscape && styles.mapStyleLandscape, !this.isOrientationLandscape && styles.mapStyleLandscapePortrait]}
+                       rotateEnabled={false}
+                       mapType="none"
+                       onLongPress={(event) => { console.log(event); this.openMenu(event); }}
+                       onPress={async (event) => { await this.onMapClick(event); }}
+              >
+                {this.loadedTrackingTracks.map(track => {
+                  return (
+                    <React.Fragment key={track.id}>
+                      <Polyline
+                        coordinates={
+                          track.getPolyLine()
+                        }
+                        strokeWidth={5}
+                        strokeColor="#f00"
+                        zIndex={1}
+                        tappable={true}
+                        onPress={async () => {
+                          let result = await TrackingStore.getTracking(track.id);
+                          if (result.success) {
+                            this.selectTracking(result.data);
+                          }
+                        }}
+                      />
+                      {track.getPoints().map(point => {
                         return (
-                          <React.Fragment key={track.id}>
-                            <Polyline
-                              coordinates={
-                                track.getPolyLine()
-                              }
-                              strokeWidth={5}
-                              strokeColor="#f00"
-                              zIndex={1}
-                              onPress={async () => {
-                                let result = await TrackingStore.getTracking(track.id);
-                                if (result.success) {
-                                  this.selectTracking(result.data);
-                                }
-                              }}
-                            />
-                            {track.getPoints().map(point => {
-                              return (
-                                <Marker
-                                  key={point.id}
-                                  coordinate={ { latitude: point.lat, longitude: point.lng } }
-                                  title={"Test"}
-                                  description={"Test"}
-                                  icon={this.markers.markerElse}
-                                  image={this.markers.markerElse}
-                                >
-                                  <Callout onPress={() => { console.log(point); }}>
-                                    <Text>Load this from the non-existing API! Yay!</Text>
-                                  </Callout>
-                                </Marker>
-                              )
-                            })}
-                          </React.Fragment>
+                          <Marker
+                            key={point.id}
+                            coordinate={ { latitude: point.lat, longitude: point.lng } }
+                            title={"Test"}
+                            description={"Test"}
+                            icon={this.markers.markerElse}
+                            image={this.markers.markerElse}
+                          >
+                            <Callout onPress={() => { console.log(point); }}>
+                              <Text>Load this from the non-existing API! Yay!</Text>
+                            </Callout>
+                          </Marker>
                         )
                       })}
-                      {this.layer && <UrlTile urlTemplate={this.layer.getTileUrl()} zIndex={-1} />}
-                      {this.displayLastPositions && this.mapTrackings.map(tracking => {
-                        let marker = this.markers[tracking.getIconName()];
-                        return (
+                    </React.Fragment>
+                  )
+                })}
+
+                {this.selectingOfflineRegion && 
+                  <React.Fragment>
+                      {this.selectedPolygon.map((point) => {
+                          return (
                             <Marker
-                              key={tracking.id}
-                              coordinate={ { latitude: tracking.lastPosition.lat, longitude: tracking.lastPosition.lng } }
-                              title={tracking.getName()}
-                              description={tracking.note}
-                              icon={marker}
-                              image={marker}
-                            >
-                              <Callout onPress={() => this.selectTracking(tracking)}>
-                                <TrackingMarker tracking={tracking}/>
-                              </Callout>
-                            </Marker>
-                        )}
-                      )}
+                              draggable
+                              coordinate={ point }
+                            />
+                          )
+                      })}
+                      <Polygon
+                        coordinates={this.selectedPolygon}
+                      />
+                  </React.Fragment>
+                }
+
+                {this.layer && <UrlTile urlTemplate={this.layer.getTileUrl()} zIndex={-1} />}
+                {this.displayLastPositions && this.mapTrackings.map(tracking => {
+                  let marker = this.markers[tracking.getIconName()];
+                  return (
+                      <Marker
+                        key={tracking.id}
+                        coordinate={ { latitude: tracking.lastPosition.lat, longitude: tracking.lastPosition.lng } }
+                        title={tracking.getName()}
+                        description={tracking.note}
+                        icon={marker}
+                        image={marker}
+                      >
+                        <Callout onPress={() => this.selectTracking(tracking)}>
+                          <TrackingMarker tracking={tracking}/>
+                        </Callout>
+                      </Marker>
+                  )}
+                )}
               </MapView>
 
               {this.isOrientationLandscape &&
