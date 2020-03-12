@@ -408,17 +408,17 @@ export default class Map extends React.Component {
 
                 {this.selectingOfflineRegion && 
                   <React.Fragment>
-                      {this.selectedPolygon.map((point) => {
+                      {this.selectedPolygon.map((point, index) => {
                           return (
                             <Marker
+                              key={index}
                               draggable
                               coordinate={ point }
+                              onDragStart={(props) => console.log(props)}
                             />
                           )
                       })}
-                      <Polygon
-                        coordinates={this.selectedPolygon}
-                      />
+                      {this.selectedPolygon.length !== 0 && <Polygon coordinates={this.selectedPolygon}/>}
                   </React.Fragment>
                 }
 
