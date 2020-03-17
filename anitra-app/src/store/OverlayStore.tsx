@@ -3,10 +3,12 @@ import AuthStore from './AuthStore';
 import { ApiConstants, formatGetRequest, apiRequest, formatDate } from "../common/ApiUtils";
 import { ListActionResult, EntityActionResult } from "../common/ActionResult";
 import { getString, ApiStrings } from "../common/ApiStrings";
-import Storage, { FILE_MAPPING } from '../common/Storage';
+import Storage, { FILE_MAPPING, PATH_MAPPING } from '../common/Storage';
 import Layer from '../entities/Layer';
 import { BoundingTileDefinition } from '../common/GeoUtils';
 import axios from 'axios';
+import { OfflineRegion } from '../entities/OfflineRegion';
+import { LatLng } from 'react-native-maps';
 
 const LAYER_IDENTIFIERS = {
     LAYER_SEZNAM_AERIAL_MAPS:  "LAYER_SEZNAM_AERIAL_MAPS",
@@ -21,6 +23,8 @@ class OverlayStore extends BaseStore
 
     private defaultLayer: Layer;
 
+    private offlineRegions: Map<number, OfflineRegion> = new Map<number, OfflineRegion>();
+
     constructor()
     {
         super();
@@ -30,9 +34,15 @@ class OverlayStore extends BaseStore
         this.layers.set(LAYER_IDENTIFIERS.LAYER_SEZNAM_AERIAL_MAPS_OFFLINE, new Layer("Seznam Aerial (only cached)", Storage.getMapTileTemplate(), ""));
     }
 
-    async downloadRange(range: BoundingTileDefinition, progress: Function) : Promise<boolean> {
+    async downloadRange(range: BoundingTileDefinition, bounds: LatLng[], progress: Function) : Promise<boolean> {
         let downloadLayer = this.layers.get(LAYER_IDENTIFIERS.LAYER_SEZNAM_AERIAL_MAPS);
         let tileCount = 0;
+
+        let offlineRegion = new OfflineRegion();
+        offlineRegion.id = this.offlineRegions.size + 1;
+        offlineRegion.tileWrap = range;
+        offlineRegion.boundingBox = bounds;
+        // todo figure out ID
 
         let values = Array.from(range.boundingTiles.values());
 
@@ -43,7 +53,6 @@ class OverlayStore extends BaseStore
             let yRange = row.maxY - row.minY;
             for (let y = 0; y < yRange; y++) {
                 for (let x = 0; x < xRange; x++) {
-                    tileCount++;
                     let tileX = row.minX + x;
                     let tileY = row.minY + y;
                     let tileZ = row.zoom;
@@ -51,12 +60,41 @@ class OverlayStore extends BaseStore
                     let tileUrl = downloadLayer.getTileUrl().replace('{z}', tileZ.toString()).replace('{x}', tileX.toString()).replace('{y}', tileY.toString());
                     let success = await Storage.saveMapTile(tileUrl, tileX, tileY, tileZ);
                     console.log('Tile download:', success);
+
+                    if (success) {
+                        tileCount++;
+                    }
+
                     progress(tileCount);
                 }
             }
         }
 
+        await Storage.save(PATH_MAPPING.TILE_DEFINITION + '/' + offlineRegion.id + '.json', offlineRegion);
+        this.offlineRegions.set(offlineRegion.id, offlineRegion);
+
         return true;
+    }
+
+    async getOfflineAreas() : Promise<OfflineRegion[]>
+    {
+        try {
+            let data = await Storage.getAllInDirectory(PATH_MAPPING.TILE_DEFINITION, OfflineRegion);
+            this.offlineRegions.clear();
+            for (let i = 0; i < data.length; i++) {
+                this.offlineRegions.set(i, data[i] as OfflineRegion);
+            }
+
+            return Array.from(this.offlineRegions.values());
+        } catch {
+            return [];
+        }
+    }
+
+
+
+    getOfflineLayer(): Layer {
+        return this.layers.get(LAYER_IDENTIFIERS.LAYER_SEZNAM_AERIAL_MAPS_OFFLINE);
     }
 
     public async getAvailableLayers() : Promise<Layer[]> {

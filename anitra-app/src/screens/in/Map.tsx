@@ -23,9 +23,11 @@ import TrackingList, { TrackingListActions } from '../../components/TrackingList
 import TrackingDataSlider from '../../components/TrackingDataSlider';
 import TrackingMarker from '../../components/TrackingMarker';
 import RegionDownload from '../../components/RegionDownload';
+import NetStore from '../../store/NetStore';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, listenOrientationChange as lor, removeOrientationListener as rol} from 'react-native-responsive-screen';
 import { lonDeltaToZoom, BoundingTileDefinition } from '../../common/GeoUtils';
 import { showMessage, hideMessage } from "react-native-flash-message";
+import { OfflineRegion } from '../../entities/OfflineRegion.js';
 
 @observer
 export default class Map extends React.Component {
@@ -91,7 +93,13 @@ export default class Map extends React.Component {
   selectingPolygonLeadingPoints: LatLng[] = [];
 
   @observable
+  offlineAreas: OfflineRegion[] = [];
+
+  @observable
   zoomLevel: number = 1;
+
+  @observable
+  isOnline: boolean = false;
 
   regionChangeTimeout : number = null;
 
@@ -144,7 +152,6 @@ export default class Map extends React.Component {
         }
       });
 
-      console.log((await ScreenOrientation.getOrientationAsync()).orientation);
       let orientation = (await ScreenOrientation.getOrientationAsync()).orientation;
       this.isOrientationLandscape = orientation.startsWith('LANDSCAPE') || orientation.startsWith('UNKNOWN');
       
@@ -162,6 +169,43 @@ export default class Map extends React.Component {
         if (state === "active") {
           this.loadMapMarkers();
         }
+      });
+
+      this.loadingText = "Loading offline maps";
+
+      this.offlineAreas = await OverlayStore.getOfflineAreas();
+
+      this.loadingText = "Checking online status";
+
+      this.isOnline = NetStore.getOnline();
+
+      NetStore.addConnectionCallback(async (state) => {
+        let previousState = this.isOnline;
+        this.isOnline = state;
+        
+        if (previousState === false && this.isOnline) {
+          showMessage({
+            message: "Online",
+            type: "info",
+            icon: 'info'
+          });
+          this.selectLayer(await OverlayStore.getDefaultLayer());
+        } else if (previousState === true && !this.isOnline) {
+          showMessage({
+            message: "Offline",
+            type: "warning",
+            icon: 'warning'
+          });
+
+          this.selectLayer(OverlayStore.getOfflineLayer());
+        }
+
+      });
+
+      showMessage({
+        message: "Tap the map for a longer period of time to open the context menu.",
+        type: "info",
+        icon: 'info'
       });
 
       this.loading = false;
@@ -293,17 +337,16 @@ export default class Map extends React.Component {
 
   async onMapClick( event : MapEvent ) {
     if (this.selectingOfflineRegion) {
-      if (this.selectingPolygonLeadingPoints.length === 2) {
-        const that = this;
+      let coord : LatLng = event.nativeEvent.coordinate;
+      this.selectingPolygonLeadingPoints.push(coord);
 
+      if (this.selectingPolygonLeadingPoints.length === 2) {
         setTimeout(() => {
           this.showRegionDownload = true;
         }, 2000);
         return;
       }
 
-      let coord : LatLng = event.nativeEvent.coordinate;
-      this.selectingPolygonLeadingPoints.push(coord);
     }
   }
 
@@ -347,7 +390,7 @@ export default class Map extends React.Component {
           this.contextMenuVisible = false;
         } else {
           showMessage({
-            message: "Tap your screen twice to select a bounding box to download.",
+            message: "Select two points on your screen to download an offline area.",
             type: "info",
             icon: 'info'
           });
@@ -391,11 +434,22 @@ export default class Map extends React.Component {
 
     this.loadingText = 'Downloading...';
 
-    await OverlayStore.downloadRange(range, ((progress) => {
+    await OverlayStore.downloadRange(range, this.selectingPolygonLeadingPoints, ((progress) => {
       this.loadingText = 'Downloading: ' + progress + ' / ' + range.tileCount;
     }).bind(this));
 
     this.loading = false;
+
+    this.showRegionDownload = false;
+    this.selectingPolygonLeadingPoints = [];
+
+    showMessage({
+      message: "Offline region downloaded",
+      type: "success",
+      icon: 'success'
+    });
+
+    this.offlineAreas = await OverlayStore.getOfflineAreas();
   }
 
   render () {
@@ -577,6 +631,16 @@ export default class Map extends React.Component {
                       />
                   </React.Fragment>
                 }
+
+                {this.offlineAreas.map(x => {
+                      console.log(x.boundingBox);
+                      return (
+                        <Polygon
+                          key={x.id}
+                          coordinates={x.boundingBox}
+                        />
+                      )
+                    })}
 
                 {this.layer && <UrlTile urlTemplate={this.layer.getTileUrl()} zIndex={-1} />}
                 {this.displayLastPositions && this.mapTrackings.map(tracking => {

@@ -74,10 +74,10 @@ export function getBoundingTileArray(points: LatLng[], zoomLevels: number[]) : B
         }
 
         let row = {
-            minX: tileBoundsXMin - 1,
-            maxX: tileBoundsXMax + 1,
-            minY: tileBoundsYMin - 1,
-            maxY: tileBoundsYMax + 1,
+            minX: tileBoundsXMin - 2,
+            maxX: tileBoundsXMax + 2,
+            minY: tileBoundsYMin - 2,
+            maxY: tileBoundsYMax + 2,
             zoom: zoom
         } as BoundingTileRow;
 
