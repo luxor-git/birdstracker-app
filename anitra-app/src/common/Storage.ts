@@ -99,6 +99,29 @@ class PersistentStorage
 
         return info.exists;
     }
+
+    public async saveMapTile(url: string, x: number, y: number, z: number) : Promise<boolean>
+    {
+        //try {
+        await FileSystem.makeDirectoryAsync(PATH_MAPPING.TILE + '/' + z + '/' + x, {
+            intermediates: true
+        });
+
+        console.log('Downloading ', url, ' to ', PATH_MAPPING.TILE + '/' + z + '/' + x + '/' + y + '.png');
+
+        await FileSystem.downloadAsync(url, PATH_MAPPING.TILE + '/' + z + '/' + x + '/' + y + '.png');
+        
+        return true;
+        /*} catch {
+            return false;
+        }*/
+    }
+
+    public getMapTileTemplate()
+    {
+        return PATH_MAPPING.TILE + '/{z}/{x}/{y}.png';
+    }
+
 }
 
 const PATH_MAPPING = {

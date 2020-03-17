@@ -63,6 +63,7 @@ export default class ContextMenu extends React.Component<ContextMenuProps> {
                     <ScrollView style={{flex: 1, width: 300}}>
                         {this.button('retweet', 'Refresh', async () => { await this.actions.refreshTrackings(); })}
                         {this.button('user', 'Sign out', async () => { await this.actions.signOut(); })}
+                        {this.button('map', 'Download offline area', async () => { await this.actions.showOfflineAreaEdit(); })}
                     </ScrollView>
                 </View>
                 }

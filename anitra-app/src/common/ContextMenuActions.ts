@@ -6,5 +6,6 @@ export default interface ContextActions {
 
     refreshTrackings() : Promise<void>;
   
-  }
+    showOfflineAreaEdit() : Promise<void>;
+}
   

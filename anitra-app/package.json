@@ -26,6 +26,7 @@
     "react-native-circular-action-menu": "^0.5.0",
     "react-native-elements": "^1.2.7",
     "react-native-flags": "^1.0.0",
+    "react-native-flash-message": "^0.1.15",
     "react-native-gesture-handler": "^1.5.6",
     "react-native-image-view": "^2.1.9",
     "react-native-indicators": "^0.17.0",
