@@ -27,6 +27,7 @@ import Trackings from './src/screens/in/Trackings';
 import TrackingDetail from './src/screens/in/TrackingDetail';
 import Settings from './src/screens/in/Settings';
 import { Alert } from 'react-native';
+import FlashMessage from "react-native-flash-message";
 
 TaskManager.defineTask(TASK_NAMES.TASK_UPDATE_TRACKINGS, async () => {
   await BackgroundSync.syncTrackings();
@@ -75,7 +76,10 @@ export default class App extends React.Component
 {
   render () {
     return (
-      <AppContainer ref = { setNavigatorRef }/>
+      <React.Fragment>
+        <AppContainer ref = { setNavigatorRef }/>
+        <FlashMessage position="top" />
+      </React.Fragment>
     )
   }
 }

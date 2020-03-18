@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions, Alert, TextInput, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, AppState } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Alert, TextInput, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, AppState, SafeAreaView } from 'react-native';
 import Theme from "../../constants/Theme.js";
 import MapView, { Callout, MapEvent, LatLng, Polygon } from 'react-native-maps';
 import { SearchBar, Button, Icon } from 'react-native-elements';
@@ -17,15 +17,17 @@ import SlidingUpPanel from 'rn-sliding-up-panel';
 import OverlayStore from "../../store/OverlayStore";
 import Layer from '../../entities/Layer.js';
 import RNPickerSelect from 'react-native-picker-select';
-import ActionButton from 'react-native-circular-action-menu';
 import ContextMenuActions from '../../common/ContextMenuActions';
 import AuthStore from "../../store/AuthStore";
 import TrackingList, { TrackingListActions } from '../../components/TrackingList';
 import TrackingDataSlider from '../../components/TrackingDataSlider';
 import TrackingMarker from '../../components/TrackingMarker';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-
-const {height, width} = Dimensions.get('window');
+import RegionDownload from '../../components/RegionDownload';
+import NetStore from '../../store/NetStore';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp, listenOrientationChange as lor, removeOrientationListener as rol} from 'react-native-responsive-screen';
+import { lonDeltaToZoom, BoundingTileDefinition } from '../../common/GeoUtils';
+import { showMessage, hideMessage } from "react-native-flash-message";
+import { OfflineRegion } from '../../entities/OfflineRegion.js';
 
 @observer
 export default class Map extends React.Component {
@@ -55,6 +57,9 @@ export default class Map extends React.Component {
   showTrackingDataSlider: boolean = false;
 
   @observable
+  showRegionDownload: boolean = false;
+
+  @observable
   trackingOverlayTracking: Tracking;
 
   @observable
@@ -82,10 +87,21 @@ export default class Map extends React.Component {
   displayLastPositions: boolean = true;
 
   @observable
-  selectingOfflineRegion: boolean = true;
+  selectingOfflineRegion: boolean = false;
   
   @observable
   selectingPolygonLeadingPoints: LatLng[] = [];
+
+  @observable
+  offlineAreas: OfflineRegion[] = [];
+
+  @observable
+  zoomLevel: number = 1;
+
+  @observable
+  isOnline: boolean = false;
+
+  regionChangeTimeout : number = null;
 
   @computed get selectedPolygon() : LatLng[] 
   {
@@ -115,6 +131,8 @@ export default class Map extends React.Component {
   };
 
   async componentDidMount () {
+      lor(this); // Listen for orientation changes
+
       this.loading = true;
       this.loadingText = "Loading trackings";
       this.trackings = await (await TrackingStore.getTrackingList()).data;
@@ -134,7 +152,6 @@ export default class Map extends React.Component {
         }
       });
 
-      console.log((await ScreenOrientation.getOrientationAsync()).orientation);
       let orientation = (await ScreenOrientation.getOrientationAsync()).orientation;
       this.isOrientationLandscape = orientation.startsWith('LANDSCAPE') || orientation.startsWith('UNKNOWN');
       
@@ -154,7 +171,49 @@ export default class Map extends React.Component {
         }
       });
 
+      this.loadingText = "Loading offline maps";
+
+      this.offlineAreas = await OverlayStore.getOfflineAreas();
+
+      this.loadingText = "Checking online status";
+
+      this.isOnline = NetStore.getOnline();
+
+      NetStore.addConnectionCallback(async (state) => {
+        let previousState = this.isOnline;
+        this.isOnline = state;
+        
+        if (previousState === false && this.isOnline) {
+          showMessage({
+            message: "Online",
+            type: "info",
+            icon: 'info'
+          });
+          this.selectLayer(await OverlayStore.getDefaultLayer());
+        } else if (previousState === true && !this.isOnline) {
+          showMessage({
+            message: "Offline",
+            type: "warning",
+            icon: 'warning'
+          });
+
+          this.selectLayer(OverlayStore.getOfflineLayer());
+        }
+
+      });
+
+      showMessage({
+        message: "Tap the map for a longer period of time to open the context menu.",
+        type: "info",
+        icon: 'info'
+      });
+
       this.loading = false;
+  }
+
+  componentWillUnmount()
+  {
+    rol(); //Will stop listening to orientation change events
   }
 
   async showAllMarkers() {
@@ -243,8 +302,6 @@ export default class Map extends React.Component {
 
   async unloadTrackingTrack(tracking: Tracking)
   {
-    console.log(this.loadedTrackingTracks);
-
     for (let i = 0; i < this.loadedTrackingTracks.length; i++) {
       if (this.loadedTrackingTracks[i]?.id == tracking.id) {
         this.loadedTrackingTracks.splice(i, 1);
@@ -280,12 +337,16 @@ export default class Map extends React.Component {
 
   async onMapClick( event : MapEvent ) {
     if (this.selectingOfflineRegion) {
-      if (this.selectingPolygonLeadingPoints.length === 2) {
-        return; // no more need to be selected
-      }
-
       let coord : LatLng = event.nativeEvent.coordinate;
       this.selectingPolygonLeadingPoints.push(coord);
+
+      if (this.selectingPolygonLeadingPoints.length === 2) {
+        setTimeout(() => {
+          this.showRegionDownload = true;
+        }, 2000);
+        return;
+      }
+
     }
   }
 
@@ -317,7 +378,29 @@ export default class Map extends React.Component {
       refreshTrackings: async () => {
         this.contextMenuVisible = false;
         this.forceReloadTrackingTracks();
+      },
+
+      showOfflineAreaEdit: async () => {
+        if (this.zoomLevel <= 10) {
+          showMessage({
+            message: "Please zoom in further",
+            type: "info",
+            icon: 'info'
+          });
+          this.contextMenuVisible = false;
+        } else {
+          showMessage({
+            message: "Select two points on your screen to download an offline area.",
+            type: "info",
+            icon: 'info'
+          });
+
+          this.selectingOfflineRegion = true;
+          this.selectingPolygonLeadingPoints = [];
+          this.contextMenuVisible = false;
+        }
       }
+
     } as ContextMenuActions;
   }
 
@@ -339,7 +422,116 @@ export default class Map extends React.Component {
     } as TrackingListActions;
   }
 
+  async discardSelectedRange() {
+    this.showRegionDownload = false;
+    this.selectingPolygonLeadingPoints = [];
+  }
+
+  async downloadSelectedRange(range: BoundingTileDefinition) {
+    this.showRegionDownload = false;
+
+    this.loading = true;
+
+    this.loadingText = 'Downloading...';
+
+    await OverlayStore.downloadRange(range, this.selectingPolygonLeadingPoints, ((progress) => {
+      this.loadingText = 'Downloading: ' + progress + ' / ' + range.tileCount;
+    }).bind(this));
+
+    this.loading = false;
+
+    this.showRegionDownload = false;
+    this.selectingPolygonLeadingPoints = [];
+
+    showMessage({
+      message: "Offline region downloaded",
+      type: "success",
+      icon: 'success'
+    });
+
+    this.offlineAreas = await OverlayStore.getOfflineAreas();
+  }
+
   render () {
+      const styles = StyleSheet.create({
+        container: {
+          flex: 1,
+          backgroundColor: '#f6f6f6'
+        },
+        containerPortrait: {
+          height: hp('50%'),
+        },
+        containerLandscape: {
+          flexDirection: "row"
+        },
+        buttonPad: {
+          padding: 2,
+        },
+        loginWrapper: {
+          alignSelf: 'stretch',
+          margin: 10
+        },
+        mapStyle: {
+          flex: 1,
+          flexGrow: 1
+        },
+        mapStyleLandscape: {
+          width: wp('75%'),
+        },
+        mapStyleLandscapePortrait: {
+          width: wp('100%'),
+        },
+        buttonControl: {
+          borderRadius: 100,
+          backgroundColor: "red"
+        },
+        panel: {
+          flex: 1,
+          position: 'relative'
+        },
+        textInput: {
+          height: 20,
+          backgroundColor: "#fff",
+          color: "#000"
+        },
+        panelHeader: {
+          backgroundColor: '#f6f6f6',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+          borderColor: "transparent"
+        },
+        panelHeaderPortrait: {
+          height: hp('10%'),
+        },
+        panelHeaderLandscape: {
+          height: hp('20%'),
+        },
+        inputWrapper: {
+          padding: 5,
+          borderWidth: 0
+        },
+        inputWrapperOffset: {
+          padding: 5,
+          paddingLeft: 12,
+          paddingRight: 12,
+          borderWidth: 0
+        },
+        inputLabel: {
+          marginBottom: 5
+        },
+        actionButtonIcon: {
+          fontSize: 20,
+          height: 22,
+          color: 'white',
+        },
+        trackingListView: {
+          height: hp('100%'),
+          width: wp('33%')
+        }
+      });
+
       return (
         <KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
           <View style={[styles.container, this.isOrientationLandscape && styles.containerLandscape]}>
@@ -361,12 +553,29 @@ export default class Map extends React.Component {
                   maxDaysBack={30}
                 />
               }
+              {this.showRegionDownload &&
+                <RegionDownload
+                  region={this.selectedPolygon}
+                  close={(async () => { await this.discardSelectedRange(); }).bind(this)}
+                  onSuccess={(async (range: BoundingTileDefinition ) => { await this.downloadSelectedRange(range); })}
+                />
+              }
 
               <MapView style={[styles.mapStyle, this.isOrientationLandscape && styles.mapStyleLandscape, !this.isOrientationLandscape && styles.mapStyleLandscapePortrait]}
                        rotateEnabled={false}
                        mapType="none"
                        onLongPress={(event) => { console.log(event); this.openMenu(event); }}
                        onPress={async (event) => { await this.onMapClick(event); }}
+                       onRegionChange={region => {
+                        clearTimeout(this.regionChangeTimeout);
+                        this.regionChangeTimeout = setTimeout(() => {
+                            let zoom = lonDeltaToZoom(region.longitudeDelta);
+                            if (zoom != this.zoomLevel) {
+                              this.zoomLevel = zoom;
+                              console.log(zoom);
+                            }
+                        }, 100)
+                      }}
               >
                 {this.loadedTrackingTracks.map(track => {
                   return (
@@ -422,6 +631,16 @@ export default class Map extends React.Component {
                   </React.Fragment>
                 }
 
+                {this.offlineAreas.map(x => {
+                      console.log(x.boundingBox);
+                      return (
+                        <Polygon
+                          key={x.id}
+                          coordinates={x.boundingBox}
+                        />
+                      )
+                    })}
+
                 {this.layer && <UrlTile urlTemplate={this.layer.getTileUrl()} zIndex={-1} />}
                 {this.displayLastPositions && this.mapTrackings.map(tracking => {
                   let marker = this.markers[tracking.getIconName()];
@@ -443,158 +662,93 @@ export default class Map extends React.Component {
               </MapView>
 
               {this.isOrientationLandscape &&
-                <View style={{ height: height, width: width / 3 }}>
+                <View style={styles.trackingListView}>
                   <TrackingList actions={this.getTrackingListActions()} trackings={this.mapTrackings}/>
                 </View>
               }
 
-              <SlidingUpPanel
-                ref={c => (this.panel = c)}
-                draggableRange={{top: height / 1.75, bottom: 60}}
-                animatedValue={this.draggedValue}
-                showBackdrop={false}
-                containerStyle={{ backgroundColor: "transparent" }}
-              >
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                  <View style={styles.panel}>
-                    <View style={styles.panelHeader}>
-                        <View style={{ height: 2, backgroundColor: "#000", width: 60}}>
+                <SlidingUpPanel
+                  ref={c => (this.panel = c)}
+                  draggableRange={this.isOrientationLandscape ? {top: hp('70%'), bottom: hp('20%')} : {top: hp('50%'), bottom: hp('10%')}}
+                  animatedValue={this.draggedValue}
+                  showBackdrop={false}
+                  containerStyle={{ backgroundColor: "transparent" }}
+                  snappingPoints={this.isOrientationLandscape ? [ hp('20%'), hp('70%')] : [ hp('10%'), hp('50%')]}
+                >
+                  <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                    <View style={styles.panel}>
+                      <View style={[styles.panelHeader, this.isOrientationLandscape && styles.panelHeaderLandscape, !this.isOrientationLandscape && styles.panelHeaderLandscape]}>
+                          <View style={{ height: 2, backgroundColor: "#000", width: 60}}>
+                          </View>
+                      </View>
+                      <View style={[styles.container, !this.isOrientationLandscape && styles.containerPortrait]}>
+                        <View style={styles.inputWrapper}>
+                            <SearchBar
+                              containerStyle={{ backgroundColor: "transparent", borderWidth: 0, borderColor: "#fff", borderTopColor: "transparent", borderBottomColor: "transparent" }}
+                              inputContainerStyle={{ backgroundColor: "#fff", borderWidth: 0, borderColor: "#fff", borderRadius: 0 }}
+                              inputStyle={{ color: "#000" }}
+                              onChangeText={(text) => { this.updateSearchText(text) }}
+                              value={this.searchText}
+                            />
                         </View>
-                    </View>
-                    <View style={styles.container}>
-                      <View style={styles.inputWrapper}>
-                          <SearchBar
-                            containerStyle={{ backgroundColor: "transparent", borderWidth: 0, borderColor: "#fff", borderTopColor: "transparent", borderBottomColor: "transparent" }}
-                            inputContainerStyle={{ backgroundColor: "#fff", borderWidth: 0, borderColor: "#fff", borderRadius: 0 }}
-                            inputStyle={{ color: "#000" }}
-                            onChangeText={(text) => { this.updateSearchText(text) }}
-                            value={this.searchText}
+
+                        <View style={styles.inputWrapperOffset}>
+                          <Text style={{marginBottom: 5}}>
+                            Species
+                          </Text>
+                          <RNPickerSelect
+                            onValueChange={(value) => { this.searchSpeciesId = value; console.log(this.searchSpeciesId); this.reloadSearch(); }}
+                            style={{height: 40, width: "auto", backgroundColor: "#fff" }}
+                            items={this.selectSpecies}>
+                          </RNPickerSelect>
+                        </View>
+
+                        {/*<View style={styles.inputWrapperOffset}>
+                          <View style={{ display: "flex", flexDirection: "row" }}>
+                            <View style={{ flexGrow: 1 }}>
+                              <Text style={styles.inputLabel}>
+                                From
+                              </Text>
+
+                              <TextInput
+                                style={styles.textInput}
+                                keyboardType={'number-pad'}
+                              />
+                            </View>
+
+                            <View style={{ width: 15 }}>
+
+                            </View>
+
+                            <View style={{ flexGrow: 1 }}>
+                              <Text style={styles.inputLabel}>
+                                To
+                              </Text>
+
+                              <TextInput
+                                style={styles.textInput}
+                                keyboardType={'number-pad'}
+                              />
+                            </View>
+                          </View>
+                        </View>*/}
+
+                        <View>
+                          <Icon
+                            raised
+                            name='map'
+                            type='font-awesome'
+                            color='#f50'
+                            onPress={() => { this.showLayersOverlay = true }}
                           />
-                      </View>
-
-                      <View style={styles.inputWrapperOffset}>
-                        <Text style={{marginBottom: 5}}>
-                          Species
-                        </Text>
-                        <RNPickerSelect
-                          onValueChange={(value) => { this.searchSpeciesId = value; console.log(this.searchSpeciesId); this.reloadSearch(); }}
-                          style={{height: 40, width: "auto", backgroundColor: "#fff" }}
-                          items={this.selectSpecies}>
-                        </RNPickerSelect>
-                      </View>
-
-                      {/*<View style={styles.inputWrapperOffset}>
-                        <View style={{ display: "flex", flexDirection: "row" }}>
-                          <View style={{ flexGrow: 1 }}>
-                            <Text style={styles.inputLabel}>
-                              From
-                            </Text>
-
-                            <TextInput
-                              style={styles.textInput}
-                              keyboardType={'number-pad'}
-                            />
-                          </View>
-
-                          <View style={{ width: 15 }}>
-
-                          </View>
-
-                          <View style={{ flexGrow: 1 }}>
-                            <Text style={styles.inputLabel}>
-                              To
-                            </Text>
-
-                            <TextInput
-                              style={styles.textInput}
-                              keyboardType={'number-pad'}
-                            />
-                          </View>
                         </View>
-                      </View>*/}
-
-                      <View>
-                        <Icon
-                          raised
-                          name='map'
-                          type='font-awesome'
-                          color='#f50'
-                          onPress={() => { this.showLayersOverlay = true }}
-                        />
                       </View>
                     </View>
-                  </View>
-                </TouchableWithoutFeedback>
-              </SlidingUpPanel>
+                  </TouchableWithoutFeedback>
+                </SlidingUpPanel>
           </View>
         </KeyboardAvoidingView>
       );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f6f6f6'
-  },
-  containerLandscape: {
-    flexDirection: "row"
-  },
-  buttonPad: {
-    padding: 2,
-  },
-  loginWrapper: {
-    alignSelf: 'stretch',
-    margin: 10
-  },
-  mapStyle: {
-    flex: 1,
-    flexGrow: 1
-  },
-  mapStyleLandscape: {
-    width: 2 * (Dimensions.get('window').width / 3),
-  },
-  mapStyleLandscapePortrait: {
-    width: Dimensions.get('window').width,
-  },
-  buttonControl: {
-    borderRadius: 100,
-    backgroundColor: "red"
-  },
-  panel: {
-    flex: 1,
-    position: 'relative'
-  },
-  textInput: {
-    height: 20,
-    backgroundColor: "#fff",
-    color: "#000"
-  },
-  panelHeader: {
-    height: 40,
-    backgroundColor: '#f6f6f6',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    borderColor: "transparent"
-  },
-  inputWrapper: {
-    padding: 5,
-    borderWidth: 0
-  },
-  inputWrapperOffset: {
-    padding: 5,
-    paddingLeft: 12,
-    paddingRight: 12,
-    borderWidth: 0
-  },
-  inputLabel: {
-    marginBottom: 5
-  },
-  actionButtonIcon: {
-    fontSize: 20,
-    height: 22,
-    color: 'white',
-  }
-});
