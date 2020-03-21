@@ -208,8 +208,6 @@ export default class Map extends React.Component {
         type: "info",
         icon: 'info'
       });
-
-      this.loading = false;
   }
 
   componentWillUnmount()
@@ -529,7 +527,7 @@ export default class Map extends React.Component {
         <KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
           <View style={[styles.container, this.isOrientationLandscape && styles.containerLandscape]}>
               {this.loading && <LoadingOverlay loadingText={this.loadingText}/>}
-              {this.showLayersOverlay && <LayersOverlay selectedLayer={this.layer} setLayer={this.selectLayer.bind(this)} />}
+              {this.showLayersOverlay && <LayersOverlay selectedLayer={this.layer} setLayer={this.selectLayer.bind(this)} close={(() => { this.showLayersOverlay = false; }).bind(this)} />}
               {this.showTrackingOverlay && 
                 <TrackingOverlay
                   selectedTracking={this.trackingOverlayTracking}
