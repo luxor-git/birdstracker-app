@@ -15,6 +15,7 @@ import TrackingStore from '../store/TrackingStore';
 import Photo from '../entities/Photo.js';
 import ImageView from 'react-native-image-view';
 import Flag from 'react-native-flags';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp, listenOrientationChange as lor, removeOrientationListener as rol} from 'react-native-responsive-screen';
 
 const {height, width} = Dimensions.get('window');
 
@@ -111,14 +112,16 @@ export default class TrackingOverlay extends React.Component<TrackingOverlayProp
                         alignItems: "center",
                         alignContent: "center",
                         padding: 0,
-                        minWidth: width / 2
+                        minWidth: width / 2,
+                        borderRadius: 20,
+                        overflow: 'hidden'
                     }
                 }
                 onBackdropPress={() => { this.closeFunction() }}
-                width="auto"
-                height="auto"
+                width={wp('90%')}
+                height={hp('80%')}
               >
-              <View style={{ minWidth: width / 2 }}>
+              <View style={{ width: wp('90%') }}>
                 {this.loading && <View><MaterialIndicator color={ Theme.colors.brand.primary }/></View>}
                 {!this.loading &&
                 <View>
@@ -126,14 +129,6 @@ export default class TrackingOverlay extends React.Component<TrackingOverlayProp
                         <View style={{ display: "flex", flexDirection: "row", padding: 10 }}>
                             <Text style={{ color: "#fff" }}>
                                 {this.tracking.getName()}
-                            </Text>
-
-                            <Text style={{ color: "#fff" }}>
-                                {this.tracking.sex}
-                            </Text>
-
-                            <Text style={{ color: "#fff" }}>
-                                {this.tracking.age}
                             </Text>
                         </View>
                     </View>
@@ -145,6 +140,24 @@ export default class TrackingOverlay extends React.Component<TrackingOverlayProp
                             </Text>
                             <Text>
                                 {this.tracking.species?.scientificName}
+                            </Text>
+                        </View>
+
+                        <View>
+                            <Text style={styles.label}>
+                                Age
+                            </Text>
+                            <Text>
+                                {this.tracking.getAge()}
+                            </Text>
+                        </View>
+
+                        <View>
+                            <Text style={styles.label}>
+                                Sex
+                            </Text>
+                            <Text>
+                                {this.tracking.sex}
                             </Text>
                         </View>
 
@@ -223,7 +236,7 @@ export default class TrackingOverlay extends React.Component<TrackingOverlayProp
                                 </Text>
                             </View>
 
-                            <View style={{ display: "flex", flexDirection: "row" }}>
+                            <View style={{ display: "flex", flexDirection: "row", padding: 10 }}>
                                 {/*<View style={styles.iconColumn}>
                                     <Icon
                                         raised
@@ -252,33 +265,37 @@ export default class TrackingOverlay extends React.Component<TrackingOverlayProp
                                 */}
 
                                 {!this.tracking.trackLoaded && 
-                                    <View style={styles.iconColumn}>
+                                    <TouchableOpacity
+                                        style={styles.iconColumn} 
+                                        onPress={() => { this.loadTrackingTrack(this.tracking) }}
+                                    >
                                         <Icon
                                             raised
                                             name='map-marker'
                                             type='font-awesome'
                                             color={Theme.colors.brand.primary}
-                                            onPress={() => { this.loadTrackingTrack(this.tracking) }}
                                         />
                                         <Text style={{ textAlign: "center" }}>
                                             Load track
                                         </Text>
-                                    </View>
+                                    </TouchableOpacity>
                                 }
 
                                 {this.tracking.trackLoaded && 
-                                    <View style={styles.iconColumn}>
+                                    <TouchableOpacity
+                                        style={styles.iconColumn} 
+                                        onPress={() => { this.unloadTrackingTrack(this.tracking) }}
+                                    >
                                         <Icon
                                             raised
                                             name='map-marker'
                                             type='font-awesome'
                                             color={Theme.colors.brand.primary}
-                                            onPress={() => { this.unloadTrackingTrack(this.tracking) }}
                                         />
                                         <Text style={{ textAlign: "center" }}>
                                             Unload track
                                         </Text>
-                                    </View>
+                                    </TouchableOpacity>
                                 }
 
                             </View>

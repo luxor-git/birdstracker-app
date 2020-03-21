@@ -1,5 +1,10 @@
 import { IEntity, ISerializableEntity } from './IEntity';
 
+export function displayAge(age: number) : string
+{
+    return ((age % 10 === 5)?'+':'') + Math.floor(age / 10) + ' CY';
+}
+
 export class Tracking implements ISerializableEntity
 {
     id: number;
@@ -12,7 +17,7 @@ export class Tracking implements ISerializableEntity
     deviceCode: string = "";
 
     sex: string = "";
-    age: string = "";
+    age: number;
 
     firstPosition?: LocalizedPosition;
     lastPosition?: LocalizedPosition;
@@ -48,6 +53,18 @@ export class Tracking implements ISerializableEntity
         }
 
         return 'Error';
+    }
+
+    /**
+     * Gets tracking age.
+     */
+    public getAge() : string 
+    {
+        if (!this.age) {
+            return "";
+        }
+
+        return displayAge(this.age);
     }
 
     public getIconName() : string {

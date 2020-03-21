@@ -347,7 +347,6 @@ export default class Map extends React.Component {
         }, 2000);
         return;
       }
-
     }
   }
 
@@ -429,19 +428,23 @@ export default class Map extends React.Component {
   }
 
   async downloadSelectedRange(range: BoundingTileDefinition) {
+
     this.showRegionDownload = false;
 
     this.loading = true;
 
     this.loadingText = 'Downloading...';
 
-    await OverlayStore.downloadRange(range, this.selectingPolygonLeadingPoints, ((progress) => {
+
+    await OverlayStore.downloadRange(range, range.corners, ((progress) => {
       this.loadingText = 'Downloading: ' + progress + ' / ' + range.tileCount;
     }).bind(this));
 
     this.loading = false;
 
     this.showRegionDownload = false;
+    this.selectingOfflineRegion = false;
+
     this.selectingPolygonLeadingPoints = [];
 
     showMessage({
@@ -625,15 +628,18 @@ export default class Map extends React.Component {
                   </React.Fragment>
                 }
 
-                {this.offlineAreas.map(x => {
-                      console.log(x.boundingBox);
+                {(!this.isOnline || this.selectingOfflineRegion) && this.offlineAreas.map(x => {
+                      console.log('Bounding box', x.boundingBox);
                       return (
                         <Polygon
                           key={x.id}
                           coordinates={x.boundingBox}
+                          strokeColor="#f00"
+                          strokeWidth={3}
                         />
                       )
-                    })}
+                    })
+                }
 
                 {this.layer && <UrlTile urlTemplate={this.layer.getTileUrl()} zIndex={-1} />}
                 {this.displayLastPositions && this.mapTrackings.map(tracking => {
