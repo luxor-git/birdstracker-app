@@ -208,6 +208,8 @@ export default class Map extends React.Component {
         type: "info",
         icon: 'info'
       });
+
+      this.loading = false;
   }
 
   componentWillUnmount()
