@@ -28,6 +28,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp, listenOrientatio
 import { lonDeltaToZoom, BoundingTileDefinition } from '../../common/GeoUtils';
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { OfflineRegion } from '../../entities/OfflineRegion.js';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 @observer
 export default class Map extends React.Component {
@@ -454,10 +455,6 @@ export default class Map extends React.Component {
 
   render () {
       const styles = StyleSheet.create({
-        container: {
-          flex: 1,
-          backgroundColor: '#f6f6f6'
-        },
         containerPortrait: {
           height: hp('50%'),
         },
@@ -494,19 +491,15 @@ export default class Map extends React.Component {
           backgroundColor: "#fff",
           color: "#000"
         },
+        container: {
+          flex: 1,
+          backgroundColor: Theme.colors.brand.primary
+        },
         panelHeader: {
-          backgroundColor: '#f6f6f6',
-          alignItems: 'center',
-          justifyContent: 'center',
+          backgroundColor: Theme.colors.brand.primary,
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
-          borderColor: "transparent"
-        },
-        panelHeaderPortrait: {
-          height: hp('10%'),
-        },
-        panelHeaderLandscape: {
-          height: hp('20%'),
+          borderColor: "transparent",
         },
         inputWrapper: {
           padding: 5,
@@ -678,70 +671,84 @@ export default class Map extends React.Component {
                 >
                   <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={styles.panel}>
-                      <View style={[styles.panelHeader, this.isOrientationLandscape && styles.panelHeaderLandscape, !this.isOrientationLandscape && styles.panelHeaderLandscape]}>
-                          <View style={{ height: 2, backgroundColor: "#000", width: 60}}>
+                      <View style={[styles.panelHeader, this.isOrientationLandscape && { height: hp('20%') }, !this.isOrientationLandscape && { height: hp('10%') }]}>
+                        <View style={{ display: 'flex', alignItems: 'center', padding: 2, paddingTop: 10}}>
+                          <View style={{ height: 2, backgroundColor: "#fff", width: 60}}>
                           </View>
-                      </View>
-                      <View style={[styles.container, !this.isOrientationLandscape && styles.containerPortrait]}>
+                        </View>
                         <View style={styles.inputWrapper}>
                             <SearchBar
+                              placeholder={'Search by name'}
                               containerStyle={{ backgroundColor: "transparent", borderWidth: 0, borderColor: "#fff", borderTopColor: "transparent", borderBottomColor: "transparent" }}
-                              inputContainerStyle={{ backgroundColor: "#fff", borderWidth: 0, borderColor: "#fff", borderRadius: 0 }}
+                              inputContainerStyle={{ backgroundColor: "#fff", borderWidth: 0, borderColor: "#fff", borderRadius: 5 }}
                               inputStyle={{ color: "#000" }}
                               onChangeText={(text) => { this.updateSearchText(text) }}
                               value={this.searchText}
                             />
                         </View>
-
+                      </View>
+                      <View style={[styles.container, !this.isOrientationLandscape && styles.containerPortrait]}>
                         <View style={styles.inputWrapperOffset}>
-                          <Text style={{marginBottom: 5}}>
-                            Species
-                          </Text>
-                          <RNPickerSelect
-                            onValueChange={(value) => { this.searchSpeciesId = value; console.log(this.searchSpeciesId); this.reloadSearch(); }}
-                            style={{height: 40, width: "auto", backgroundColor: "#fff" }}
-                            items={this.selectSpecies}>
-                          </RNPickerSelect>
+                          <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15 }}>Filters</Text>
+                          <View style={{ display: 'flex', paddingTop: 5}}>
+                            <View style={{ backgroundColor: '#fff', height: 2, flexGrow: 1 }}></View>
+                          </View>
                         </View>
 
-                        {/*<View style={styles.inputWrapperOffset}>
-                          <View style={{ display: "flex", flexDirection: "row" }}>
-                            <View style={{ flexGrow: 1 }}>
-                              <Text style={styles.inputLabel}>
-                                From
-                              </Text>
-
-                              <TextInput
-                                style={styles.textInput}
-                                keyboardType={'number-pad'}
-                              />
-                            </View>
-
-                            <View style={{ width: 15 }}>
-
-                            </View>
-
-                            <View style={{ flexGrow: 1 }}>
-                              <Text style={styles.inputLabel}>
-                                To
-                              </Text>
-
-                              <TextInput
-                                style={styles.textInput}
-                                keyboardType={'number-pad'}
-                              />
-                            </View>
+                        <View style={styles.inputWrapperOffset}>
+                          <Text style={{marginBottom: 5, color: '#fff', fontWeight: 'bold'}}>
+                            Species
+                          </Text>
+                          <View style={{ backgroundColor: '#fff', height: 40, display: 'flex', borderRadius: 5 }}>
+                            <RNPickerSelect
+                              onValueChange={(value) => { this.searchSpeciesId = value; console.log(this.searchSpeciesId); this.reloadSearch(); }}
+                              placeholderTextColor='#7b8894'
+                              style={{ inputIOS: { flexGrow: 1, color: '#7b8894', fontSize: 18, paddingLeft: 10, height: 40 } }}
+                              useNativeAndroidPickerStyle={false}
+                              items={this.selectSpecies}
+                            >
+                            </RNPickerSelect>
                           </View>
-                        </View>*/}
+                        </View>
 
-                        <View>
-                          <Icon
-                            raised
-                            name='map'
-                            type='font-awesome'
-                            color='#f50'
+                        <View style={styles.inputWrapperOffset}>
+                          <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 15 }}>Actions</Text>
+                          <View style={{ display: 'flex', paddingTop: 5}}>
+                            <View style={{ backgroundColor: '#fff', height: 2, flexGrow: 1 }}></View>
+                          </View>
+                        </View>
+
+                        <View style={[styles.inputWrapperOffset, { display: 'flex', flexDirection: 'row' }]}>
+                          <TouchableOpacity
+                            style={{ marginRight: 5, display: 'flex', alignItems: 'center' }}
                             onPress={() => { this.showLayersOverlay = true }}
-                          />
+                          >
+                            <Icon
+                              raised
+                              name='map'
+                              type='font-awesome'
+                              color={Theme.colors.brand.primary}
+                              
+                            />
+                            <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                              Map layers
+                            </Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={{ marginRight: 5, display: 'flex', alignItems: 'center' }}
+                            onPress={() => { this.contextMenuVisible = true }}
+                          >
+                            <Icon
+                              raised
+                              name='bars'
+                              type='font-awesome'
+                              color={Theme.colors.brand.primary}
+                            />
+                            <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                              Open menu
+                            </Text>
+                          </TouchableOpacity>
                         </View>
                       </View>
                     </View>
