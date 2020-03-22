@@ -29,6 +29,7 @@ import { lonDeltaToZoom, BoundingTileDefinition } from '../../common/GeoUtils';
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { OfflineRegion } from '../../entities/OfflineRegion.js';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import MarkerPosition from '../../components/MarkerPosition';
 
 @observer
 export default class Map extends React.Component {
@@ -574,6 +575,8 @@ export default class Map extends React.Component {
                       }}
               >
                 {this.loadedTrackingTracks.map(track => {
+                  let pointCount = track.getPoints().length;
+
                   return (
                     <React.Fragment key={track.id}>
                       <Polyline
@@ -585,24 +588,38 @@ export default class Map extends React.Component {
                         zIndex={1}
                         tappable={true}
                         onPress={async () => {
+                          /*console.log('Loading tracking', track.id);
                           let result = await TrackingStore.getTracking(track.id);
+                          console.log('Loading tracking result', result.data);
                           if (result.success) {
                             this.selectTracking(result.data);
-                          }
+                          }*/
                         }}
                       />
-                      {track.getPoints().map(point => {
+                      {track.getPoints().map((point, index) => {
+                        let image = this.markers.markerElse;
+                        let zIndex = 1;
+
+                        if (index === 0) {
+                          image = this.markers.marker30d;
+                          zIndex = 2;
+                        } else if (index === pointCount - 1) {
+                          image = this.markers.marker24h;
+                          zIndex = 3;
+                        }
+
                         return (
                           <Marker
                             key={point.id}
                             coordinate={ { latitude: point.lat, longitude: point.lng } }
                             title={"Test"}
                             description={"Test"}
-                            icon={this.markers.markerElse}
-                            image={this.markers.markerElse}
+                            icon={image}
+                            image={image}
+                            zIndex={zIndex}
                           >
-                            <Callout onPress={() => { console.log(point); }}>
-                              <Text>Load this from the non-existing API! Yay!</Text>
+                            <Callout>
+                              <MarkerPosition id={point.id}/>
                             </Callout>
                           </Marker>
                         )

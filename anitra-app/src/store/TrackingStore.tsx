@@ -1,12 +1,14 @@
 import BaseStore from './BaseStore';
-import { Tracking, LocalizedPosition, Species, Track, Position } from '../entities/Tracking';
+import { Tracking, LocalizedPosition, Species, Track, Position, PositionData } from '../entities/Tracking';
 import AuthStore from './AuthStore';
 import { ApiConstants, formatGetRequest, apiRequest, formatDate } from "../common/ApiUtils";
 import { ListActionResult, EntityActionResult } from "../common/ActionResult";
 import { getString, ApiStrings } from "../common/ApiStrings";
-import Storage, { FILE_MAPPING } from '../common/Storage';
+import Storage, { FILE_MAPPING, PATH_MAPPING } from '../common/Storage';
 import Photo from '../entities/Photo';
 import { ObservableMap } from 'mobx';
+import Constants from '../constants/Constants';
+import netStore from './NetStore';
 
 class TrackingStore extends BaseStore
 {
@@ -225,6 +227,19 @@ class TrackingStore extends BaseStore
     public async getTrack(id: number, count: number) : Promise<Track>
     {
         const apiToken = await AuthStore.getAuthToken();
+        const path = PATH_MAPPING.TRACKS + '/' + id + '.json';
+
+        const data = await Storage.load(Track, path);
+
+        if (data) {
+            let diff = +new Date() - +new Date(data.lastSynchronized);
+            
+            if (diff > Constants.CACHE_TIMEOUT && netStore.getOnline()) {
+                console.log('Cache expired, loading from API');
+            } else {
+                return data as Track;
+            }
+        }
 
         let response = await apiRequest(
             ApiConstants.API_TRACKED_OBJECT + '/' + ApiConstants.API_TRACK + '/' + id,
@@ -245,8 +260,36 @@ class TrackingStore extends BaseStore
 
         track.id = id;
         track.positions = positions;
+        track.lastSynchronized = new Date();
+
+        await Storage.save(path, track);
 
         return track;
+    }
+
+    public async getPoint(id: number) : Promise<PositionData>
+    {
+        const apiToken = await AuthStore.getAuthToken();
+
+        let response = await apiRequest(
+            ApiConstants.API_TRACKED_OBJECT + '/' + ApiConstants.API_POINT + '/' + id,
+            formatGetRequest(apiToken)
+        );
+
+        let positionData = new PositionData();
+        positionData.id = id;
+
+        const data = response.data.data;
+
+        Object.keys(data).forEach((key) => {
+            if (key !== 'header') {
+                if (typeof data[key] === "string" || typeof data[key] === "number") {
+                    positionData.pointData.set(key, data[key]);
+                }
+            }
+        });
+
+        return positionData;
     }
 
 }

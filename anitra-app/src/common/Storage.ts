@@ -11,7 +11,7 @@ class PersistentStorage
     public async init() : Promise<void> {
         console.log('Creating directories...');
         let exists = await this.fileExists(PATH_MAPPING.DATA);
-
+        
         if (exists) {
             console.log('Directiores already exist');
         } else {
@@ -21,6 +21,7 @@ class PersistentStorage
             await FileSystem.makeDirectoryAsync(PATH_MAPPING.SPECIES);
             await FileSystem.makeDirectoryAsync(PATH_MAPPING.TILE);
             await FileSystem.makeDirectoryAsync(PATH_MAPPING.TILE_DEFINITION);
+            await FileSystem.makeDirectoryAsync(PATH_MAPPING.TRACKS);
         }
 
         console.log('Directories created OK');
@@ -144,7 +145,8 @@ const PATH_MAPPING = {
     SPECIES:         FileSystem.documentDirectory + 'data/species',
     COMMON:          FileSystem.documentDirectory + 'data/common',
     TILE_DEFINITION: FileSystem.documentDirectory + 'data/tile',
-    TILE:            FileSystem.documentDirectory + 'tile' // cache dir?
+    TILE:            FileSystem.documentDirectory + 'tile',
+    TRACKS:          FileSystem.documentDirectory + "tracks",
 };
 
 

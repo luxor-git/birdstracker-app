@@ -233,3 +233,29 @@ export class Track implements ISerializableEntity
 
     positions: Position[] = [];
 }
+
+export class PositionData implements ISerializableEntity, IEntity
+{
+
+    constructor () {
+        this.pointData = new Map<string, string>();
+    }
+
+    toJson(): object {
+        throw new Error("Method not implemented.");
+    }
+
+    toJsonString(): string {
+        throw new Error("Method not implemented.");
+    }
+
+    fromJson(json: any): IEntity {
+        throw new Error("Method not implemented.");
+    }
+
+    id?: number;
+    synchronized: boolean;
+    lastSynchronized?: Date;
+
+    pointData: Map<string, string>;
+}

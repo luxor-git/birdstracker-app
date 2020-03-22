@@ -82,8 +82,6 @@ export default class TrackingOverlay extends React.Component<TrackingOverlayProp
             quality: 1
         });
 
-        console.log(result);
-
         if (!result.cancelled) {
             // save to action queue
         }
