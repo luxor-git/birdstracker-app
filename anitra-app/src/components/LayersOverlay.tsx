@@ -7,7 +7,7 @@ import OverlayStore from "../store/OverlayStore";
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import Layer from '../entities/Layer.js';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp, listenOrientationChange as lor, removeOrientationListener as rol} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 interface LayersOverlayProps
 {

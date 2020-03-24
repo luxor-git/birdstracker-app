@@ -7,7 +7,7 @@ import { ListItem } from 'react-native-elements';
 import Theme from "../constants/Theme.js";
 import { Icon } from 'react-native-elements'
 import { Tracking } from '../entities/Tracking.js';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp, listenOrientationChange as lor, removeOrientationListener as rol} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const {height} = Dimensions.get('window');
 

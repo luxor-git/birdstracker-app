@@ -15,7 +15,7 @@ import TrackingStore from '../store/TrackingStore';
 import Photo from '../entities/Photo.js';
 import ImageView from 'react-native-image-view';
 import Flag from 'react-native-flags';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp, listenOrientationChange as lor, removeOrientationListener as rol} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const {height, width} = Dimensions.get('window');
 

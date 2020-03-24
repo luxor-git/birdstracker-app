@@ -10,18 +10,13 @@ class PersistentStorage
 
     public async init() : Promise<void> {
         console.log('Creating directories...');
-        let exists = await this.fileExists(PATH_MAPPING.DATA);
-        
-        if (exists) {
-            console.log('Directiores already exist');
-        } else {
-            // todo Object.keys...
-            await FileSystem.makeDirectoryAsync(PATH_MAPPING.DATA);
-            await FileSystem.makeDirectoryAsync(PATH_MAPPING.TRACKING);
-            await FileSystem.makeDirectoryAsync(PATH_MAPPING.SPECIES);
-            await FileSystem.makeDirectoryAsync(PATH_MAPPING.TILE);
-            await FileSystem.makeDirectoryAsync(PATH_MAPPING.TILE_DEFINITION);
-            await FileSystem.makeDirectoryAsync(PATH_MAPPING.TRACKS);
+
+        let keys = Object.keys(PATH_MAPPING);
+
+        for (let i = 0; i < keys.length; i++) {
+            if (!await this.fileExists(PATH_MAPPING[keys[i]])) {
+                await FileSystem.makeDirectoryAsync(PATH_MAPPING[keys[i]], { intermediates: true });
+            }
         }
 
         console.log('Directories created OK');
