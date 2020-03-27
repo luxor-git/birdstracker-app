@@ -13,6 +13,7 @@ import ContextMenuActions from '../common/ContextMenuActions';
 
 interface ContextMenuProps {
     actions: ContextMenuActions;
+    hasTracks: boolean;
 }
 
 @observer
@@ -62,8 +63,15 @@ export default class ContextMenu extends React.Component<ContextMenuProps> {
                 <View style={{flex: 1}}>
                     <ScrollView style={{flex: 1, width: 300}}>
                         {this.button('retweet', 'Refresh', async () => { await this.actions.refreshTrackings(); })}
-                        {this.button('user', 'Sign out', async () => { await this.actions.signOut(); })}
+                        
+                        {this.button('list', 'Show tracking list', async () => { await this.actions.showTrackingList(); })}
+
                         {this.button('map', 'Download offline area', async () => { await this.actions.showOfflineAreaEdit(); })}
+
+                        {this.props.hasTracks && 
+                            this.button('strikethrough', 'Unload tracks', async () => { await this.actions.unloadTracks(); })
+                        }
+                        {this.button('user', 'Sign out', async () => { await this.actions.signOut(); })}
                     </ScrollView>
                 </View>
                 }

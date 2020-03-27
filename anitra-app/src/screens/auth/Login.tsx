@@ -8,8 +8,7 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { LinearGradient } from 'expo-linear-gradient';
 const {height, width} = Dimensions.get('window');
-
-// todo prefill e-mail from preferences if available
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 @observer
 export default class Login extends React.Component {
@@ -30,9 +29,10 @@ export default class Login extends React.Component {
     if (reply.success) {
       this.props.navigation.navigate('Map');
     } else {
-      reply.messages.forEach(x => {
-        console.log(x);
-        //Toast.show(x);
+      showMessage({
+        message: "Authentication error",
+        type: "danger",
+        icon: 'danger'
       });
     }
 

@@ -192,6 +192,14 @@ export class Position
 
 export class Track implements ISerializableEntity
 {
+    id?: number;
+    synchronized: boolean;
+    lastSynchronized?: Date;
+
+    positions: Position[] = [];
+
+    tracking: Tracking;
+
     toJson(): object {
         return {
             id: this.id,
@@ -227,11 +235,6 @@ export class Track implements ISerializableEntity
         return this.positions;
     }
 
-    id?: number;
-    synchronized: boolean;
-    lastSynchronized?: Date;
-
-    positions: Position[] = [];
 }
 
 export class PositionData implements ISerializableEntity, IEntity

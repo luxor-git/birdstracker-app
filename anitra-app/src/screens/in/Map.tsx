@@ -90,6 +90,9 @@ export default class Map extends React.Component {
 
   @observable
   selectingOfflineRegion: boolean = false;
+
+  @observable
+  showTrackingListOverlay: boolean = false;
   
   @observable
   selectingPolygonLeadingPoints: LatLng[] = [];
@@ -151,19 +154,6 @@ export default class Map extends React.Component {
         return {
           label: x.scientificName,
           value: x.id
-        }
-      });
-
-      let orientation = (await ScreenOrientation.getOrientationAsync()).orientation;
-      this.isOrientationLandscape = orientation.startsWith('LANDSCAPE') || orientation.startsWith('UNKNOWN');
-      
-      ScreenOrientation.addOrientationChangeListener((orientation) => {
-        console.log(orientation);
-        if (orientation) {
-          if (orientation.orientationInfo) {
-            this.isOrientationLandscape = orientation.orientationInfo.orientation.startsWith('LANDSCAPE');
-            console.log('Is landscape:', this.isOrientationLandscape);
-          }
         }
       });
 
@@ -296,6 +286,7 @@ export default class Map extends React.Component {
     this.loading = true;
     this.loadingText = "Loading track...";
     let track = await TrackingStore.getTrack(tracking.id, 100);
+    track.tracking = tracking;
     this.loadedTrackingTracks.push(track);
     tracking.trackLoaded = true;
     this.displayLastPositions = false;
@@ -400,6 +391,22 @@ export default class Map extends React.Component {
           this.selectingPolygonLeadingPoints = [];
           this.contextMenuVisible = false;
         }
+      },
+
+      unloadTracks: async () => {
+        this.loading = true;
+
+        for (let i = 0; i < this.loadedTrackingTracks.length; i++) {
+          await this.unloadTrackingTrack(this.loadedTrackingTracks[i].tracking);
+        }
+
+        this.contextMenuVisible = false;
+        this.loading = false;
+      },
+      
+      showTrackingList: async () => {
+        this.contextMenuVisible = false;
+        this.showTrackingListOverlay = true;
       }
 
     } as ContextMenuActions;
@@ -419,6 +426,9 @@ export default class Map extends React.Component {
       },
       unloadTracking: async (tracking: Tracking) => {
         await this.unloadTrackingTrack(tracking);
+      },
+      close: async () => {
+        this.showTrackingListOverlay = false;
       }
     } as TrackingListActions;
   }
@@ -531,7 +541,8 @@ export default class Map extends React.Component {
 
       return (
         <KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
-          <View style={[styles.container, this.isOrientationLandscape && styles.containerLandscape]}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={[styles.container, this.isOrientationLandscape && styles.containerLandscape]}>
               {this.loading && <LoadingOverlay loadingText={this.loadingText}/>}
               {this.showLayersOverlay && <LayersOverlay selectedLayer={this.layer} setLayer={this.selectLayer.bind(this)} close={(() => { this.showLayersOverlay = false; }).bind(this)} />}
               {this.showTrackingOverlay && 
@@ -542,7 +553,7 @@ export default class Map extends React.Component {
                   close={this.unselectTracking.bind(this)}
                 />
               }
-              {this.contextMenuVisible && <ContextMenu actions={this.getContextMenuActions()}/>}
+              {this.contextMenuVisible && <ContextMenu actions={this.getContextMenuActions()} hasTracks={this.loadedTrackingTracks.length > 0}/>}
               {this.showTrackingDataSlider &&
                 <TrackingDataSlider
                   close={() => { this.showTrackingDataSlider = false; }}
@@ -619,7 +630,7 @@ export default class Map extends React.Component {
                             zIndex={zIndex}
                           >
                             <Callout>
-                              <MarkerPosition id={point.id}/>
+                              <MarkerPosition tracking={track.tracking} id={point.id}/>
                             </Callout>
                           </Marker>
                         )
@@ -646,7 +657,6 @@ export default class Map extends React.Component {
                 }
 
                 {(!this.isOnline || this.selectingOfflineRegion) && this.offlineAreas.map(x => {
-                      console.log('Bounding box', x.boundingBox);
                       return (
                         <Polygon
                           key={x.id}
@@ -678,10 +688,8 @@ export default class Map extends React.Component {
                 )}
               </MapView>
 
-              {this.isOrientationLandscape &&
-                <View style={styles.trackingListView}>
+              {this.showTrackingListOverlay &&
                   <TrackingList actions={this.getTrackingListActions()} trackings={this.mapTrackings}/>
-                </View>
               }
 
                 <SlidingUpPanel
@@ -778,6 +786,7 @@ export default class Map extends React.Component {
                   </TouchableWithoutFeedback>
                 </SlidingUpPanel>
           </View>
+          </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       );
   }
