@@ -733,7 +733,7 @@ export default class Map extends React.Component {
                             <RNPickerSelect
                               onValueChange={(value) => { this.searchSpeciesId = value; console.log(this.searchSpeciesId); this.reloadSearch(); }}
                               placeholderTextColor='#7b8894'
-                              style={{ inputIOS: { flexGrow: 1, color: '#7b8894', fontSize: 18, paddingLeft: 10, height: 40 } }}
+                              style={{ inputIOS: { flexGrow: 1, color: '#7b8894', fontSize: 18, paddingLeft: 10, height: 40 }, inputAndroid: { flexGrow: 1, color: '#7b8894', fontSize: 18, paddingLeft: 10, height: 40 } }}
                               useNativeAndroidPickerStyle={false}
                               items={this.selectSpecies}
                             >
