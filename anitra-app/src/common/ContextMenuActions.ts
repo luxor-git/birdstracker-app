@@ -1,5 +1,4 @@
 export default interface ContextActions {
-  
     signOut() : Promise<void>;
 
     closeMenu() : Promise<void>;
@@ -7,5 +6,9 @@ export default interface ContextActions {
     refreshTrackings() : Promise<void>;
   
     showOfflineAreaEdit() : Promise<void>;
+
+    unloadTracks() : Promise<void>;
+
+    showTrackingList() : Promise<void>;
 }
   

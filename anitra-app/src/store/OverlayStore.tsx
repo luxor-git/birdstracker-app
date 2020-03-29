@@ -42,7 +42,6 @@ class OverlayStore extends BaseStore
         offlineRegion.id = this.offlineRegions.size + 1;
         offlineRegion.tileWrap = range;
         offlineRegion.boundingBox = bounds;
-        // todo figure out ID
 
         let values = Array.from(range.boundingTiles.values());
 

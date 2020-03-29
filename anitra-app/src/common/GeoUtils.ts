@@ -11,6 +11,7 @@ export interface MapTile
 export interface BoundingTileDefinition
 {
     boundingTiles: Map<number, BoundingTileRow>;
+    corners: LatLng[];
     tileCount: number;
 }
 
@@ -89,6 +90,7 @@ export function getBoundingTileArray(points: LatLng[], zoomLevels: number[]) : B
 
     return { 
         boundingTiles: tileMap,
-        tileCount: tileCount
+        tileCount: tileCount,
+        corners: points
     } as BoundingTileDefinition;
 }

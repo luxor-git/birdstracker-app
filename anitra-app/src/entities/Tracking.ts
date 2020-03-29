@@ -1,5 +1,10 @@
 import { IEntity, ISerializableEntity } from './IEntity';
 
+export function displayAge(age: number) : string
+{
+    return ((age % 10 === 5)?'+':'') + Math.floor(age / 10) + ' CY';
+}
+
 export class Tracking implements ISerializableEntity
 {
     id: number;
@@ -12,7 +17,7 @@ export class Tracking implements ISerializableEntity
     deviceCode: string = "";
 
     sex: string = "";
-    age: string = "";
+    age: number;
 
     firstPosition?: LocalizedPosition;
     lastPosition?: LocalizedPosition;
@@ -48,6 +53,18 @@ export class Tracking implements ISerializableEntity
         }
 
         return 'Error';
+    }
+
+    /**
+     * Gets tracking age.
+     */
+    public getAge() : string 
+    {
+        if (!this.age) {
+            return "";
+        }
+
+        return displayAge(this.age);
     }
 
     public getIconName() : string {
@@ -175,6 +192,14 @@ export class Position
 
 export class Track implements ISerializableEntity
 {
+    id?: number;
+    synchronized: boolean;
+    lastSynchronized?: Date;
+
+    positions: Position[] = [];
+
+    tracking: Tracking;
+
     toJson(): object {
         return {
             id: this.id,
@@ -210,9 +235,30 @@ export class Track implements ISerializableEntity
         return this.positions;
     }
 
+}
+
+export class PositionData implements ISerializableEntity, IEntity
+{
+
+    constructor () {
+        this.pointData = new Map<string, string>();
+    }
+
+    toJson(): object {
+        throw new Error("Method not implemented.");
+    }
+
+    toJsonString(): string {
+        throw new Error("Method not implemented.");
+    }
+
+    fromJson(json: any): IEntity {
+        throw new Error("Method not implemented.");
+    }
+
     id?: number;
     synchronized: boolean;
     lastSynchronized?: Date;
 
-    positions: Position[] = [];
+    pointData: Map<string, string>;
 }

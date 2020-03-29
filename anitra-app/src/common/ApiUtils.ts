@@ -10,7 +10,8 @@ export const ApiConstants = {
     API_LIST: 'list',
     API_SPECIES: 'species',
     API_GALLERY: 'gallery',
-    API_TRACK: 'data'
+    API_TRACK: 'data',
+    API_POINT: 'get-point'
 };
 
 export function formatPostRequest(formData: FormData, apiKey?: string) : any {

@@ -3,11 +3,11 @@ import { observable, computed } from 'mobx';
 import { observer } from 'mobx-react';
 import { StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, FlatList, Dimensions, SectionList } from 'react-native';
 import { MaterialIndicator } from 'react-native-indicators';
-import { ListItem } from 'react-native-elements';
+import { ListItem, Overlay } from 'react-native-elements';
 import Theme from "../constants/Theme.js";
 import { Icon } from 'react-native-elements'
 import { Tracking } from '../entities/Tracking.js';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp, listenOrientationChange as lor, removeOrientationListener as rol} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const {height} = Dimensions.get('window');
 
@@ -16,6 +16,7 @@ export interface TrackingListActions {
     openDetail: Function;
     loadTracking: Function;
     unloadTracking: Function;
+    close: Function;
 };
 
 interface TrackingListProps {
@@ -74,58 +75,67 @@ export default class TrackingList extends React.Component<TrackingListProps> {
 
     render() {
         return (
-            <View style={styles.fullList}>
-                <SectionList
-                    keyExtractor={(item) => { return (item as Tracking).id.toString(); }}
-                    onRefresh={async () => {
-                        await this.actions.refresh();
-                    }}
-                    sections={this.trackings}
-                    refreshing={this.loading}
-                    renderItem={
-                        ({ item }) => {
-                            item = item as Tracking;
-                            //subtitle={item}
-                            return (
-                                <ListItem 
-                                    title={item.getName()}
-                                    bottomDivider
-                                    chevron
-                                    onLongPress={() => {
-                                        this.actions.openDetail(item)
-                                    }}
-                                    checkBox={
-                                        {
-                                            checked: this.checkedTrackings.indexOf(item.id) >= 0,
-                                            onPress: async () => {
-                                                this.loadingRow = item.id;
-                                                if (item.trackLoaded) {
-                                                    await this.actions.unloadTracking(item);
-                                                } else {
-                                                    await this.actions.loadTracking(item);
+            <Overlay
+                isVisible={true}
+                windowBackgroundColor="rgba(255, 255, 255, .5)"
+                overlayStyle={{display: "flex", backgroundColor: "#fff", flexDirection: "column", alignItems: "center", alignContent: "center", borderRadius: 20 }}
+                height={hp('80%')}
+                width={wp('80%')}
+                onBackdropPress={() => { this.props.actions.close() }}
+            >
+                <View style={styles.fullList}>
+                    <SectionList
+                        keyExtractor={(item) => { return (item as Tracking).id.toString(); }}
+                        onRefresh={async () => {
+                            await this.actions.refresh();
+                        }}
+                        sections={this.trackings}
+                        refreshing={this.loading}
+                        renderItem={
+                            ({ item }) => {
+                                item = item as Tracking;
+                                //subtitle={item}
+                                return (
+                                    <ListItem 
+                                        title={item.getName()}
+                                        bottomDivider
+                                        chevron
+                                        onLongPress={() => {
+                                            this.actions.openDetail(item)
+                                        }}
+                                        checkBox={
+                                            {
+                                                checked: this.checkedTrackings.indexOf(item.id) >= 0,
+                                                onPress: async () => {
+                                                    this.loadingRow = item.id;
+                                                    if (item.trackLoaded) {
+                                                        await this.actions.unloadTracking(item);
+                                                    } else {
+                                                        await this.actions.loadTracking(item);
+                                                    }
+                                                    this.loadingRow = null;
                                                 }
-                                                this.loadingRow = null;
                                             }
                                         }
-                                    }
-                                >
-                                </ListItem>
-                            )
+                                    >
+                                    </ListItem>
+                                )
+                            }
                         }
-                    }
-                    renderSectionHeader={({ section: { title } }) => (
-                        <Text style={styles.sectionHeaderText}>{title}</Text>
-                    )}
-                />
-            </View>
+                        renderSectionHeader={({ section: { title } }) => (
+                            <Text style={styles.sectionHeaderText}>{title}</Text>
+                        )}
+                    />
+                </View>
+            </Overlay>
         )
     }
 }
 
 const styles = StyleSheet.create({
     fullList: {
-        height: hp('100%'),
-        width: wp('33%')
+        display: 'flex',
+        width: '100%'
     },
     sectionHeaderText: {
         backgroundColor: Theme.colors.brand.primary,
