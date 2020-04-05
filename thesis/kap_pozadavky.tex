@@ -2,17 +2,53 @@
 
 \chapter{Analýza požadavků}
 
-Cílem mobilní aplikace pro platformu Anitra je doplnění ekosystému značky Anitra o vhodné řešení zobrazení dat v terénu. Na začátku psání práce byla pouze dostupná webová aplikace, která měla pro práci v terénu následující nevýhody:
+Kapitola analýza požadavků se věnuje první fázi ve vývoji softwarového projektu. Analýza požadavků se skládá z různých fází dle metodiky, ale vždy je cílem od relevantních stran získat seznam požadavků, co aplikace musí splňovat, aby naplnila cíle, kvůli kterým se k vývoji SW projektu rozhodlo.
+
+% chce to zdroje, a ten text je taky dost divný
+
+\section{Identifikace stakeholderů}
+
+Identifikace stakeholder je první fází v analýze požadavků. Účelem této fáze je identifikovat všechny relevantní zůčastněné strany, aby mohly být zapojeny do fáze sběru požadavků. V případě nedostatečného zapojení stakeholderů je vysoká pravděpodobnost, že software nebude uspokojovat potřeby všech zúčastněných stran.
+
+Za stakeholdery byly identifikovány následující subjekty: stávající uživatele webové aplikace Anitra a majitel firmy Anitra System s.r.o. 
+
+Stávající uživatelé aplikace již požadovali funkce pro práci v terénu a jejich požadavky byly zaevidovány do pořadníku funkcí pro webovou aplikaci. Tyto požadavky byly konzultovány se zakladatelem firmy Anitra a byly vybrány k řešení.
+
+\section{Sběr požadavků}
+
+Pro zakladatele firmy Anitra je cílem mobilní aplikace doplnění ekosystému značky Anitra o vhodné řešení zobrazení a zadávání dat v terénu. Na začátku psání práce byla pouze dostupná webová aplikace, která měla pro práci v terénu následující nevýhody:
 
 \begin{itemize}
 	\item data po odpojení z internetu nebyla dostupná, ve většině případů ani již načtená data,
-	\item aplikace se na malých obrazovkách složitě používala,
 	\item aplikace byla příliš náročná na energii,
 	\item mapové podklady se nezobrazovaly po odpojení ze sítě,
+	\item aplikace byla na datový přenos příliš náročná,
 	\item navigace v GUI byla pro malá zařízení příliš složitá.
 \end{itemize}
 
-Z těchto zkušeností uživatelů vyplynuly klíčové požadavky na funkcionalitu aplikace. Pro uživatele je nutné podporovat práci off-line, poskytovat jednoduché a přehledné uživatelské rozhraní vhodné pro ovládání jedním prstem, 
+Tyto podněty byly sebrány od uživatelů webové aplikace Anitra v období 2018-2020, ale mělo by se jednat o dostatečný základ pro zařazení mobilní aplikace do portfolia ekosystému Anitra, jelikož se jedná o obecné předpoklady pro software tohoto typu.
 
+Z těchto zkušeností uživatelů vyplynuly klíčové funkční i nefunkční požadavky na funkcionalitu aplikace. Jednotlivé části jsou rozebrány níže. Další funkční požadavky byly vydefinovány zakladatelem firmy Anitra (zde uvedeny ve zkrácené formě):
 
-'%•Definice •Přihlášení •user a heslo +„sign with google“•Mapa•Zobrazení posledních pozic (viz mapa Anitra)•vizualizovat•TO trasy•POI body•Uživatelskétrasy / body•Podpora práce vterénu•Hledání konkrétního jedince (jeho poslední lokalizace)•Nebo kontrola živého zvířete •Užitečné funkcionality •Zobrazení vlastní pozice v mapě společně sbody zdatabáze•Možnost zaznamenat a ukázat svoji trasu vmapě (například při hledání loggeru v poli -kde už jsem to prošel..) •>> odeslat a uložit na serveru•vytvořit datovou strukturu po uložení •Obecně moct vložit nějakéPOI (včetně fotky)•Možnost zadat pozorování k trackingu•možnost udělat a vložit foto •K začátku sledování včetněmožnosti vyplnění tracking / animal informace•knálezu mrtvého (mortalita)•kpozorování/kontrole•vložit obecnou fotku do systému•Off-line mod•Off line satelitní/hybridní/turistická mapa•Mapy a výběr (viz Anitra)•Mapbox•Nějaká letecká (mapy.cz, ESRI, bing)•turistické mapy•notifikace(zde se jedná oPush notifikace ze serveru, aplikace tyto věci vyhodnocovat nebude)•o podezření na úhyn (trojstupňové varování: "skoro jistota", "pravděpodobnost", "podezření" ?•opuštění hnízda, opuštění hnízdní lokality, začátek migrace, návrat na hnízdiště•nedodržení aktuálně definovaného SMS cyklu •Ovládací panel pro Anitra Device•Poslední pozice a data•Informace o aktuálním nastavení (vč. "next session" tj. kdy bude zařízení příště připravené přijímat instrukce)•úpravy konfigurace•Konfigurační API ?
+\begin{itemize}
+	\item zobrazení dat ze zařízení,
+	\item zaznamenat trasu, bod,
+	\item možnost přiložit obrázek k zvířeti,
+	\item notifikace o nových datech,
+	\item zobrazení vlastní pozice na mapě.
+\end{itemize}
+
+\section{Funkční požadavky}
+
+Funkční požadavky popisují očekávané chování systémuy. Funkční požadavky slouží s potřeby uživatelů a lze je vyjádřit ve formě případů užití. 
+
+\subsection{Diagram případů užití}
+
+\section{Nefunkční požadavky}
+
+Nefunkční požadavky udávají kvalitu systému, ale ne jeho chování. Tyto požadavky často přináší omezení do implementací funkčních požadavků a je někdy obtížné tyto požadavky sladit. Jako příklad se často uvádí požadavky spojené s komfortem uživatelů (např. přístupnost, výkonnost, lokalizace), provozem aplikace (přenositelnost, tolerance chyb) a bezpečnost. Do nefuknčních požadavků se řadí i požadavky související s možností dalšího vývoje systému.
+
+Z výše uvedeného seznamu požadavků vyplynulo několik klíčových nefunkčních požadavků především ve vztahu k uživatelům. Pro úspěch aplikace je nutné, aby grafické rozhraní aplikace bylo dostatečně jednoduché a podstatné funkce byly rychle přístupné bez složitých navigací, jelikož uživatel nemusí mít mnoho času pro práci s aplikací v terénu. S tímto souvisí i nutnost odezvy v jednotkách sekund. 
+
+Neuvedeným požadavkem je multiplatformnost aplikace, jelikož část uživatelů stávající aplikace využívá mobilní operační systém iOS a část Android. Podstatným požadavkem je i rozšiřitelnost aplikace, jelikož se s vývojem aplikace počítá i po dokončení této práce. 
+

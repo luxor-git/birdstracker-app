@@ -436,6 +436,7 @@ export default class Map extends React.Component {
   async discardSelectedRange() {
     this.showRegionDownload = false;
     this.selectingPolygonLeadingPoints = [];
+    this.selectingOfflineRegion = false;
   }
 
   async downloadSelectedRange(range: BoundingTileDefinition) {

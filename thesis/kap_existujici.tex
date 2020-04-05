@@ -2,15 +2,83 @@
 
 \chapter{Existující řešení}
 
+Tato kapitola se věnuje popisu již existujících řešení problémů nastíněných v předchozí kapitole. V této kapitole budou zhodnoceny i další problémy, např. administrativního rázu a problémy s bezpečností dat. Za konkrétní problémy se zde řadí: uchovávání informací o jedincích (morfometricé údaje, obrázky, místo označení), uchování pozic z GPS-GSM trackeru, uchování jiných geografických informací (např. lokace hnízdiště), přehlednost dat, přenositelnost a sdílení dat. Jednotlivá řešení budou popsána, zhodnocena z pohledu vydefinovaných kritérií a na konci bude vynesen verdikt, proč bylo rozhodnuto pro vývoj mobilní aplikace nad platformou Anitra. 
+
 % popsat, jak se současně využívá Google MyMaps, fyzický zápisník, (Anitra?), Movebank aplikace
 
 \section{Nestrukturovaný ruční zápis}
 
 ruční poznámky - obrázek od D.
 
+Popsat co jsou nestrukturovaná data
+
+Metoda nestrukturovaného ručního zápisu spočívá v uchovávání papírových dokumentů vznikající při činnosti ornitologů. Je možné zapsat např. pozorování jedinců, kontroly hnízd, manipulace (např. nasazení kroužku), morfometrické údaje (délky křídel), obecné poznámky. Schéma zápisu nemusí být normalizované, je zde tedy nejjednoduší možnost schéma upravit pro potřeby ornitologa, případně ornitologické organisace.
+
+\begin{table}[h]
+	\begin{tabular}{ l | l }
+		Kritérium                              & Hodnocení \\
+ 		\hline			
+		Informace o jedincích                  & 1 -- absence vynuceného schématu umožňuje uložit jakékoliv informace          \\
+		Práce s pozicemi z trackerů            & 4 -- informace musí být ručně vloženy          \\
+		Práce s uživatelsky vloženými pozicemi & 3 -- informace musí být ručně vloženy, ale schéma není pevně dané          \\
+		Přehlednost dat                        & 3 -- v datech se obtížně hledá, závisí primárně na zapisovateli, některé věci nejde visualizovat jednoduše          \\
+		Přenositelnost a sdílení dat           & 4 - data jsou složitě přenositelná, mohou být i obtížně pochopitelná          \\
+		\hline	
+	\end{tabular}
+\end{table}
+
+\textbf{Výhody}
+
+\begin{itemize}
+	\item možnost kdykoliv upravit schéma,
+	\item nízká náročnost na technologie,
+	\item rychlost zápisu,
+\end{itemize}
+
+\textbf{Nevýhody}
+
+\begin{itemize}
+	\item obtižné vkládání fotodokumentace, o
+	\item data jsou složitě přenositelná, obvykle pouze ručním přepisem do jiného systému.
+\end{itemize}
+
 \section{Strukturovaný ruční zápis}
 
-excel - R. - jak to řešili?
+%https://books.google.cz/books/about/Data_informace_znalosti_a_Internet.html?id=UJh-gLdTH8IC&printsec=frontcover&source=kp_read_button&redir_esc=y#v=onepage&q&f=false stránka 2, 1.1.1
+
+Označení "strukturovaná" se přisuzuje datům, které explicitně zachycují fakta, atributy, objekty, u kterých je významným rysem existence elementů dat. Strukturované ukládání dat je strojově zpracovatelné počítači a ukládá se často v databázových systémech nebo tabulkových procesorech. V této podkapitole bude popsán zápis pomocí tabulkového procesoru.
+
+Na rozdíl od ručního zápisu je zde možné vynutit schéma, přehlednost i přenositelnost dat je tedy nesrovnale vyšší. Změny schématu pro zaznamenání nového druhu informací mohou být komplikací, např. v případu rozdělení datového elementu na dva, nutnosti změnit procesy či procedury zapisování záznamu. Problematické je vkládání a zobrazování některých telemetrických dat z trackerů umístěných na zvířatech. Ačkoliv např. zobrazení numerických telemetrických dat (teplota, napětí na akumulátoru) je jednoduché a dá se v tabulkovém procesoru zobrazit jednoduše, geografické pozice nikoliv. Problém také nastává při přibývání dat s výkonem. Problém zde může nastat při spolupráci více uživatelů najednou, synchronizace dat se musí kontrolovat, aby nedošlo ke ztrátě dat.
+
+\begin{table}[h]
+	\begin{tabular}{ l | l }
+		Kritérium                              & Hodnocení \\
+		\hline			
+		Informace o jedincích                  & 2 -- způsob dostačuje, ale změna schématu nemusí vždy být flexibilní          \\
+		Práce s pozicemi z trackerů            & 3 -- informace musí být ručně vloženy, případně integrovány službou          \\
+		Práce s uživatelsky vloženými pozicemi & 3 -- informace musí být ručně vloženy, ale schéma není pevně dané          \\
+		Přehlednost dat                        & 2 -- v datech se dá vcelku dobře hledat, ale některé metriky je obtížné visualizovat          \\
+		Přenositelnost a sdílení dat           & 3 - data jsou přenositelná do jiných formátů, ale díky absenci standardizovaného schématu se vždy musí data napárovat ručně          \\
+		\hline	
+	\end{tabular}
+\end{table}
+
+\textbf{Výhody}
+
+\begin{itemize}
+	\item možnost kdykoliv upravit schéma,
+	\item nízká náročnost na technologie,
+	\item rychlost zápisu,
+	\item integrované visualizační nástroje,
+	\item tabulková podoba dat srozumitelná pro vědce.
+\end{itemize}
+
+\textbf{Nevýhody}
+
+\begin{itemize}
+	\item data jsou stále z větší části vkládaná ručně
+	\item data jsou složitě přenositelná, obvykle pouze ručním přepisem do jiného systému.
+\end{itemize}
 
 \section{Editory map}
 
