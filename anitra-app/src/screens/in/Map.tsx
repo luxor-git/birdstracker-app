@@ -649,6 +649,9 @@ export default class Map extends React.Component {
                                 zIndex={zIndex}
                                 onPress={() => { this.expandedPointId = point.id; }}
                               >
+                                <Callout>
+                                  <MaterialIndicator color={ Theme.colors.brand.primary }/>
+                                </Callout>
                               </Marker>
                             }
                           </React.Fragment>

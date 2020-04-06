@@ -10,3 +10,16 @@
 
 \section{Expo}
 
+\section{TurtleCLI}
+
+TurtleCLI je nástroj pro sestavení Expo aplikací z příkazové řádky. Nástroj je určen pro uživatele, kteří si nepřejí využívat infrastruktury poskytované od Expo pro sestavování vlastních aplikací, ale přejí si aplikaci sestavit například na vlastním stroji nebo na vlastním nástroji kontinuální integrace. Autor práce vybral tuto technologi z důvodu vysoké vytíženosti veřejné infrastruktury společnosti Expo (varianta nazývaná Community), kde jeho build ve frontě čekal v jednotkách hodin, než se dostal na řadu. Společnost Expo nabízí placenou variantu svých služeb, ve kterých avizuje výrazně vyšší rychlost odbavení, než u varianty zdarma a nástroje pro týmovou práci. Za značnou nevýhodu se taktéž může brát fakt, že kód je vždy odesílán třetí straně k sestavení, což pro mnoho firem může být nepřípustné. Oproti tomu provozování na vlastní infrastruktuře skýtá mnoho potenciálních výhod, za zmínku stojí napojení na firemní CI procesy, testovací infrastrukturu, rapidní nasazení mnoha paralelních větví do testovacích kanálů, jednodušší napojení sestavení na jiné akce. Níže je uvedena tabulka popisující podstatné rozdíly mezi jednotlivými způsoby sestavení Expo aplikací. 
+
+\begin{table}[h]
+	\begin{tabular}{llll}
+		Kategorie                        & Community         & Priority      & Vlastní infrastruktura                 \\
+		Cena                             & zdarma            & 29 USD / měs. & cena výpočetního výkonu                \\
+		Čekací doba na začátek sestavení & cca. 1h           & minuty        & ihned                                  \\
+		Složitost zprovoznění            & součástí expo-cli & triviální     & dle zvolené varianty, nepříliš náročné \\
+		Provázanost s Expo               & vždy              & vždy          & dle zvolené varianty                  
+	\end{tabular}
+\end{table}
