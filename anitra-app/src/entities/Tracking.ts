@@ -245,15 +245,25 @@ export class PositionData implements ISerializableEntity, IEntity
     }
 
     toJson(): object {
-        throw new Error("Method not implemented.");
+        return {
+            id: this.id,
+            synchronized: this.synchronized,
+            lastSynchronized: this.lastSynchronized,
+            pointData: [...(this.pointData.entries())]
+        };
     }
 
     toJsonString(): string {
-        throw new Error("Method not implemented.");
+        return JSON.stringify(this.toJson());
     }
 
     fromJson(json: any): IEntity {
-        throw new Error("Method not implemented.");
+        this.id = json.id;
+        this.synchronized = json.synchronized;
+        this.lastSynchronized = json.lastSynchronized;
+        this.pointData = json.pointData.reduce((m, [key, val])=> m.set(key, val) , new Map());
+        
+        return this;
     }
 
     id?: number;

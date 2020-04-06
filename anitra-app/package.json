@@ -16,6 +16,7 @@
     "expo": "~36.0.0",
     "expo-background-fetch": "~8.0.0",
     "expo-image-picker": "~8.0.1",
+    "expo-location": "~8.0.0",
     "expo-secure-store": "~8.0.0",
     "expo-task-manager": "~8.0.0",
     "mobx": "^5.15.4",
@@ -24,6 +25,7 @@
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-circular-action-menu": "^0.5.0",
+    "react-native-cluster-map": "^1.0.4",
     "react-native-elements": "^1.2.7",
     "react-native-flags": "^1.0.0",
     "react-native-flash-message": "^0.1.15",
@@ -44,8 +46,7 @@
     "react-navigation": "^4.1.1",
     "react-navigation-drawer": "^2.3.4",
     "react-navigation-stack": "^2.1.1",
-    "rn-sliding-up-panel": "^2.4.0",
-    "expo-location": "~8.0.0"
+    "rn-sliding-up-panel": "^2.4.0"
   },
   "devDependencies": {
     "@types/react": "~16.9.0",

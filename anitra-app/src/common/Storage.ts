@@ -142,6 +142,7 @@ const PATH_MAPPING = {
     TILE_DEFINITION: FileSystem.documentDirectory + 'data/tile',
     TILE:            FileSystem.documentDirectory + 'tile',
     TRACKS:          FileSystem.documentDirectory + "tracks",
+    TRACKING_POINT:  FileSystem.documentDirectory + "data/point",
 };
 
 

@@ -258,6 +258,12 @@ class TrackingStore extends BaseStore
 
         let track = new Track();
 
+        var posReserve = positions.reverse().slice(0, 10);
+
+        for (let p of posReserve) {
+            await this.getPoint(p.id);
+        }
+
         track.id = id;
         track.positions = positions;
         track.lastSynchronized = new Date();
@@ -269,6 +275,21 @@ class TrackingStore extends BaseStore
 
     public async getPoint(id: number) : Promise<PositionData>
     {
+        const path = PATH_MAPPING.TRACKING_POINT + '/' + id + '.json';
+
+        let data = await Storage.load(PositionData, path);
+
+        if (data) {
+            let diff = +new Date() - +new Date(data.lastSynchronized);
+            
+            if (diff > Constants.CACHE_TIMEOUT && netStore.getOnline()) {
+                console.log('Cache expired, loading from API');
+            } else {
+                console.log('From cache');
+                return data as PositionData;
+            }
+        }
+
         const apiToken = await AuthStore.getAuthToken();
 
         let response = await apiRequest(
@@ -279,7 +300,7 @@ class TrackingStore extends BaseStore
         let positionData = new PositionData();
         positionData.id = id;
 
-        const data = response.data.data;
+        data = response.data.data;
 
         Object.keys(data).forEach((key) => {
             if (key !== 'header') {
@@ -288,6 +309,8 @@ class TrackingStore extends BaseStore
                 }
             }
         });
+
+        await Storage.save(path, positionData);
 
         return positionData;
     }

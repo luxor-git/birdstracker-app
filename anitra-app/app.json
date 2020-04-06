@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Anitra",
+    "name": "Anitra Wildlife Tracker",
     "slug": "anitra-app",
     "privacy": "public",
     "sdkVersion": "36.0.0",
@@ -11,7 +11,7 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/appicon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -24,7 +24,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "cz.anitra.app.tracker"
     },
     "android": {
       "permissions": [
@@ -33,7 +34,9 @@
         "ACCESS_FINE_LOCATION",
         "CAMERA",
         "VIBRATE"
-      ]
+      ],
+      "package": "cz.anitra.app.tracker",
+      "versionCode": 1
     }
   }
 }

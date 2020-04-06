@@ -68,7 +68,6 @@ export default class TrackingList extends React.Component<TrackingListProps> {
 
     async componentDidMount() {
         this.loading = true;
-        //this.trackings = this.props.trackings;
         this.actions = this.props.actions;
         this.loading = false;
     }
@@ -139,7 +138,7 @@ const styles = StyleSheet.create({
     },
     sectionHeaderText: {
         backgroundColor: Theme.colors.brand.primary,
-        color: '#fff',
+        color: '#91C040',
         padding: 10
     }
 });

@@ -30,6 +30,7 @@ import { showMessage, hideMessage } from "react-native-flash-message";
 import { OfflineRegion } from '../../entities/OfflineRegion.js';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MarkerPosition from '../../components/MarkerPosition';
+import { MaterialIndicator } from 'react-native-indicators';
 
 @observer
 export default class Map extends React.Component {
@@ -106,6 +107,9 @@ export default class Map extends React.Component {
   @observable
   isOnline: boolean = false;
 
+  @observable
+  expandedPointId: number = null;
+
   regionChangeTimeout : number = null;
 
   @computed get selectedPolygon() : LatLng[] 
@@ -133,6 +137,8 @@ export default class Map extends React.Component {
     marker7d: require('../../assets/markers/marker7d.png'),
     marker30d: require('../../assets/markers/marker30d.png'),
     markerElse: require('../../assets/markers/markerElse.png'),
+    markerFirst: require('../../assets/markers/markerFirst.png'),
+    markerLast: require('../../assets/markers/markerLast.png'),
   };
 
   async componentDidMount () {
@@ -608,32 +614,44 @@ export default class Map extends React.Component {
                           }*/
                         }}
                       />
+
                       {track.getPoints().map((point, index) => {
                         let image = this.markers.markerElse;
                         let zIndex = 1;
 
                         if (index === 0) {
-                          image = this.markers.marker30d;
+                          image = this.markers.markerFirst;
                           zIndex = 2;
                         } else if (index === pointCount - 1) {
-                          image = this.markers.marker24h;
+                          image = this.markers.markerLast;
                           zIndex = 3;
                         }
 
                         return (
-                          <Marker
-                            key={point.id}
-                            coordinate={ { latitude: point.lat, longitude: point.lng } }
-                            title={"Test"}
-                            description={"Test"}
-                            icon={image}
-                            image={image}
-                            zIndex={zIndex}
-                          >
-                            <Callout>
-                              <MarkerPosition tracking={track.tracking} id={point.id}/>
-                            </Callout>
-                          </Marker>
+                          <React.Fragment key={point.id}>
+                            {this.expandedPointId === point.id &&  
+                              <Marker
+                                coordinate={ { latitude: point.lat, longitude: point.lng } }
+                                icon={image}
+                                image={image}
+                                zIndex={zIndex}
+                              >
+                                <Callout>
+                                    <MarkerPosition tracking={track.tracking} id={point.id}/>
+                                </Callout>
+                              </Marker>
+                            }
+                            {this.expandedPointId !== point.id &&  
+                              <Marker
+                                coordinate={ { latitude: point.lat, longitude: point.lng } }
+                                icon={image}
+                                image={image}
+                                zIndex={zIndex}
+                                onPress={() => { this.expandedPointId = point.id; }}
+                              >
+                              </Marker>
+                            }
+                          </React.Fragment>
                         )
                       })}
                     </React.Fragment>
