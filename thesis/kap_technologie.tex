@@ -23,7 +23,7 @@ Jednotlivá kritéria jsou rozebrána níže.
 
 \subsection{Podpora více platforem}
 
-Podpora platforem iOS a Android je kritickým požadavkem aplikace vycházející z analýzy požadavků. Technologie musí podporovat, ideálně platformně nezávisle abstrahovat, přístup k zdrojům souborového systému, přístup k vzdáleným zdrojům pomocí protokolu HTTP, umožnit vytvářet mapové aplikace, bezpečně uložit uživatelské přihlašovací údaje. Technologie by neměla vyžadovat platformně závislý nativní kód. 
+Podpora platforem iOS a Android je kritickým požadavkem aplikace vycházející z analýzy požadavků. Technologie musí podporovat, ideálně platformně nezávisle abstrahovat, přístup k zdrojům souborového systému, přístup k vzdáleným zdrojům pomocí protokolu HTTP, umožnit vytvářet mapové aplikace, bezpečně uložit uživatelské přihlašovací údaje. Technologie by neměla vyžadovat platformně závislý nativní kód.
 
 \subsection{Rychlost vývoje}
 
@@ -137,7 +137,7 @@ Flutter je SDK od společnosti Google sloužící pro vytváření "nádherných
 
 \subsection{Vybraná technologie}
 
-Pro řešení práce byla vybraná technologie React Native (resp. Expo), jelikož ze srování vyšla nejlépe. Dále bylo rozhodnuto o využití nadstavby TypeScript na JS. Popis technologie je uveden v další kapitole.
+Pro řešení práce byla vybraná technologie React Native (resp. Expo), jelikož ze srování vyšla nejlépe. Dále bylo rozhodnuto o využití nadstavby TypeScript na JS a správce stavů MobX. Popis technologie je uveden v další kapitole.
 
 \section{React Native}
 
@@ -240,7 +240,7 @@ MobX je knihovna pro reaktivní správu stavu aplikace (ref)
 % https://docs.expo.io/versions/latest/
 % https://flatlogic.com/blog/why-i-don-t-want-to-use-react-native-with-expo/
 
-Expo je součástí nástrojů a služeb postavených nad React Native a nativními platformami soužící k vývoji, sestavení, nasazení a rychlé iteraci iOS, Android a webových aplikací s jednotným zdrojovým kódem (ref). Expo je abstrakce oddělující React Native kompletně od nativního kódu a tedy od nutnosti vyvíjet ve třech jazycích. Expo poskytuje většinu API pro běžné mobilní aplikace (podstatnou výjimkou je Bluetooth a nákupy v aplikaci), nástroje pro rapidní vývoj a cloudovou infrastrukturu pro sestavení, není tedy nutné pro sestavení např. iOS aplikace vlastnit stroj s operačním systémem MacOS. Nástroje pro rapidní vývoj jsou obrovské plus platformy Expo -- JS se sestaví na stroji vývojáře, odešle se na servery Expo a je možné projekt spustit na jakémkoliv zařízení za pomocí speciální mobilní aplikace a QR kódu. Z tohoto zařízení je v realném čase možné sledovat běh událostí a ladících zpráv. 
+Expo je součástí nástrojů a služeb postavených nad React Native a nativními platformami sloužící k vývoji, sestavení, nasazení a rychlé iteraci iOS, Android a webových aplikací s jednotným zdrojovým kódem (ref). Expo je abstrakce oddělující React Native kompletně od nativního kódu a tedy od nutnosti vyvíjet ve třech jazycích. Expo poskytuje většinu API pro běžné mobilní aplikace (podstatnou výjimkou je Bluetooth a nákupy v aplikaci), nástroje pro rapidní vývoj a cloudovou infrastrukturu pro sestavení, není tedy nutné pro sestavení např. iOS aplikace vlastnit stroj s operačním systémem MacOS. Nástroje pro rapidní vývoj jsou obrovské plus platformy Expo -- JS se sestaví na stroji vývojáře, odešle se na servery Expo a je možné projekt spustit na jakémkoliv zařízení za pomocí speciální mobilní aplikace a QR kódu. Z tohoto zařízení je v realném čase možné sledovat běh událostí a ladících zpráv. 
 
 Mezi nevýhody Expo se udává následující:
 
@@ -271,17 +271,14 @@ expo start --android #platforma Android
 expo start --ios #platforma iOS
 \end{lstlisting}
 
-Po spuštění příkazu se načte ve webovém prohlížeči obrazovka obsahující log sestavovacího nástroje (), ladící výstupy aplikace, 
+Po spuštění příkazu se načte ve webovém prohlížeči obrazovka obsahující log sestavovacího nástroje (Metro Bundler), ladící výstupy aplikace, seznam proveditelných akcí a QR kód pro spuštění aplikace na jakémkoliv mobilním zařízení s klientskou aplikací Expo. Z této obrazovky je taktéž možné projekt publikovat přes cloudové nástroje Expo. Alternativní způsob je popsán v následující kapitole.
 
-\begin{figure}
+\begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=140mm]{img/expo.png}
 	\end{center}
 	\caption{Expo -- zdroj: autor}
 \end{figure}
-
-
-% todo add screenshot
 
 \subsection{TurtleCLI}
 
