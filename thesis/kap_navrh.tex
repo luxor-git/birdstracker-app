@@ -12,6 +12,19 @@ Pro tuto práci byla zvolena technika drátěných modelů (tzv. wireframe), sch
 
 % https://www.academia.edu/6511543/The_Elements_of_User_Experience_User-Centered_Design_for_the_Web_and_Beyond_Second_Edition p. 128
 
+\subsection{Onboarding, přihlášení, registrace}
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=70mm]{img/wf_onboarding.png}
+		\includegraphics[width=70mm]{img/wf_login.png}
+	\end{center}
+	\caption[Wireframe přihlášení a onboarding obrazovky]{Wireframe onboarding a přihlašovací obrazovky -- zdroj: autor}
+	\label{fig:boat1}
+\end{figure}
+
+Pro přihlašovací obrazovku byl zvolen koncept tzv. onboardingu, praktiky popisující funkce aplikace a výhody založení účtu. Onboarding lze také chápat jako náhradu aplikačního návodu. Onboarding může být prováděn mnoha způsoby, jako nejsnadněji řešitelný byl vybrán tzv. carousel, seznam posouvatelných panelů, kde každý z nich obsahuje určité informace o mobilní aplikaci. Pro přihlašovací obrazku byl zvolen očekávatelný klasický formát přihlašovacího dialogu. Pro registraci byl využit tzv. web view, komponenta, co zobrazí webový prohlížeč svázaný s aplikací. Registrace se tedy provádí přes stávající webovou aplikaci. Důvodem tohoto rozhodnutí je absence API pro vytváření uživatelských účtu, ale zároveň i předpoklad, že uživatel mobilní aplikace bude i zároveň uživatelem aplikace webové.
+
 \subsection{Mapová koncepce}
 
 Hlavní obrazovkou aplikace byla zvolena obrazovka s mapou, aby odpovídala očekávání uživatelů webové aplikace Anitra, kde hlavní obrazovkou je taktéž mapa. Veškeré kontrolky, které by se daly zobrazit jako separátní stránky, se zobrazují v modálních oknech nad obrazovkou, což je opět koncepce vycházející z již hotové webové aplikace. Aplikace tedy rovnou splní jeden ze zmíněných případů užití při zapnutí, a to kontrolu posledních pozic trackerů a případné odfiltrování pro uživatele nezajímavých trackerů způsoben srovnatelným s aktuálním řešením, čímž by se dalo očekávat zkrácení doby učení uživatelů aplikace.
