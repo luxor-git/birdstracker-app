@@ -4,11 +4,12 @@ import { Text, View, Button, Vibration, Platform } from 'react-native';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
-import { ApiConstants, formatGetRequest, apiRequest, formatDate } from "../common/ApiUtils";
+import { ApiConstants, formatPostRequest, apiRequest, formatDate } from "../common/ApiUtils";
+import NetStore from './NetStore';
 
 class NotificationStore extends BaseStore
 {
-    async registerForNotifications()
+    async registerForNotifications() : Promise<boolean>
     {
         if (Constants.isDevice) {
             const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
@@ -18,11 +19,24 @@ class NotificationStore extends BaseStore
               finalStatus = status;
             }
             if (finalStatus !== 'granted') {
-              alert('Failed to get push token for push notification!');
               return;
             }
             const token = await Notifications.getExpoPushTokenAsync();
-            console.log(token);
+            
+            if (NetStore.getOnline()) {
+              const data = new FormData();
+              data.append('token', token);
+              let response;
+      
+              try {
+                  response = await apiRequest(
+                    ApiConstants.API_URL + ApiConstants.API_USER + ApiConstants.API_NOTIFICATION_URL,
+                    formatPostRequest(data)
+                  );
+              } catch (e) {
+                  return false;
+              }
+            }
           } else {
             alert('Must use physical device for Push Notifications');
           }
