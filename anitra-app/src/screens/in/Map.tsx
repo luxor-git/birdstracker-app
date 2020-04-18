@@ -31,6 +31,7 @@ import { OfflineRegion } from '../../entities/OfflineRegion.js';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MarkerPosition from '../../components/MarkerPosition';
 import { MaterialIndicator } from 'react-native-indicators';
+import NotificationStore from '../../store/NotificationStore';
 
 @observer
 export default class Map extends React.Component {
@@ -142,6 +143,11 @@ export default class Map extends React.Component {
   };
 
   async componentDidMount () {
+      try {
+        await NotificationStore.registerForNotifications();
+      } catch {
+      }
+      
       lor(this); // Listen for orientation changes
 
       this.loading = true;
