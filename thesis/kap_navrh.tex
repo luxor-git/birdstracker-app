@@ -14,32 +14,81 @@ Pro tuto práci byla zvolena technika drátěných modelů (tzv. wireframe), sch
 
 \subsection{Onboarding, přihlášení, registrace}
 
-\begin{figure}[h]
+\begin{figure}[H]
 	\begin{center}
 		\includegraphics[width=70mm]{img/wf_onboarding.png}
 		\includegraphics[width=70mm]{img/wf_login.png}
 	\end{center}
 	\caption[Wireframe přihlášení a onboarding obrazovky]{Wireframe onboarding a přihlašovací obrazovky -- zdroj: autor}
-	\label{fig:boat1}
 \end{figure}
 
 Pro přihlašovací obrazovku byl zvolen koncept tzv. onboardingu, praktiky popisující funkce aplikace a výhody založení účtu. Onboarding lze také chápat jako náhradu aplikačního návodu. Onboarding může být prováděn mnoha způsoby, jako nejsnadněji řešitelný byl vybrán tzv. carousel, seznam posouvatelných panelů, kde každý z nich obsahuje určité informace o mobilní aplikaci. Pro přihlašovací obrazku byl zvolen očekávatelný klasický formát přihlašovacího dialogu. Pro registraci byl využit tzv. web view, komponenta, co zobrazí webový prohlížeč svázaný s aplikací. Registrace se tedy provádí přes stávající webovou aplikaci. Důvodem tohoto rozhodnutí je absence API pro vytváření uživatelských účtu, ale zároveň i předpoklad, že uživatel mobilní aplikace bude i zároveň uživatelem aplikace webové.
 
 \subsection{Mapová koncepce}
 
-Hlavní obrazovkou aplikace byla zvolena obrazovka s mapou, aby odpovídala očekávání uživatelů webové aplikace Anitra, kde hlavní obrazovkou je taktéž mapa. Veškeré kontrolky, které by se daly zobrazit jako separátní stránky, se zobrazují v modálních oknech nad obrazovkou, což je opět koncepce vycházející z již hotové webové aplikace. Aplikace tedy rovnou splní jeden ze zmíněných případů užití při zapnutí, a to kontrolu posledních pozic trackerů a případné odfiltrování pro uživatele nezajímavých trackerů způsoben srovnatelným s aktuálním řešením, čímž by se dalo očekávat zkrácení doby učení uživatelů aplikace.
+Hlavní obrazovkou aplikace byla zvolena obrazovka s mapou, aby odpovídala očekávání uživatelů webové aplikace Anitra, kde hlavní obrazovkou je taktéž mapa. Veškeré kontrolky, které by se daly zobrazit jako separátní stránky, se zobrazují v modálních oknech nad obrazovkou, což je opět koncepce vycházející z již hotové webové aplikace. Aplikace tedy rovnou splní jeden ze zmíněných případů užití při zapnutí, a to kontrolu posledních pozic trackerů a případné odfiltrování pro uživatele nezajímavých trackerů způsoben srovnatelným s aktuálním řešením, čímž by se dalo očekávat zkrácení doby učení uživatelů aplikace. Na mapě se zobrazují individuální poslední pozice trackerů uživatele, aktuálnost poslední pozice je odstupňována dle času a barvy ikony, konzistentně s aktuálním řešením. V poslední pozici se zobrazí základní informace o trackeru -- název, lokalita poslední pozice. Po klepnutí na poslední pozici se zobrazí detail objektu, ze kterého uživatel může spouštět další akce.
+
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=70mm]{img/wf_lastpos.png}
+		\includegraphics[width=70mm]{img/wf_filter.png}
+	\end{center}
+	\caption[Wireframe poslední pozice a filtrování mapy]{Wireframe poslední pozice a filtrování mapy -- zdroj: autor}
+\end{figure}
+
+Pro navigaci v aplikaci je potřeba zavést základní menu, které uživateli umožní nejpodstatnější akce docílit v rozmezí pár uživatelských interakcí. Do aplikace bylo přidáno menu ve formě vyjížděcí kontrolky (realizované knihovnou rn-sliding-up-panel) s full-text vyhledávačem v hlavičce. Po zadání textu do vyhledávače se prozkoumají názvy všech trackerů a na mapě (či v dalších přehledových kontrolkách) zůstanou pouze relevantní trackery. Po vysunutí menu nahoru se zobrazí další možnost filtrování, a to klíčový výběr podle druhu. Filtry fungují v kombinaci ve formě logické spojky A. Pod filtrem druhu se nachází seznam akcí, které uživatel může provést. 
+
+\subsection{Detail trackeru}
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=70mm]{img/wf_trackingdetail.png}
+	\end{center}
+	\caption[Wireframe detailu trackeru]{Wireframe detailu trackeru -- zdroj: autor}
+\end{figure}
+
+Po vybrání trackeru v mapě nebo v seznamu trackerů (viz dále) se uživateli zobrazí modální okno s popisem, základními informacemi, fotogalerií a seznamem akcí, které uživatel může s trackerem provést, v prvotní verzi aplikace pouze načíst trasu za posledních 30 dní (nebo do limitu 100 pozic). Ze stejného okna lze načtenou trasu skrýt.
+
+\subsection{Kontextové menu a podobrazovky}
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=70mm]{img/wf_contextmenu.png}
+	\end{center}
+	\caption[Wireframe kontextového menu]{Wireframe kontextového menu -- zdroj: autor}
+\end{figure}
+
+Kvůli způsobu provedení aplikace nebylo mnoho míst, kam přehledně uložit ovládací prvky. Některé ovládací prvky jsou také provázány s kliknutím do mapy. Z tohoto důvodu byl zvolen koncept kontextového menu nad mapou. Po dlouhém klepnutí na hlavní mapu se zobrazí seznam veškerých dostupných akcí. V seznamu jsou i globální (tedy nekontextové) akce, např. odhlášení, zobrazení seznamu trackerů, výběr mapových podkladů, stáhnutí off-line map. Kontextové menu se zobrazí v klasickém modálním okně a dá se odvolat kliknutím mimo okno nebo na jakýkoliv ovládací prvek vně.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=70mm]{img/wf_list.png}
+	\end{center}
+	\caption[Wireframe seznamu trackerů]{Wireframe seznamu trackerů -- zdroj: autor}
+\end{figure}
+
+Pro seznam trackerů byla zvolena seznamová komponenta s hlavičkami oddělující jednotlivé druhy, kvůli konzistenci s webovou aplikací. Kliknutím na položk u v seznamu se zobrazí detail trackeru a kliknutím na zaškrtávací tlačítko se načte trasa zařízení.
+
+Stáhnutí off-line regionu map se aktivuje po kliknutí na položku v kontextovém menu, pokud je uživatel dostatečně přiblížen v mapě. Pro uživatele nemá smysl stahovat regiony výrazně větší než 1 km$^2$, což lze omezit právě např. minimálním tzv. \emph{zoom levelem} mapy. Běžné rasterové (tedy především satelitní) mapy jsou klientksým softwarům indexovány v trojrozměrné struktuře ve formátu \emph{z-x-y}, kde z udává zoom level a x a y 2D souřadnice daného mapového čtverce. Tato struktura v podstatě odpovídá datové strutkuře \emph{quadtree}, roste tedy exponenciálně počet čtverečků ve kterých se vyskytuje vybraná plocha, zatímco velikost jednotlivých čtverečků v bytech je v podstatě srovnatelná. Pro ušetření místa na klientovi byl vybrán tedy přístup s omezením vybrané plochy nastavením minimálního zoom levelu. Uživatel tak může prakticky stahovat maximálně několik stovek mapových čtverečků, čímž by nemělo dojít k nedostatku místa na straně uživatele. Před stáhnutím bude uživateli zobrazen dialog, ve kterém se uživateli zobrazí počet čtverečků ke stáhnutí a odhadovaná velikost v bytech. Po potvrzení ze strany uživatele se zobrazí indikátor zobrazující počet státhnutých čtverečků k celkovému počtu. Při zadávání se také uživateli zobrazí na mapě již stáhnuté regiony označené červeným čtvercem.
 
 \section{Aplikační architektura}
 
 %Clements, Paul; Felix Bachmann; Len Bass; David Garlan; James Ivers; Reed Little; Paulo Merson; Robert Nord; Judith Stafford (2010). Documenting Software Architectures: Views and Beyond, Second Edition. Boston: Addison-Wesley. ISBN 978-0-321-55268-6.
 
-Aplikační (resp. softwarová) architektura popisuje strukturu softwarového systému. Struktura softwarového systému obsdahuje softwarové elementy, jejich vztahy a vlastnosti elementů a jejich vlastností (ref). Přístupy k této disciplíně se liší dle metodiky vývoje softwaru, rigozórní metody preferují architekturu dopředu pevně formulovat, zatímco více agilní metodiky pravý opak. V rámci této práce softwarová architektura nebyla řešena příliš do podrobna, jelikož se jedná o velmi malou aplikaci.
+Aplikační (resp. softwarová) architektura popisuje strukturu softwarového systému. Struktura softwarového systému obsdahuje softwarové elementy, jejich vztahy a vlastnosti elementů a jejich vlastností (ref). Přístupy k této disciplíně se liší dle metodiky vývoje softwaru, rigozórní metody preferují architekturu dopředu pevně formulovat, zatímco více agilní metodiky pravý opak. V rámci této práce softwarová architektura nebyla řešena příliš do podrobna, jelikož se jedná o velmi malou aplikaci. Cílem bylo navrhnout koncept bez zbytečných duplikacích kódu, možností centralizovaného čtení a zápisu do cache, volání API z jednoho místa a přehlednost kódu.
 
 \subsection{Základní koncepce}
 
 Pro řešení aplikace byly zvoleny architektonické vzory, tedy typické architektury, které se v návrhu softwarových architektur často vyskytují. Aplikace byla navrhnutá jako dvouvrstvá klient-server aplikace, kde první vrstva zajišťuje operaci s daty (modelová vrstva, podkapitola Datové zdroje a entity) a druhá vrstva správné zobrazení (prezentační vrstva, podkapitola Komponenty). Tento koncept byl zvolen díky plnému splnění architektonických nároků malé aplikace a komponentové architektuře React.
 
 \subsection{Datové zdroje a entity}
+
+Aplikace je ze své podstaty klientem webové služby poskytované platformou Anitra. Komunikace se vzdáleným serverem probíhá pomocí Hyper Text Transfer Protoclu, za pomocí tzv. REST API formátu. Pro každou doménovou oblast bylo v aplikaci vytvořeno tzv. uložiště, objekt, který plní určité požadavky (prezentační vrstva nepotřebuje vědět, jakým způsobem byly získány). Uložiště pro každý požadavek provádí následující sekvenci rozhodnutí: pokusí se načíst výsledeck z cache a prověřit, že není starší než daný časový llimit. V případě že je přes časový limit a uživatel je připojený k internetu, uživateli se vrátí čerstvá odpověď z API. V případě že uživatel připojený k síti není, vrátí se uložená odpověď, případně chyba, pokud žádná není.
+
+% todo krátký přehled entit
+
+% todo diagram
 
 \subsection{Komponenty}
 

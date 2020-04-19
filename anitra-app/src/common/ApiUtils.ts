@@ -11,11 +11,12 @@ export const ApiConstants = {
     API_SPECIES: 'species',
     API_GALLERY: 'gallery',
     API_TRACK: 'data',
-    API_POINT: 'get-point'
+    API_POINT: 'get-point',
+    API_NOTIFICATION_URL: ''
 };
 
 export function formatPostRequest(formData: FormData, apiKey?: string) : any {
-    return {
+    let ret = {
         method: 'post',
         headers: {
             'Content-Type': 'multipart/form-data'
@@ -23,6 +24,12 @@ export function formatPostRequest(formData: FormData, apiKey?: string) : any {
         data: formData,
         timeout: 10000
     };
+
+    if (apiKey) {
+        ret.headers["Authorization"] = apiKey;
+    }
+
+    return ret;
 };
 
 export function formatGetRequest(apiKey?: string) : any {
