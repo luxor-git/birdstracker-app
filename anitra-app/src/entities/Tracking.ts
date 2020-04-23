@@ -5,6 +5,13 @@ export function displayAge(age: number) : string
     return ((age % 10 === 5)?'+':'') + Math.floor(age / 10) + ' CY';
 }
 
+/**
+ * Tracking entity.
+ *
+ * @export
+ * @class Tracking
+ * @implements {ISerializableEntity}
+ */
 export class Tracking implements ISerializableEntity
 {
     id: number;

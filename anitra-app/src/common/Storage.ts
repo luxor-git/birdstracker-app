@@ -5,9 +5,21 @@ import EntityFactory from '../entities/EntityFactory';
 import NetStore from '../store/NetStore';
 import Constants from '../constants/Constants';
 
+/**
+ * Persistent storage class.
+ * Saves all entities.
+ *
+ * @class PersistentStorage
+ */
 class PersistentStorage
 {
 
+    /**
+     * Initializes folders.
+     *
+     * @returns {Promise<void>}
+     * @memberof PersistentStorage
+     */
     public async init() : Promise<void> {
         console.log('Creating directories...');
 
@@ -23,13 +35,27 @@ class PersistentStorage
     }
 
 
-    public async save(path: string, data: ISerializableEntity) : Promise<void>
-    {
+    /**
+     * Saves a serializable entity to a given path.
+     *
+     * @param {string} path
+     * @param {ISerializableEntity} data
+     * @returns {Promise<void>}
+     * @memberof PersistentStorage
+     */
+    public async save(path: string, data: ISerializableEntity) : Promise<void> {
         await FileSystem.writeAsStringAsync(path, data.toJsonString());
     }
 
-    public async saveCollection(path: string, data: ISerializableEntity[]) : Promise<void>
-    {
+    /**
+     * Saves a collection to a given path.
+     *
+     * @param {string} path
+     * @param {ISerializableEntity[]} data
+     * @returns {Promise<void>}
+     * @memberof PersistentStorage
+     */
+    public async saveCollection(path: string, data: ISerializableEntity[]) : Promise<void> {
         let arr = []; //wrapper?
 
         data.forEach((x) => {
@@ -50,8 +76,16 @@ class PersistentStorage
         await FileSystem.writeAsStringAsync(path, saveData);
     }
 
-    public async loadCollection(path: string, type: { new() : ISerializableEntity }, expireCache: boolean = false) : Promise<ISerializableEntity[]>
-    {
+    /**
+     * Loads a collection from disk.
+     *
+     * @param {string} path
+     * @param {{ new() : ISerializableEntity }} type
+     * @param {boolean} [expireCache=false]
+     * @returns {Promise<ISerializableEntity[]>}
+     * @memberof PersistentStorage
+     */
+    public async loadCollection(path: string, type: { new() : ISerializableEntity }, expireCache: boolean = false) : Promise<ISerializableEntity[]> {
         console.log("Loading from", path);
         let res = await FileSystem.readAsStringAsync(path);
         let json = JSON.parse(res);
@@ -73,6 +107,14 @@ class PersistentStorage
         return arr;
     }
 
+    /**
+     * Loads a single entity from disk.
+     *
+     * @param {{ new() : ISerializableEntity }} type
+     * @param {string} path
+     * @returns {Promise<ISerializableEntity>}
+     * @memberof PersistentStorage
+     */
     public async load(type: { new() : ISerializableEntity }, path: string) : Promise<ISerializableEntity>
     {
         try {
@@ -92,12 +134,27 @@ class PersistentStorage
         }
     }
 
+    /**
+     * Check if file exists.
+     *
+     * @param {string} path
+     * @returns {Promise<boolean>}
+     * @memberof PersistentStorage
+     */
     public async fileExists(path: string) : Promise<boolean> {
         let info = await FileSystem.getInfoAsync(path);
 
         return info.exists;
     }
 
+    /**
+     * Return all files in a directory.
+     *
+     * @param {string} url
+     * @param {{ new() : ISerializableEntity }} type
+     * @returns {Promise<ISerializableEntity[]>}
+     * @memberof PersistentStorage
+     */
     public async getAllInDirectory(url: string, type: { new() : ISerializableEntity }) : Promise<ISerializableEntity[]>
     {
         let entries = await FileSystem.readDirectoryAsync(url);
@@ -110,6 +167,17 @@ class PersistentStorage
         return arr;
     }
 
+    /**
+     * Saves a map tile.
+     * Map tiles are saved to disk in base64 format.
+     *
+     * @param {string} url
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     * @returns {Promise<boolean>}
+     * @memberof PersistentStorage
+     */
     public async saveMapTile(url: string, x: number, y: number, z: number) : Promise<boolean>
     {
         try {
@@ -127,6 +195,12 @@ class PersistentStorage
         }
     }
 
+    /**
+     * Gets tile URL for map.
+     *
+     * @returns
+     * @memberof PersistentStorage
+     */
     public getMapTileTemplate()
     {
         return PATH_MAPPING.TILE + '/{z}/{x}/{y}.png';
@@ -134,6 +208,7 @@ class PersistentStorage
 
 }
 
+/** Filesystem path mappings */
 const PATH_MAPPING = {
     DATA:            FileSystem.documentDirectory + "data",
     TRACKING:        FileSystem.documentDirectory + 'data/tracking',
@@ -145,7 +220,7 @@ const PATH_MAPPING = {
     TRACKING_POINT:  FileSystem.documentDirectory + "data/point",
 };
 
-
+/** Mapping to individual files */
 const FILE_MAPPING = {
     TRACKINGS: PATH_MAPPING.TRACKING + '/tracking.json',
     SPECIES: PATH_MAPPING.TRACKING + '/species.json',

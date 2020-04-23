@@ -15,6 +15,14 @@ export const ApiConstants = {
     API_NOTIFICATION_URL: ''
 };
 
+/**
+ * Formats post request for Axios.
+ *
+ * @export
+ * @param {FormData} formData
+ * @param {string} [apiKey]
+ * @returns {*}
+ */
 export function formatPostRequest(formData: FormData, apiKey?: string) : any {
     let ret = {
         method: 'post',
@@ -32,6 +40,13 @@ export function formatPostRequest(formData: FormData, apiKey?: string) : any {
     return ret;
 };
 
+/**
+ * Formats GET request for Axios.
+ *
+ * @export
+ * @param {string} [apiKey]
+ * @returns {*}
+ */
 export function formatGetRequest(apiKey?: string) : any {
     let obj : any = {
         method: 'get',
@@ -46,10 +61,24 @@ export function formatGetRequest(apiKey?: string) : any {
     return obj;
 };
 
+/**
+ * Adds listener for invalid tokens.
+ *
+ * @export
+ * @param {Function} callback
+ */
 export function addInvalidTokenListener(callback: Function) : void {
     invalidTokenListeners.push(callback);
 }
 
+/**
+ * Calls an API request.
+ *
+ * @export
+ * @param {string} url
+ * @param {*} options
+ * @returns {Promise<BaseActionResult>}
+ */
 export async function apiRequest(url: string, options: any) : Promise<BaseActionResult>
 {
     console.log('---');
@@ -84,7 +113,13 @@ export async function apiRequest(url: string, options: any) : Promise<BaseAction
     return baseResponse;
 };
 
-export function formatDate(date: any) : Date 
-{
+/**
+ * Formats a date.
+ *
+ * @export
+ * @param {*} date
+ * @returns {Date}
+ */
+export function formatDate(date: any) : Date {
     return date;
 }
