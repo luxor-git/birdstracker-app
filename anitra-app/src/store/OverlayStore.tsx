@@ -10,6 +10,7 @@ import axios from 'axios';
 import { OfflineRegion } from '../entities/OfflineRegion';
 import { LatLng } from 'react-native-maps';
 
+/** Layer name constants */
 const LAYER_IDENTIFIERS = {
     LAYER_SEZNAM_AERIAL_MAPS:  "LAYER_SEZNAM_AERIAL_MAPS",
     LAYER_SEZNAM_AERIAL_MAPS_OFFLINE:  "LAYER_SEZNAM_AERIAL_MAPS_OFFLINE",
@@ -17,16 +18,47 @@ const LAYER_IDENTIFIERS = {
     LAYER_OPENSTREETMAP: "LAYER_OPENSTREETMAP"
 };
 
+/**
+ * Overlay store
+ *
+ * @class OverlayStore
+ * @extends {BaseStore}
+ */
 class OverlayStore extends BaseStore
 {
+    /**
+     * Available layers map.
+     *
+     * @private
+     * @type {Map<string, Layer>}
+     * @memberof OverlayStore
+     */
     private layers: Map<string, Layer> = new Map();
 
+    /**
+     * Default layer reference.
+     *
+     * @private
+     * @type {Layer}
+     * @memberof OverlayStore
+     */
     private defaultLayer: Layer;
 
+    /**
+     * List of off-line regions to display.
+     *
+     * @private
+     * @type {Map<number, OfflineRegion>}
+     * @memberof OverlayStore
+     */
     private offlineRegions: Map<number, OfflineRegion> = new Map<number, OfflineRegion>();
 
-    constructor()
-    {
+    /**
+     * Creates an instance of OverlayStore.
+     * Initializes layers.
+     * @memberof OverlayStore
+     */
+    constructor() {
         super();
         this.defaultLayer = new Layer("Seznam Aerial", "https://mapserver.mapy.cz/bing/{z}-{x}-{y}", "");
         this.layers.set(LAYER_IDENTIFIERS.LAYER_SEZNAM_AERIAL_MAPS, this.defaultLayer);
@@ -34,7 +66,16 @@ class OverlayStore extends BaseStore
         this.layers.set(LAYER_IDENTIFIERS.LAYER_SEZNAM_AERIAL_MAPS_OFFLINE, new Layer("Seznam Aerial (only cached)", Storage.getMapTileTemplate(), ""));
     }
 
-    async downloadRange(range: BoundingTileDefinition, bounds: LatLng[], progress: Function) : Promise<boolean> {
+    /**
+     * Downloads a range for off-line use.
+     *
+     * @param {BoundingTileDefinition} range
+     * @param {LatLng[]} bounds
+     * @param {Function} progress
+     * @returns {Promise<boolean>}
+     * @memberof OverlayStore
+     */
+    public async downloadRange(range: BoundingTileDefinition, bounds: LatLng[], progress: Function) : Promise<boolean> {
         let downloadLayer = this.layers.get(LAYER_IDENTIFIERS.LAYER_SEZNAM_AERIAL_MAPS);
         let tileCount = 0;
 
@@ -75,7 +116,13 @@ class OverlayStore extends BaseStore
         return true;
     }
 
-    async getOfflineAreas() : Promise<OfflineRegion[]>
+    /**
+     * Gets a list of available off-line areas.
+     *
+     * @returns {Promise<OfflineRegion[]>}
+     * @memberof OverlayStore
+     */
+    public async getOfflineAreas() : Promise<OfflineRegion[]>
     {
         try {
             let data = await Storage.getAllInDirectory(PATH_MAPPING.TILE_DEFINITION, OfflineRegion);
@@ -90,16 +137,32 @@ class OverlayStore extends BaseStore
         }
     }
 
-
-
-    getOfflineLayer(): Layer {
+    /**
+     * Returns the pointer to off-line aerial maps.
+     *
+     * @returns {Layer}
+     * @memberof OverlayStore
+     */
+    public getOfflineLayer(): Layer {
         return this.layers.get(LAYER_IDENTIFIERS.LAYER_SEZNAM_AERIAL_MAPS_OFFLINE);
     }
 
+    /**
+     * Lists available layers.
+     *
+     * @returns {Promise<Layer[]>}
+     * @memberof OverlayStore
+     */
     public async getAvailableLayers() : Promise<Layer[]> {
         return Array.from(this.layers.values());
     }
 
+    /**
+     * Returns pointer to the default layer.
+     *
+     * @returns {Promise<Layer>}
+     * @memberof OverlayStore
+     */
     public async getDefaultLayer() : Promise<Layer>
     {
         return this.defaultLayer;
@@ -109,6 +172,5 @@ class OverlayStore extends BaseStore
 const store = new OverlayStore();
 
 export default store;
-
 
 export { LAYER_IDENTIFIERS };

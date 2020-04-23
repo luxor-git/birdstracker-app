@@ -7,8 +7,20 @@ import Constants from 'expo-constants';
 import { ApiConstants, formatPostRequest, apiRequest, formatDate } from "../common/ApiUtils";
 import NetStore from './NetStore';
 
+/**
+ * Store dealing with notification requests.
+ *
+ * @class NotificationStore
+ * @extends {BaseStore}
+ */
 class NotificationStore extends BaseStore
 {
+  /**
+   * Registers user for notifications.
+   *
+   * @returns {Promise<boolean>}
+   * @memberof NotificationStore
+   */
     async registerForNotifications() : Promise<boolean>
     {
         if (Constants.isDevice) {

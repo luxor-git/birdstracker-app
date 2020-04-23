@@ -76,19 +76,38 @@ Stáhnutí off-line regionu map se aktivuje po kliknutí na položku v kontextov
 
 %Clements, Paul; Felix Bachmann; Len Bass; David Garlan; James Ivers; Reed Little; Paulo Merson; Robert Nord; Judith Stafford (2010). Documenting Software Architectures: Views and Beyond, Second Edition. Boston: Addison-Wesley. ISBN 978-0-321-55268-6.
 
-Aplikační (resp. softwarová) architektura popisuje strukturu softwarového systému. Struktura softwarového systému obsdahuje softwarové elementy, jejich vztahy a vlastnosti elementů a jejich vlastností (ref). Přístupy k této disciplíně se liší dle metodiky vývoje softwaru, rigozórní metody preferují architekturu dopředu pevně formulovat, zatímco více agilní metodiky pravý opak. V rámci této práce softwarová architektura nebyla řešena příliš do podrobna, jelikož se jedná o velmi malou aplikaci. Cílem bylo navrhnout koncept bez zbytečných duplikacích kódu, možností centralizovaného čtení a zápisu do cache, volání API z jednoho místa a přehlednost kódu.
+Aplikační (resp. softwarová) architektura popisuje strukturu softwarového systému. Struktura softwarového systému obsahuje softwarové elementy, jejich vztahy a vlastnosti elementů a jejich vlastností (ref). Přístupy k této disciplíně se liší dle metodiky vývoje softwaru, rigozórní metody preferují architekturu dopředu pevně formulovat, zatímco více agilní metodiky pravý opak. V rámci této práce softwarová architektura nebyla řešena příliš do podrobna, jelikož se jedná o velmi malou aplikaci a úmyslem bylo dodat produkt co nejdříve. Cílem bylo navrhnout koncept bez zbytečných duplikacích kódu, možností centralizovaného čtení a zápisu do cache, volání API z jednoho místa a přehlednost kódu.
 
 \subsection{Základní koncepce}
 
-Pro řešení aplikace byly zvoleny architektonické vzory, tedy typické architektury, které se v návrhu softwarových architektur často vyskytují. Aplikace byla navrhnutá jako dvouvrstvá klient-server aplikace, kde první vrstva zajišťuje operaci s daty (modelová vrstva, podkapitola Datové zdroje a entity) a druhá vrstva správné zobrazení (prezentační vrstva, podkapitola Komponenty). Tento koncept byl zvolen díky plnému splnění architektonických nároků malé aplikace a komponentové architektuře React.
+Pro řešení aplikace byly zvoleny architektonické vzory, tedy typické architektury, které se v návrhu softwarových architektur vyskytují. Aplikace byla navrhnutá jako dvouvrstvá klient-server aplikace, kde první vrstva zajišťuje operaci s daty (modelová vrstva, podkapitola Datové zdroje a entity) a druhá vrstva správné zobrazení (prezentační vrstva, podkapitola Komponenty). Tento koncept byl zvolen díky plnému splnění architektonických nároků malé aplikace a komponentové architektuře React, přičemž bylo zajištěno, že data jdou vždy jedním směrem.
 
 \subsection{Datové zdroje a entity}
 
-Aplikace je ze své podstaty klientem webové služby poskytované platformou Anitra. Komunikace se vzdáleným serverem probíhá pomocí Hyper Text Transfer Protoclu, za pomocí tzv. REST API formátu. Pro každou doménovou oblast bylo v aplikaci vytvořeno tzv. uložiště, objekt, který plní určité požadavky (prezentační vrstva nepotřebuje vědět, jakým způsobem byly získány). Uložiště pro každý požadavek provádí následující sekvenci rozhodnutí: pokusí se načíst výsledeck z cache a prověřit, že není starší než daný časový llimit. V případě že je přes časový limit a uživatel je připojený k internetu, uživateli se vrátí čerstvá odpověď z API. V případě že uživatel připojený k síti není, vrátí se uložená odpověď, případně chyba, pokud žádná není.
+Aplikace je ze své podstaty klientem webové služby poskytované platformou Anitra. Komunikace se vzdáleným serverem probíhá pomocí Hyper Text Transfer Protocolu, za pomocí tzv. REST API formátu, přičemž zprávy ze strany serveru jsou serializovány do formátu JSON. Pro každou doménovou oblast bylo v aplikaci vytvořeno tzv. uložiště -- třída, která plní určité business požadavky, přičemž prezentační vrstva nepotřebuje vědět, jakým způsobem byla data získána či předaná data zpracována.
+% todo diagram
+
+Pro aplikaci byly navrhnuty následující datové zdroje:
+
+\begin{itemize}
+	\item BaseStore -- základní třída pro společnou funkcionalitu,
+	\item AuthStore -- třída poskytující metody pro autentifikaci uživatele,
+	\item LocationStore -- třída zpracovávající získávání a ukládání GPS pozic,
+	\item NetStore -- třída zpracovávající události spojené s připojením a odpojením k internetu,
+	\item NotificationStore -- třída zpracovávající registraci k notifikacím,
+	\item OverlayStore -- třída zajišťující mapové podklady,
+	\item TrackingStore -- třída zajišťující akce spojené s jednotlivými trackery.
+\end{itemize}
 
 % todo krátký přehled entit
 
-% todo diagram
+\subsubsection{Cache}
+
+Uložiště pro každý požadavek provádí následující sekvenci rozhodnutí: pokusí se načíst výsledek z cache a prověřit, že není starší než daný časový llimit. V případě že je přes časový limit a uživatel je připojený k internetu, uživateli se vrátí čerstvá odpověď z API. V případě že uživatel připojený k síti není, vrátí se uložená odpověď, případně chyba, pokud žádná není.
+
+
 
 \subsection{Komponenty}
+
+V předchozích kapitolách byl zmíněn základ komponentového systému React. Komponenty v aplikaci lze rozdělit do dvou typů -- obrazovky a subkomponenty. Obrazovky sdružují subkomponenty do funkčního celku a předávají jim data. Subkomponenty zpravidla slouží k zobrazování určitých dat nebo uživatelské interakci. Subkomponentám jsou předávána data a události, je zde tedy zajištěná obousměrná komunikace mezi obrazovkou a komponentou. Předáním dat se zpravidla subkomponenta překreslí bez nutnosti překreslit nesouvisející (sub)komponenty.
 

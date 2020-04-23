@@ -10,16 +10,31 @@ import { ObservableMap } from 'mobx';
 import Constants from '../constants/Constants';
 import netStore from './NetStore';
 
+/**
+ * Tracking-related data sourcing.
+ *
+ * @class TrackingStore
+ * @extends {BaseStore}
+ */
 class TrackingStore extends BaseStore
 {
-    //private trackings: Map<number, Tracking> = new Map();
-
+    /**
+     * List of species.
+     *
+     * @private
+     * @type {Map<number, Species>}
+     * @memberof TrackingStore
+     */
     private species: Map<number, Species> = new Map();
 
-    //private loadedTrackings: ObservableMap<number, Tracking> = new ObservableMap();
-
-    public async getTrackingList(forceRefresh: boolean = false) : Promise<ListActionResult<Tracking>>
-    {
+    /**
+     * Returns a list of trackings.
+     *
+     * @param {boolean} [forceRefresh=false]
+     * @returns {Promise<ListActionResult<Tracking>>}
+     * @memberof TrackingStore
+     */
+    public async getTrackingList(forceRefresh: boolean = false) : Promise<ListActionResult<Tracking>> {
         // todo - TIMEOUT & NET CHECK
         let result = new ListActionResult<Tracking>(false);
 
@@ -66,8 +81,15 @@ class TrackingStore extends BaseStore
         return result;
     }
 
-    public async getTracking(id :number, forceRefresh: boolean = false) : Promise<EntityActionResult<Tracking>>
-    {
+    /**
+     * Returns a single tracking.
+     *
+     * @param {number} id
+     * @param {boolean} [forceRefresh=false]
+     * @returns {Promise<EntityActionResult<Tracking>>}
+     * @memberof TrackingStore
+     */
+    public async getTracking(id :number, forceRefresh: boolean = false) : Promise<EntityActionResult<Tracking>> {
         let res = new EntityActionResult<Tracking>(false);
 
         const allTrackings = await this.getTrackingList(forceRefresh);
@@ -85,6 +107,14 @@ class TrackingStore extends BaseStore
         return res;
     }
 
+    /**
+     * Parses received JSON data into a lighter structure.
+     *
+     * @private
+     * @param {*} trackingRow
+     * @returns {Promise<Tracking>}
+     * @memberof TrackingStore
+     */
     private async trackingFromList(trackingRow: any) : Promise<Tracking> {
         let tracking = new Tracking();
 
@@ -126,6 +156,12 @@ class TrackingStore extends BaseStore
         return tracking;
     }
 
+    /**
+     * Returns a list of all species.
+     *
+     * @returns {Promise<ListActionResult<Species>>}
+     * @memberof TrackingStore
+     */
     public async getSpecies(): Promise<ListActionResult<Species>> {
         let result = new ListActionResult<Species>(false);
         let fromCache = await Storage.fileExists(FILE_MAPPING.SPECIES);
@@ -179,6 +215,13 @@ class TrackingStore extends BaseStore
         return result;
     }
 
+    /**
+     * Returns single species object by id.
+     *
+     * @param {number} id
+     * @returns {Promise<Species>}
+     * @memberof TrackingStore
+     */
     public async getSpeciesById(id: number) : Promise<Species>
     {
         if (this.species.size === 0) {
@@ -188,9 +231,15 @@ class TrackingStore extends BaseStore
         return this.species.get(id);
     }
 
+    /**
+     * Returns list of photos of a tracking with a given id.
+     *
+     * @param {number} id
+     * @returns {Promise<ListActionResult<Photo>>}
+     * @memberof TrackingStore
+     */
     public async getPhotos(id: number) : Promise<ListActionResult<Photo>>
     {
-        ///api/v1/tracked-object/gallery/1591
         const apiToken = await AuthStore.getAuthToken();
 
         let response = await apiRequest(
@@ -224,8 +273,15 @@ class TrackingStore extends BaseStore
         return ret;
     }
 
-    public async getTrack(id: number, count: number) : Promise<Track>
-    {
+    /**
+     * Returns single track.
+     *
+     * @param {number} id
+     * @param {number} count
+     * @returns {Promise<Track>}
+     * @memberof TrackingStore
+     */
+    public async getTrack(id: number, count: number) : Promise<Track> {
         const apiToken = await AuthStore.getAuthToken();
         const path = PATH_MAPPING.TRACKS + '/' + id + '.json';
 
@@ -273,8 +329,14 @@ class TrackingStore extends BaseStore
         return track;
     }
 
-    public async getPoint(id: number) : Promise<PositionData>
-    {
+    /**
+     * Returns a single point.
+     *
+     * @param {number} id
+     * @returns {Promise<PositionData>}
+     * @memberof TrackingStore
+     */
+    public async getPoint(id: number) : Promise<PositionData> {
         const path = PATH_MAPPING.TRACKING_POINT + '/' + id + '.json';
 
         let data = await Storage.load(PositionData, path);
@@ -314,7 +376,6 @@ class TrackingStore extends BaseStore
 
         return positionData;
     }
-
 }
 
 const store = new TrackingStore();

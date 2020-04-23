@@ -8,12 +8,37 @@ import { observable } from "mobx";
 import * as SecureStore from 'expo-secure-store';
 import User from '../entities/User';
 
+/**
+ * This class handles user authentication.
+ *
+ * @class AuthStore
+ * @extends {BaseStore}
+ */
 class AuthStore extends BaseStore
 {
+    /**
+     * Authorization state.
+     *
+     * @type {boolean}
+     * @memberof AuthStore
+     */
     @observable public isAuthorized: boolean = false;
 
+    /**
+     * Current user.
+     *
+     * @private
+     * @type {User}
+     * @memberof AuthStore
+     */
     private user : User;
 
+    /**
+     * Awaits user authentication state.
+     *
+     * @returns {Promise<void>}
+     * @memberof AuthStore
+     */
     public async awaitAuth() : Promise<void>
     {
         const value = await AsyncStorage.getItem(STORAGE_KEY_INDEXES.AUTH_KEY);
@@ -40,17 +65,38 @@ class AuthStore extends BaseStore
         return;
     }
 
+    /**
+     * Placeholder function.
+     *
+     * @private
+     * @param {string} token
+     * @returns {Promise<boolean>}
+     * @memberof AuthStore
+     */
     private async verifyToken(token: string) : Promise<boolean>
     {
         return true;
     }
 
+    /**
+     * Returns authentication token.
+     *
+     * @returns {Promise<string>}
+     * @memberof AuthStore
+     */
     public async getAuthToken() : Promise<string>
     {
         await this.awaitAuth();
         return this.user.apiKey;
     }
 
+    /**
+     * Returns user object from AsyncStorage.
+     *
+     * @param {boolean} [forceRefresh=false]
+     * @returns {Promise<User>}
+     * @memberof AuthStore
+     */
     public async getUser(forceRefresh: boolean = false) : Promise<User>
     {
         if (!this.user || forceRefresh) {
@@ -72,6 +118,12 @@ class AuthStore extends BaseStore
         return this.user;
     }
 
+    /**
+     * Authenticates user from stored credentials.
+     *
+     * @returns {Promise<boolean>}
+     * @memberof AuthStore
+     */
     public async authenticateFromStoredCredentials() : Promise<boolean>
     {
         const credentials = await this.getStoredCredentials();
@@ -82,6 +134,14 @@ class AuthStore extends BaseStore
         }
     }
 
+    /**
+     * Performs authentication against the remote server with supplied credentials.
+     *
+     * @param {string} username
+     * @param {string} password
+     * @returns {Promise<BaseActionResult>}
+     * @memberof AuthStore
+     */
     public async authenticate(username: string, password: string) : Promise<BaseActionResult>
     {
         let result = new BaseActionResult(false);
@@ -119,6 +179,12 @@ class AuthStore extends BaseStore
         return response;
     }
 
+    /**
+     * Returns stored credentials.
+     *
+     * @returns {Promise<any>}
+     * @memberof AuthStore
+     */
     public async getStoredCredentials() : Promise<any>
     {
         try {
@@ -134,6 +200,12 @@ class AuthStore extends BaseStore
         }
     }
 
+    /**
+     * Logs the user out.
+     *
+     * @returns {Promise<void>}
+     * @memberof AuthStore
+     */
     public async logout() : Promise<void>
     {
         await AsyncStorage.clear();

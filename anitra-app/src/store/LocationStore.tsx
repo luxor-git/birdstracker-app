@@ -14,20 +14,45 @@ import * as TaskManager from 'expo-task-manager';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 
+/** Background task name */
 const LOCATION_TASK_NAME = 'LOCATION_TASK';
 
+/**
+ * Location processing function.
+ *
+ * @interface LocationProcessor
+ */
 interface LocationProcessor
 {
     (data: Location[]) : void;
 }
 
+/**
+ * Location store.
+ *
+ * @class LocationStore
+ * @extends {BaseStore}
+ */
 class LocationStore extends BaseStore
 {
 
+    /**
+     * True if location task is running.
+     *
+     * @private
+     * @type {boolean}
+     * @memberof LocationStore
+     */
     private isLocationUpdating: boolean = false;
 
     private eventListeners: LocationProcessor[];
 
+    /**
+     * Starts location update task.
+     *
+     * @returns {Promise<BaseActionResult>}
+     * @memberof LocationStore
+     */
     public async startLocationUpdates() : Promise<BaseActionResult>
     {
         if (this.isLocationUpdating === true) {
@@ -42,6 +67,7 @@ class LocationStore extends BaseStore
         if (status !== 'granted') {
             actionResult.success = false;
             actionResult.messages.push('Unable to get permissions');
+            this.startLocationUpdateTask();
         } else {
             actionResult.success = true;
             this.isLocationUpdating = true;
@@ -50,6 +76,12 @@ class LocationStore extends BaseStore
         return actionResult;
     }
 
+    /**
+     * Starts location update background task.
+     *
+     * @private
+     * @memberof LocationStore
+     */
     private async startLocationUpdateTask()
     {
         Location.startLocationUpdatesAsync(LOCATION_TASK_NAME,
@@ -63,11 +95,24 @@ class LocationStore extends BaseStore
         );
     }
 
+    /**
+     * Adds location event listener.
+     *
+     * @param {LocationProcessor} eventListener
+     * @memberof LocationStore
+     */
     public async addLocationListener(eventListener: LocationProcessor)
     {
         this.eventListeners.push(eventListener);
     }
 
+    /**
+     * Pushes new locations for location processors.
+     * This needs to be public since the task is not sharing the same context.
+     *
+     * @param {Location[]} locations
+     * @memberof LocationStore
+     */
     public async pushNewLocations(locations: Location[])
     {
         this.eventListeners.forEach((x) => {
