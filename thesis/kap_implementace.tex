@@ -1,3 +1,172 @@
 %%% Fiktivní kapitola s ukázkami sazby
 
 \chapter{Implementace}
+
+Kapitola implementace se věnuje konkrétním akcím vedoucím k vytvoření spustitelného aplikačního artefaktu. V jednotlivých podkapitolách budou uvedeny využité prostředky, konkrétní kroky a jejich výstupy. Některé z těchto kroků jsou použitelné pro všechny Expo projekty a některé úsudky lze využit při vytváření vlastních Expo projektů. Za zmínku zde také stojí kapitola Implementace off-line map, ve které je popsán způsob jak zajistit funkční off-line mapy pro Expo projekty, pro co neexistují zatím žádné komunitní knihovny nebo Expo-nativní způsoby řešení.
+
+\section{Vývojové prostředí}
+
+% https://www.techopedia.com/definition/16376/development-environment
+
+Vývojové prostředí je kolekce procedur a nástroj pro vývoj, testování a ladění aplikací nebo programů (ref). Termín vývojové prostředí se používá v synonymu s termínem IDE, integrovaným vývojový prostředím, což je softwarový nástroj pro psaní, stestavení, testování a ladění programů. Do tohoto termínu taktéž lze zahrnout i nástroje co IDE samotné využívá pro setavení artefaktů.
+
+Pro vývoj aplikace byly zvoleny následující nástroje vývojového prostředí:
+
+\begin{itemize}
+	\item VisualStudio Code jako nástroj IDE,
+	\item Git jako verzovací nástroj,
+	\item GitHub jako nástroj verzování i projektového řízení,
+	\item AndroidStudio pro správu Android virtuálních strojů,
+	\item XCode pro správu iOS virtuálních strojů (pouze na MacOS).
+\end{itemize}
+
+Další klíčový softwarový nástroj je taktéž instalace Node.js a balíčkovacího nástroje NPM, bez kterých by vývoj Expo aplikce nemožný. Text této práce se jejich instalaci nevěnuje a předpokládá, že již nainstalované jsou. Instalace na běžných a aktuálních verzích OS není problémem.
+
+Do pojmu vývojové prostředí se zahrnují i izolovaná prostředí, ve kterém běží testovací nebo produkční instance aplikace (resp. datového zdroje), v tomto případě platformy Anitra. Pro vývoj této aplikace nebylo toto rozlišení nutné a vyvílejo se přímo na produkční verzi platformy Anitra.
+
+\subsection{Vytvoření projektu}
+
+V ukázce kódu \ref{expoinstall} bylo již zmíněno, jakým způsobem vytvořit Expo projekt. Pro vytvoření expo projektu stačí zadat následující příkazy do příkazové řádky.
+
+\begin{lstlisting}[language=Bash, caption=Vytvoření nového projektu]
+npm install --global expo-cli
+expo init mobilni-aplikace
+\end{lstlisting}
+
+První řádek nainstaluje \emph{expo-cli}, nástroje pro vytváření, správu, spouštění a sestavení Expo projektů. Druhý příkaz vytvoří nový expo projekt \emph{mobilni-aplikace} v aktuální složce uživatele.
+
+Z předpřipraveného kódu je dobré zminit vstupní bod aplikace \emph{App.tsx}, ve kterém je připravená ukázková komponenta. Z tohoto vstupního bodu se implementují navigátory zmíněné v kapitole Implementace navigátorů.
+
+\section{Implementace obrazovek}
+
+\section{Implementace komponent}
+
+\subsection{Implementace off-line map}
+
+Pro implementace off-line map bylo nutno vytvořit dvě komponenty. První komponentou jsou off-line mapy samotné, druhou komponentou způsob, jak vybrat rozsah, který má být stáhnut.
+
+Off-line schopnost map je umožněna díky následujícím klíčovým možnostem: možnost načítat tzv. tile mapy (mapy uložené ve formátu obrázků s jednoznačným indexem v dimenzích x, y a z) a URI, které využívá Expo i pro ukládání souborů. Pro mapy je tedy jedno, zda načítají jednotlivé mapové čtverečky z disku, či přímo ze vzdáleného mapového serveru.
+
+\begin{lstlisting}[language=JavaScript, caption=Off-line mapy]
+import { UrlTile } from 'react-native-maps';
+<MapView..>
+	<UrlTile urlTemplate="..."/>
+</MapView>
+\end{lstlisting}
+
+Do urlTemplate se místo vzdáleného zdroje doplní část kódu, která obsahuje parametry pro jednotlivé dimenze mapy ve formátu \emph{\{z\}/\{x\}/\{y\}.png}. Každý mapový čtvereček je následně načítán z disku. Toto chování je vhodné zapnout pouze v případě že uživatel není připojený k síti, či na přímé vyžádání uživatele.
+
+Z časových nedostatků nebylo možno vytvořit komfortní uživatelský nástroj pro výběr off-line map.
+
+\section{Implementace navigátorů}
+
+Pro implementaci navigátorů byla vybrána již zmiňovaná standardní knihovna \emph{react-navigation}. Pro instalaci je využitý balíčkovací nástroj NPM.
+
+\begin{lstlisting}[language=Bash, caption=Instalace react-navigation]
+npm install react-navigation
+npm install react-navigation-stack
+\end{lstlisting}
+
+Po instalaci je nejprve ve vybrané React komponentě nejprve naimportovat dané knihovny. 
+
+\begin{lstlisting}[language=JavaScript, caption=Import knihoven pro hlavní navigátor]
+import { createSwitchNavigator, createAppContainer, NavigationContainerComponent, NavigationActions } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+\end{lstlisting}
+
+Importováním těchto závislostí půjde vytvořit switch navigátor, hlavní navigační kontejner aplikace a stack navigátor. Následně je nutno naimportovat komponenty obrazovek následujícím způsobem.
+
+\begin{lstlisting}[language=JavaScript, caption=Import obrazovek pro hlavní navigátor]
+import Welcome from './src/screens/auth/Welcome'; // naimportuje komponentu obrazovky Welcome
+import Login from './src/screens/auth/Login';
+import Register from './src/screens/auth/Register';
+import MapScreen from './src/screens/in/Map';
+\end{lstlisting}
+
+Navigátory lze následně sestavit modulárním způsobem vkládání do sebe, kde listy grafu navigátorů jsou jednotlivé komponenty obrazovek.
+
+\begin{lstlisting}[language=JavaScript, caption=Implementace navigátorů]
+const AuthContainer = createStackNavigator({
+	Welcome: Welcome,
+	Login: Login,
+	Register: Register
+}, {
+	headerMode: 'none'
+});
+
+const AppNavigator = createSwitchNavigator({
+	AuthLoading: AuthLoading,
+	Map: MapScreen,
+	AuthContainer: AuthContainer
+}, {
+	"initialRouteName": "AuthLoading" // nazev vychozi cesty, resp. obrazovkove komponenty
+});
+\end{lstlisting}
+
+Navigátory se následně obalí aplikačním kontejnerem, ze kterého se vytvoří hlavní komponenta aplikace, tedy její vstupní bod.
+
+\begin{lstlisting}[language=JavaScript, caption=Vytvoření aplikačního kontejneru]
+const AppContainer = createAppContainer(
+	AppNavigator
+);
+
+export default class App extends React.Component
+{
+	render () {
+		return (
+				<React.Fragment>
+					<AppContainer ref = { setNavigatorRef }/>
+					<FlashMessage position="top" />
+				</React.Fragment>
+		)
+	}
+}
+\end{lstlisting}
+
+V ukázce kódu se vytváří komponenta App, která je vstupním bodem aplikace. V komponentě App se nachází fragment, který je kolekcí různých React komponent a sám nemá v uživatelském rozhraní žádnou funkci. Následně se vytvořený AppContainer využije přímo v komponentě a jeho vykresleným obsahem se stávají různé obrazovky specifikované v předchozích ukázkách kódu. Ačkoliv se nejedná přímo o funkce navigátoru, na stejné úrovni se také nachází komponenta FlashMessage, která zajistí, že se tzv. flash zprávy vygenerované v aplikaci zobrazují napříč všemi obrazovkami z jednoho místa (tedy bez duplikace kódu). Nejedná se tedy o funkci navigátoru, ale pouze o komponentu, kterou je vhodno umístit na nejvyšší úroveň kvůli prevenci duplikaci kódu a jedná se o vhodnou ukázku, co lze na stejnou úroveň jako kontejner navigátorů vložit.
+
+Pro přenavigování lze využít v jakékoliv komponentě umístěné pod AppContainerem (resp. pod jakýmkoliv navigátorem) funkcí uvedenou níže.
+
+\begin{lstlisting}[language=JavaScript, caption=Přenavigování]
+this.props.navigation.navigate("Map");
+\end{lstlisting}
+
+Všem komponentám je předán odkaz na navigátor a pomocí klíče (názvu) obrazovky se na ni lze přenavigovat kdekoliv uvnitř komponenty, např. při reagování na kliknutí z tlačítka či doběhnutím vnitřní události. Navigace mimo komponentu ale tímto způsobem není možná, proto byl autorem aplikace v App.tsx vytvořena možnost, jak tuto funkci z komponenty získat. V komponentě AppContainer byl specifikován atribut ref. Atribut ref v Reactu slouží k získání instance určité komponenty. Komponenta se předá funkci setNavigatorRef, který do lokální proměnné vloží instanci navigátoru. Aplikace nad touto lokální instancí vytváří funkci navigate, ve které volá událost navigace a je tedy možné z kódu mimo komponenty volat funkce navigace.
+
+\begin{lstlisting}[language=JavaScript, caption=Přenavigování]
+let instanceRef: NavigationContainerComponent;
+
+function setNavigatorRef(instance: NavigationContainerComponent) {
+	instanceRef = instance;
+}
+
+function navigate(routeName, params) {
+	instanceRef.dispatch(
+		NavigationActions.navigate({
+			routeName,
+			params,
+		})
+	);
+}
+\end{lstlisting}
+
+\section{Implementace push notifikací}
+
+Jednou z mnoha výhod platformy Expo je jednoduchost napojení aplikačních push notifikací. Není potřeba využívat různé poskytovatele pro různé platformy, Expo zajistí doručení na jakékoliv zařízení, které se k notifikacím registruje. Výhodou také je jednoduchost celého systému, kde stačí aby se zařízení pouze oznámilo serveru svým identifikátorem a následně lze notifikace volat za pomocí REST API Expo. Celý proces je velmi jednoduchý na implementování v mobilní aplikaci i ve zdroji notifikací. Získání notifikací na straně aplikace lze docílit následujícím způsobem.
+
+\begin{lstlisting}[language=JavaScript, caption=Expo notifikace]
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+import Constants from 'expo-constants';
+
+
+const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+
+if (finalStatus !== 'granted') {
+	return;
+}
+
+const token = await Notifications.getExpoPushTokenAsync();
+\end{lstlisting}
+
+Pro notifikace je nutno získat uživatelovo svolení. Pokud svolení dá, Expo vrátí textový token, který se následně dá použít pro poslání notifikace na konkrétní zařízení. Pro zjednodušení práce s větším počtem stejných notifikací je možnost vytvářet skupiny příjemců, aplikace tohoto nevyužívá. Kód pro generování zpráv na straně serveru není součástí této práce a je pouze obsažen ve webovém backendu aplikace Anitra.

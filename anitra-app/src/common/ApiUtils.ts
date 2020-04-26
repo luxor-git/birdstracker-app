@@ -12,7 +12,8 @@ export const ApiConstants = {
     API_GALLERY: 'gallery',
     API_TRACK: 'data',
     API_POINT: 'get-point',
-    API_NOTIFICATION_URL: ''
+    API_NOTIFICATION_URL: 'notification',
+    API_USER: 'user'
 };
 
 /**

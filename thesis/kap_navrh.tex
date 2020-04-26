@@ -2,13 +2,14 @@
 
 \chapter{Návrh}
 
-Kapitola návrh se věnuje dvou tématům. V první části se věnuje návrhu uživatelského rozhraní a přechodů mezi obrazovkami. V druhé části se věnuje tradičnějšímu chápání slova návrh ve vývoji, a to softwarové architektuře. Cílem návrhu je vytvořit 
+Kapitola návrh se věnuje dvou tématům. V první části se věnuje návrhu uživatelského rozhraní a přechodů mezi obrazovkami. V druhé části se věnuje tradičnějšímu chápání slova návrh ve vývoji, a to softwarové architektuře. Cílem návrhu je vytvořit postup, jakým se má při implementaci postupovat.
 
 \section{Uživatelské rozhraní}
 
 Návrh uživatelského rozhraní je disciplínou softwarového inženýrství, která se věnuje návrhu uživatelského rozhraní na koncepční úrovni. Při vytváření uživatelského rozhraní je nutno brát v potaz požadavky uživatelů, aby nebylo ubíráno na efektivitě aktivity uživatele v aplikaci. Cílem je navrhnout uživatelské rozhraní pro uživatele rychlo uchopitelné a přehledné. V disciplíně návrhu uživatelského rozhraní se využívá mnoho modelovacích technik, např. prototypování a drátěné modely. Pro správné posouzení efektivnosti uživatelského rozhraní je nutno tyto modely konfrontovat s potenciálními uživateli a sledovat jejich reakce a přpomínky a reflektovat je v následujících iteracích návrhu uživatelského rozhraní. 
 
 Pro tuto práci byla zvolena technika drátěných modelů (tzv. wireframe), schematickým nákresem prvků na obrazovce a jakým způsobem do sebe zapadají (ref). Tyto návrhy jsou ušetřeny komentářů, které součástí wireframů někdy bývají. V rámci této práce nebylo možno provádět studie mezi potenciálními uživateli, byl zvolen alternativní způsob inspirace známými UI elementy, které jsou přítomny v jiných aplikacích. 
+
 
 % https://www.academia.edu/6511543/The_Elements_of_User_Experience_User-Centered_Design_for_the_Web_and_Beyond_Second_Edition p. 128
 
@@ -80,17 +81,17 @@ Aplikační (resp. softwarová) architektura popisuje strukturu softwarového sy
 
 \subsection{Základní koncepce}
 
-Pro řešení aplikace byly zvoleny architektonické vzory, tedy typické architektury, které se v návrhu softwarových architektur vyskytují. Aplikace byla navrhnutá jako dvouvrstvá klient-server aplikace, kde první vrstva zajišťuje operaci s daty (modelová vrstva, podkapitola Datové zdroje a entity) a druhá vrstva správné zobrazení (prezentační vrstva, podkapitola Komponenty). Tento koncept byl zvolen díky plnému splnění architektonických nároků malé aplikace a komponentové architektuře React, přičemž bylo zajištěno, že data jdou vždy jedním směrem.
+Pro řešení aplikace byly zvoleny architektonické vzory, tedy typické architektury, které se v návrhu softwarových architektur vyskytují. Aplikace byla navrhnutá jako dvouvrstvá klient-server aplikace, kde první vrstva zajišťuje operaci s daty (modelová vrstva, podkapitola Datové zdroje a entity) a druhá vrstva správné zobrazení (prezentační vrstva, podkapitola Komponenty). Tento koncept byl zvolen díky plnému splnění architektonických nároků malé aplikace a komponentové architektuře React, přičemž bylo zajištěno, že je dodržen princip toku dat (z modelů do komponent) a událostí (z komponent do modelů). 
 
 \subsection{Datové zdroje a entity}
 
-Aplikace je ze své podstaty klientem webové služby poskytované platformou Anitra. Komunikace se vzdáleným serverem probíhá pomocí Hyper Text Transfer Protocolu, za pomocí tzv. REST API formátu, přičemž zprávy ze strany serveru jsou serializovány do formátu JSON. Pro každou doménovou oblast bylo v aplikaci vytvořeno tzv. uložiště -- třída, která plní určité business požadavky, přičemž prezentační vrstva nepotřebuje vědět, jakým způsobem byla data získána či předaná data zpracována.
+Aplikace je ze své podstaty klientem webové služby poskytované platformou Anitra, data z trackerů jiným způsobem optimálně získat nelze. Komunikace se vzdáleným serverem probíhá pomocí Hyper Text Transfer Protocolu, za pomocí tzv. REST API formátu, přičemž zprávy ze strany serveru jsou serializovány do formátu JSON, které v aplikaci odpovídají entitám (vyměněné zprávy jsou většinou počtem atributů nadmnožinou, mobilní aplikace nepotřebuje všechna data). Pro každou doménovou oblast bylo v aplikaci vytvořeno tzv. uložiště -- třída, která plní určité business požadavky, přičemž prezentační vrstva nepotřebuje vědět, jakým způsobem byla data získána či předaná data zpracována. Název uložiště byl zvolen právě z důvodu, že třídy zajišťují i cachování objektů.
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=165mm]{img/classdiagram.png}
+		\includegraphics[width=145mm]{img/classdiagram.png}
 	\end{center}
-	\caption[Class diagram]{Class diagram -- zdroj: autor}
+	\caption[Class diagram datových zdrojů a entit]{Class diagram -- zdroj: autor}
 \end{figure}
 
 Pro aplikaci byly navrhnuty následující datové zdroje:
@@ -117,24 +118,42 @@ Na datové zdroje navazují entity, objekty, se kterými komponenty i datové zd
 
 \subsubsection{Cache}
 
-%todo diagram
 
-Uložiště pro každý požadavek provádí následující sekvenci rozhodnutí: pokusí se načíst výsledek z cache a prověřit, že není starší než daný časový llimit. V případě že je přes časový limit a uživatel je připojený k internetu, uživateli se vrátí čerstvá odpověď z API. V případě že uživatel připojený k síti není, vrátí se uložená odpověď, případně chyba, pokud žádná není.
+Uložiště pro každý požadavek provádí následující sekvenci rozhodnutí: pokusí se načíst výsledek (entitu) z cache a prověřit, že není starší než daný časový limit, aby byla dodržena aktuálnost dat. V případě že je stáří entity přes časový limit a uživatel je připojený k internetu, uživateli se vrátí čerstvá odpověď z API. V případě že uživatel připojený k síti není, vrátí se uložená odpověď, případně chyba, pokud žádná není. Chyba je odchycena v uživatelském rozhraní a uživateli se zobrazí hláška, že tento zdroj nebyl uložen do aplikační cache. V případě že soubor v cache není a uživatel je připojen k internetu, z API se entita získá a uloží na disk. Tímto se zajistí dostupnost aktuálních dat v případě že uživatel připojený k internetu je a dostupnost dat v případě že není. V obrázku \ref{cachediagram} je celý proces vyznačen vývojovým diagramem.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=145mm]{img/cache.pdf}
+	\end{center}
+	\caption[Cache -- vývojový diagram]{Vývojový diagram cache -- zdroj: autor}
+	\label{cachediagram}
+\end{figure}
+
 
 \subsection{Komponenty}
 
-V předchozích kapitolách byl zmíněn základ komponentového systému React. Komponenty v aplikaci lze rozdělit do dvou typů -- obrazovky a subkomponenty. Obrazovky sdružují subkomponenty do funkčního celku a předávají jim data. Subkomponenty zpravidla slouží k zobrazování určitých dat nebo uživatelské interakci. Subkomponentám jsou předávána data a události, je zde tedy zajištěná obousměrná komunikace mezi obrazovkou a komponentou. Předáním dat se zpravidla subkomponenta překreslí bez nutnosti překreslit nesouvisející (sub)komponenty.
+V předchozích kapitolách byl zmíněn základ komponentového systému React, který aplikace využívá. Komponenty jsou samostatné (a často znovupoužitelné) části aplikace s datovými vstupy a reagující na události, ať už uživatelského rozhraní či dceřiných komponent. Komponenty v aplikaci lze rozdělit do dvou typů dle funkcí, které plní. První skupinou jsou obrazovky sdružují komponenty neobrazovkového typu (dále subkomponenty) do funkčního celku a předávají jim data a reagují na jejich události. Subkomponenty zpravidla slouží k zobrazování určitých dat nebo uživatelské interakci. Subkomponentám jsou předávána data a s obrazovkami komunikují přes události, je zde tedy zajištěná obousměrná komunikace mezi obrazovkou a komponentou. Předáním dat se zpravidla subkomponenta překreslí bez nutnosti překreslit nesouvisející (sub)komponenty, čímž je splněna tzv. reaktivita aplikace (zajištěna předem zmíněnou knihovnou MobX).
 
 Komponenty jsou strukturovány do složek dle svého typu. Obrazovky jsou uloženy ve složce \emph{src/screens}, subkomponenty se nachází ve složce \emph{src/components}.
 
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=145mm]{img/components.pdf}
+	\end{center}
+	\caption[Strom komponent]{Strom komponent -- zdroj: autor, klíč níže}
+	\label{componenttree}
+\end{figure}
+
 \subsubsection{Obrazovky}
 
-Obrazovky v aplikaci se skládají do tzv. navigátorů. Navigátor je komponentou knihovny \emph{react-navigation}, která umožňuje přepínat mezi obrazovkami v reakci na uživatelské interakce nebo události v kódu (ref). Navigátory se rozlišují dle typů uživatelských interakcí pro přenavigování, v aplikaci se používají pouze dva z mnoha typů. Prvním použitým typem je \emph{SwitchNavigator}, který nemá prostředky pro navigaci mezi obrazovkami na základě uživatelských interakcí (např. tlačítko zpět, gesto přetáhnutí po obrazovce). Tento navigátor je vhodný pro úvodní stránku s rozhodnutí, zda má uživatel být přesměrován na přihlášení nebo do aplikace. Druhým využitým navigátorem je \emph{StackNavigator}, který funguje na principu zásobníku. Každá nová otevřená obrazovka se přiřadí na vrchol zásobníku a uživatel se může z této obrazovky vždy vrátit na předchozí. Tento navigátor se hodí např. na registraci a přihlášení. Pro plné pochopení možností navigátorů je nutné uvést, že se navigátory mohou vnořovat do sebe.
+Obrazovky v aplikaci se skládají do tzv. navigátorů. Navigátor je komponentou knihovny \emph{react-navigation}, která umožňuje přepínat mezi obrazovkami v reakci na uživatelské interakce nebo události v kódu (ref). Princip práce s navigátory je daný historií knihovny React  a v nomenklatuře i chování odpovídá principům webových stránek. Každá obrazovka je přirovnatelná k webové stránce, navigátor mezi nimi umí přesměrovat a fungují zde koncepty navigačních tlačítek zpět i vpřed. Navigátory se rozlišují dle typů uživatelských interakcí pro přenavigování, v aplikaci se používají pouze dva z mnoha typů. Navigátory lze skládat do sebe a lze se navigovat napříč obrazovkami jiných navigátorů.
 
-Aplikace bude celá obalena v jednom SwitchNavigatoru, pro jednodušší správu autentizované a neautentizované části aplikace. Výchozí obrazovkou aplikace je \emph{AuthLoading}, která rozhodne, zda se uživatel má přesměrovat do neautentizované části či do autentizované. Neautentizovaná část se dále dělí na stránky onboarding, přihlášení a registrace. Mezi neautentizovanými stránkami lze přepínat gestem či tlačítkem zpět. Autentizovaná část je postavena na mapové koncepci aplikace a není využitý žádný navigátor.
+Prvním použitým typem je \emph{SwitchNavigator}, který nemá prostředky pro navigaci mezi obrazovkami na základě uživatelských interakcí (např. tlačítko zpět, gesto přetáhnutí po obrazovce), ale pouze z kódu. Tento navigátor je vhodný pro úvodní stránku s rozhodnutí, zda má uživatel být přesměrován na přihlášení nebo do aplikace. V obrázku \ref{componenttree} je uveden v zaobleném obdélníku nahoře pod názvem AppNavigator.
 
-%todo strom komponent
+Druhým využitým navigátorem je \emph{StackNavigator}, který funguje na principu zásobníku (ref). Každá nová otevřená obrazovka se přiřadí na vrchol zásobníku a uživatel se může z této obrazovky vždy vrátit na předchozí. Tento navigátor se hodí např. na registraci a přihlášení. Na obrázku \ref{componenttree} je uveden v kosodélníku vpravo pod názvem AuthContainer.
+
+Aplikace bude celá obalena v jednom SwitchNavigatoru, pro jednodušší správu autentizované a neautentizované části aplikace. Výchozí obrazovkou aplikace je \emph{AuthLoading}, která rozhodne, zda se uživatel má přesměrovat do neautentizované části či do autentizované. Neautentizovaná část (pod navigátorem \emph{AuthContainer}) se dále dělí na stránky onboarding (Welcome), přihlášení (Login) a registrace (Register). Mezi neautentizovanými stránkami lze přepínat gestem či tlačítkem zpět. Autentizovaná část (Map) je postavena na mapové koncepci aplikace a není využitý žádný navigátor, ale modální okna tvořená subkomponentami.
 
 \subsection{Subkomponenty}
 
-Subkomponenty vycházejí z předešlých částí návrhu (konkrétněji wireframe) a pro každou komponentu z wireframe bude vytvořena vlastní React komponenta. Pro často používané opakující se fragmenty v GUI lze také využít vlastní komponenty, o tomto bude rozhodnuto v implementaci.
+Subkomponenty vycházejí z předešlých částí návrhu (konkrétněji wireframe) a pro každou komponentu z wireframe bude vytvořena vlastní React komponenta. Pro často používané opakující se fragmenty v GUI lze také využít vlastní komponenty, o tomto bude rozhodnuto v implementaci. Subkomponenty nebyly předem plánovány do stejné úrovně jako obrazovky a mimo subkomponenty definovaé z wireframů byly vytvářeny ad hoc. Některé subkomponenty jsou vyznačeny v obrázku \ref{componenttree} v fialových šestiúhelnících pod obrazovkou Map.

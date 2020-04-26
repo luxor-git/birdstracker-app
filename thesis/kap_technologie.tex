@@ -240,7 +240,7 @@ MobX je knihovna pro reaktivní správu stavu aplikace (ref)
 % https://docs.expo.io/versions/latest/
 % https://flatlogic.com/blog/why-i-don-t-want-to-use-react-native-with-expo/
 
-Expo je součástí nástrojů a služeb postavených nad React Native a nativními platformami sloužící k vývoji, sestavení, nasazení a rychlé iteraci iOS, Android a webových aplikací s jednotným zdrojovým kódem (ref). Expo je abstrakce oddělující React Native kompletně od nativního kódu a tedy od nutnosti vyvíjet ve třech jazycích. Expo poskytuje většinu API pro běžné mobilní aplikace (podstatnou výjimkou je Bluetooth a nákupy v aplikaci), nástroje pro rapidní vývoj a cloudovou infrastrukturu pro sestavení, není tedy nutné pro sestavení např. iOS aplikace vlastnit stroj s operačním systémem MacOS. Nástroje pro rapidní vývoj jsou obrovské plus platformy Expo -- JS se sestaví na stroji vývojáře, odešle se na servery Expo a je možné projekt spustit na jakémkoliv zařízení za pomocí speciální mobilní aplikace a QR kódu. Z tohoto zařízení je v realném čase možné sledovat běh událostí a ladících zpráv. 
+Expo je součástí nástrojů a služeb postavených nad React Native a nativními platformami sloužící k vývoji, sestavení, nasazení a rychlé iteraci iOS, Android a webových aplikací s jednotným zdrojovým kódem (ref). Expo je abstrakce oddělující React Native kompletně od nativního kódu a tedy od nutnosti vyvíjet i ReactNative aplikace ve třech jazycích (JS pro ReactNative, Java pro Android a Swift pro iOS). Expo poskytuje většinu API pro běžné mobilní aplikace (podstatnou výjimkou je Bluetooth a nákupy v aplikaci), nástroje pro rapidní vývoj a cloudovou infrastrukturu pro sestavení artefaktů, není tedy nutné pro sestavení např. iOS aplikace vlastnit stroj s operačním systémem MacOS. Nástroje pro rapidní vývoj jsou obrovské plus platformy Expo -- aplikační kód se odešle se na servery Expo jedním příkazem (viz ukázka kódu \ref{expostart}), uživateli se vygeneruje QR kód pro oskenování mobilní aplikací a aplikaci je možné spustit na jakémkoliv zařízení za pomocí speciální aplikace. Z tohoto zařízení je v realném čase možné sledovat běh událostí a ladících zpráv na stroji vývojáře. 
 
 Mezi nevýhody Expo se udává následující:
 
@@ -259,19 +259,19 @@ Při vývoji čistě React Native aplikací a Expo aplikací není poznat témě
 
 Pro vytvoření Expo aplikace stačí zadat následující kód do příkazové řádky:
 
-\begin{lstlisting}[language=Bash, caption=Vytvoření základní struktury aplikace]
+\begin{lstlisting}[language=Bash, caption=Vytvoření základní struktury aplikace,label={expoinstall}]
 npm install --global expo-cli
 expo init mobilni-aplikace
 \end{lstlisting}
 
 Expo automaticky vytvoří doporučovanou adresářovou strukturu a ukázkové komponenty. Většina projektů má tedy stejný základ a vývojáři by se v nich měli lépe vyznat. Pro spuštění sestavovacích nástrojů a live-reload funkce stačí do příkazové řádky zadat:
 
-\begin{lstlisting}[language=Bash, caption=Spuštění mobilní aplikace na virtuálním stroji nebo připojeném zařízení]
+\begin{lstlisting}[language=Bash, caption=Spuštění mobilní aplikace na virtuálním stroji nebo připojeném zařízení,label={expostart}]
 expo start --android #platforma Android
 expo start --ios #platforma iOS
 \end{lstlisting}
 
-Po spuštění příkazu se načte ve webovém prohlížeči obrazovka obsahující log sestavovacího nástroje (Metro Bundler), ladící výstupy aplikace, seznam proveditelných akcí a QR kód pro spuštění aplikace na jakémkoliv mobilním zařízení s klientskou aplikací Expo. Z této obrazovky je taktéž možné projekt publikovat přes cloudové nástroje Expo. Alternativní způsob je popsán v následující kapitole.
+Po spuštění příkazu se načte ve webovém prohlížeči obrazovka obsahující log sestavovacího nástroje (Metro Bundler), ladící výstupy aplikace, seznam proveditelných akcí a QR kód pro spuštění aplikace na jakémkoliv mobilním zařízení s klientskou aplikací Expo. Z této obrazovky je taktéž možné projekt publikovat přes cloudové nástroje Expo. Alternativní způsob sestavení spustitelného artefaktu pro mobilní zařízení je popsán v následující kapitole.
 
 \begin{figure}[h]
 	\begin{center}
@@ -282,14 +282,25 @@ Po spuštění příkazu se načte ve webovém prohlížeči obrazovka obsahují
 
 \subsection{TurtleCLI}
 
-TurtleCLI je nástroj pro sestavení Expo aplikací z příkazové řádky. Nástroj je určen pro uživatele, kteří si nepřejí využívat infrastruktury poskytované od Expo pro sestavování vlastních aplikací, ale přejí si aplikaci sestavit například na vlastním stroji nebo na vlastním nástroji kontinuální integrace. Autor práce vybral tuto technologi z důvodu vysoké vytíženosti veřejné infrastruktury společnosti Expo (varianta nazývaná Community), kde jeho build ve frontě čekal v jednotkách hodin, než se dostal na řadu. Společnost Expo nabízí placenou variantu svých služeb, ve kterých avizuje výrazně vyšší rychlost odbavení, než u varianty zdarma a nástroje pro týmovou práci. Za značnou nevýhodu se taktéž může brát fakt, že kód je vždy odesílán třetí straně k sestavení, což pro mnoho firem může být nepřípustné. Oproti tomu provozování na vlastní infrastruktuře skýtá mnoho potenciálních výhod, za zmínku stojí napojení na firemní CI procesy, testovací infrastrukturu, rapidní nasazení mnoha paralelních větví do testovacích kanálů, jednodušší napojení sestavení na jiné akce. Níže je uvedena tabulka popisující podstatné rozdíly mezi jednotlivými způsoby sestavení Expo aplikací. 
+TurtleCLI je nástroj pro sestavení Expo aplikací z příkazové řádky. Nástroj je určen pro uživatele, kteří si nepřejí využívat infrastruktury poskytované od Expo pro sestavování vlastních aplikací, ale přejí si aplikaci sestavit například na vlastním stroji nebo na vlastním nástroji kontinuální integrace.
 
-\begin{table}[h]
-	\begin{tabular}{llll}
+Možnosti sestavení aplikací Expo jsou tedy dvojího typu, cloudové služby poskytované od Expo a TurtleCLI na vlastní infrastruktuře. Expo poskytuje cloudové služby zdarma ve variantě Community a placené prioritní zpracování ve variantě nazývané Priority.
+
+Autor práce vybral tuto technologi z důvodu vysoké vytíženosti veřejné infrastruktury společnosti Expo (varianta nazývaná Community), kde jeho build ve frontě čekal v jednotkách hodin, než se dostal na řadu. Společnost Expo nabízí placenou variantu svých služeb, ve kterých avizuje výrazně vyšší rychlost odbavení, než u varianty zdarma a nástroje pro týmovou práci. Za značnou nevýhodu se taktéž může brát fakt, že kód je vždy odesílán třetí straně k sestavení, což pro mnoho firem může být nepřípustné. Oproti tomu provozování na vlastní infrastruktuře skýtá mnoho potenciálních výhod, za zmínku stojí napojení na firemní CI procesy, testovací infrastrukturu, rapidní nasazení mnoha paralelních větví do testovacích kanálů, jednodušší napojení sestavení na jiné akce. Níže je uvedena tabulka popisující podstatné rozdíly mezi jednotlivými způsoby sestavení Expo aplikací. 
+
+\begin{table}[H]
+	\begin{tabularx}{\textwidth}{|X|X|X|X|}
+		\hline
 		Kategorie                        & Community         & Priority      & Vlastní infrastruktura                 \\
+		\hline
 		Cena                             & zdarma            & 29 USD / měs. & cena výpočetního výkonu                \\
-		Čekací doba na začátek sestavení & cca. 1h           & minuty        & ihned                                  \\
+		\hline
+		Čekací doba na začátek sestavení & cca. 1h           & minuty        & žádná                                  \\
+		\hline
 		Složitost zprovoznění            & součástí expo-cli & triviální     & dle zvolené varianty, nepříliš náročné \\
-		Provázanost s Expo               & vždy              & vždy          & dle zvolené varianty                  
-	\end{tabular}
+		\hline
+		Provázanost s Expo               & vždy              & vždy          & žádná \\     
+		\hline             
+	\end{tabularx}
+	\caption{Srovnání možností sestavení Expo aplikace}
 \end{table}
