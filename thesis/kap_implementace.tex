@@ -37,9 +37,133 @@ První řádek nainstaluje \emph{expo-cli}, nástroje pro vytváření, správu,
 
 Z předpřipraveného kódu je dobré zminit vstupní bod aplikace \emph{App.tsx}, ve kterém je připravená ukázková komponenta. Z tohoto vstupního bodu se implementují navigátory zmíněné v kapitole Implementace navigátorů.
 
+\section{Implementace uložišť a entit}
+
+Implementace uložišť a entit byla vytvořena dle návrhu aplikace. Bylo vytvořeno více entit, než bylo plánováno, aby celá aplikace komunikovala za pomocí typovaných objektů a tím se zjednodušil proces ladění v aplikaci i urychlil vývoj. Pro entity bylo využito rozhraní, aby entity pro funkce ukládání měly stejnou signaturu a bylo je možné používat ve stylu OOP bez složitých konstrukcí. V ukázce kódu uvedené níže je ukázáno rozhraní, které musí implementovat všechny entity a entity, které mají být uložitelné na disk.
+
+\begin{lstlisting}[language=JavaScript, caption=Ukázka entity]
+export interface IEntity {
+	id?: number;
+	
+	synchronized: boolean;
+	lastSynchronized?: Date;
+};
+
+export interface ISerializableEntity extends IEntity {
+	toJson() : object;
+	
+	toJsonString() : string;
+	
+	fromJson(json: any): IEntity;
+};
+\end{lstlisting}
+
+Implementace uložišť samotných spočívá v implementaci tří částí -- v komunikaci se serverem, transformaci dat od serveru a uložení těchto dat na disk. Pro komunikaci se serverem pomocí HTTP Rest API byla zvolena knihovna \emph{axios}, která se běžně používá v JavaScriptových projektech pro abstrakci rozdílů mezi jednotlivými klienty. Knihovna dále umožňuje jednodušší přístup např. k hlavičkám HTTP dotazu a je tedy jednoduché se např. oproti vzdálenému serveru autentifikovat. Axios očekává na vstupu objekt obsahující výčet parametrů a na výstupu vrací tělo dotazu zformátované do správného formátu (např. když server vrací JSON odpověď, Axios z vráceného textu správně složí JSON).
+
+Transformace dat ze serveru spočívá v převodu klíčů a hodnot vrácených ze serveru do předem zmíněných entit. Entity v aplikaci neobsahují celá data, ale pouze výčet, který aplikace skutečně potřebuje. Tímto se šetří nejen místo na disku, ale i doba serializace a deserializace entit při čtení z disku. V API nejde stanovit, jaká pole dotazovatel vyžaduje a filtrování je tedy nutno provést až na koncovém bodu procesu, tedy v mobilní aplikaci.
+
+Pro uložení dat byla využita součást Expo \emph{expo-file-system}, která abstrahuje od jednotlivých souborových systémů operačních systémů. Nevýhodou tohoto systému je neobratnost při zakládání složek, složky se musí vytvářet dopředu a nelze je vytvořit při zápisu souboru. Podstatnější nevýhodou je nutnost serializovat obsah souboru do textu, nejedná se tedy o příliš vhodnou metodu ukládání např. obrazových dat kvůli nutnosti převést binární data na textový formát např. Base64. Alternativní řešení pro Expo neexistuje. Ukázka práce se souborovým systémem je v následující ukázce kódu.
+
+\begin{lstlisting}[language=JavaScript, caption=Ukázka entity]
+import * as FileSystem from 'expo-file-system';
+
+let string = await FileSystem.readAsStringAsync(path);
+\end{lstlisting}
+
+Do proměnné string se asynchronně zapíše obsah souboru v cestě, v případě chyby čtení, např. způsobené neexistujícím souborem, se vyhodí výjimka. Soubor lze dále zpracovat předevím např. textu na JSON nebo na XML, případně jakýkoliv jiný formát, který aplikace využívá. V aplikaci se nad těmito funkcemi staví třída PersistenStorage, která poskytuje obecné metody pro uložení a získání kolekcí či jednotlivých entit.
+
 \section{Implementace obrazovek}
 
-\section{Implementace komponent}
+Implementace obrazovek byla nejdelší částí tvorby aplikace a nejnáročnější na testování. Obrazovky jsou React komponenty umístěny ihned pod navigátorem. V jejich životním cyklu se vytváří subkomponenty, získávají data z uložišť a pomocí událostí komunikují s uložišti. Obrazovky jsou spolu se subkomponentami zodpovědné za správu interakcí s uživatelem.
+
+Níže je uvedena ukázková implementace obrazovky AuthLoading, která rozhoduje o přesměrování uživatele po zapnutí aplikace, pokud je přihlášen či ne.
+
+\begin{lstlisting}[language=JavaScript, caption=Ukázka implementace obrazovky]
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { MaterialIndicator } from 'react-native-indicators';
+
+import AuthStore from '../store/AuthStore';
+import Theme from "../constants/Theme.js";
+
+export default class AuthLoading extends React.Component {
+	verifyAuth = async () => {
+		await AuthStore.awaitAuth();
+		if (AuthStore.isAuthorized) {
+			this.props.navigation.navigate("Map");
+		} else {
+			this.props.navigation.navigate("AuthContainer");
+		}
+	}
+	
+	componentDidMount() {
+		this.verifyAuth();
+	}
+	
+	render () {
+		return (
+		<View style={styles.container}>
+			<View>
+				<MaterialIndicator color={ Theme.colors.brand.primary }/>
+			</View>
+		</View>
+		);
+	}
+}
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: Theme.colors.default.background,
+		alignItems: 'center',
+		justifyContent: 'center',
+		alignSelf: 'stretch',
+	}
+});
+
+\end{lstlisting}
+
+V ukázce lze vidět několik podstatných částí. V první části jsou importy závislostí, kde veškeré obrazovky potřebují naimportovat alespoň závislost \emph{React} z knihovny React. Na druhém řádku lze vidět import typických ovládacích prvků a utilit pro obrazovku či subkomponentu. StyleSheet je způsob zapsání stylu pro ReactNative, ukázka způsobu zápisu stylů se nachází v objektu \emph{styles} na konci ukázky kódu. Text je komponenta, která umožňuje zobrazení stylovaného textu a jako jediná může obsahovat čistý text. Komponenta View rámcově odpovídá funkci tagu \emph{div} v HTML a je pouze prázdným kontejnerem pro ostatní komponenty, ale může být stylována. Následně je vidět import \emph{MaterialIndicator} z knihovny \emph{react-native-indicators}, externí komponenty, která zobrazuje načítací spinner, aby UI nevypadala neresponzivně. Následně je importováno uložiště pro autentifikaci a seznam konstant obsahující styl aplikace.
+
+Samotná obrazovka začíná na řádku 8, kde se nachází definice třídy komponenty. Na řádku devět se nachází metoda komponenty, ve které se volá uložiště Auth pro ověření, zda je uživatel autorizovaný a případně se přenaviguje na správnou obrazovku. Vysoce podstatná je metoda \emph{componentDidMount} na řádku 18, která se spustí po načtení komponenty a volá již zmiňovanou funkci na ověření přihlášení. Metoda render vrací JSX obrazovky, tedy strukturu všech subkomponent. Na konci je již zmiňovaný objekt styles, obsahující styly.
+
+Tato obrazovka je reprezentativní pro všechny obrazovky, s výjimkou hlavní mapy.
+
+\subsection{Implementace hlavní mapy}
+
+Pro hlavní část této obrazovky, tedy mapy, byla využita knihovna \emph{react-native-maps} z důvodu absence alternativ pro Expo. Knihovna však splňuje veškeré požadavky aplikace. Do mapy lze např. vkládat objekty typu trasa, bod i tyto body následně stylovat. Objekty do mapy se přidávají jako individuální komponenty, např. bod s tzv. infoboxem (bublinou nad bodem) se vytvoří následujícím způsobem.
+
+\begin{lstlisting}[language=JavaScript, caption=Ukázka implementace obrazovky]
+<MapView>
+	<Marker
+		coordinate={ { latitude: point.lat, longitude: point.lng } }
+		icon={image}
+		image={image}
+		zIndex={zIndex}
+	>
+		<Callout>
+			<MarkerPosition tracking={track.tracking} id={point.id}/>
+		</Callout>
+	</Marker>
+</MapView>
+\end{lstlisting}
+
+Ukáza ilustruje způsob umístění v mapě (parametr coordinate), způsob vybrání ikony pro obě platformy (parametr icon a image) a nastavení zIndexu, který určuje pořadí vykreslování komponent vzájemně se překrývajících. Komponenta Callout obsahuje již zmiňované infowindow, které obsahuje subkomponentu MarkerPosition.
+
+Pro implementaci vyjížděcího menu pro filtry byla využita komponenta \emph{rn-sliding-up-panel}, která plně splina zadání z kapitoly návrh. Detaily implementace lze zobrazit v příloze, jelikož jsou příliš dlouhé pro ukázky v textu této práce.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=70mm]{img/example_map.jpg}
+	\end{center}
+	\caption[Výsledek implementace hlavní mapy]{Výsledek implementace hlavní mapy -- zdroj: autor}
+\end{figure}
+
+Výsledek implementace mapy je srovnatelý s drátěným modelem představeným v kapitole návrh.
+
+\section{Implementace subkomponent}
+
+Subkomponenty byly vytvořeny pro splnění mapové koncepce, tedy pro jednotlivé overlay funkce definované v kapitole návrh. Zbylé subkomponenty byly vytvářeny dle potřeby pro zpřehlednění aplikace, tedy ad hoc. Za zvláštní zmínku stojí implementace off-line map, která byla vytvořena čistě pro tuto aplikaci.
 
 \subsection{Implementace off-line map}
 
@@ -56,7 +180,7 @@ import { UrlTile } from 'react-native-maps';
 
 Do urlTemplate se místo vzdáleného zdroje doplní část kódu, která obsahuje parametry pro jednotlivé dimenze mapy ve formátu \emph{\{z\}/\{x\}/\{y\}.png}. Každý mapový čtvereček je následně načítán z disku. Toto chování je vhodné zapnout pouze v případě že uživatel není připojený k síti, či na přímé vyžádání uživatele.
 
-Z časových nedostatků nebylo možno vytvořit komfortní uživatelský nástroj pro výběr off-line map.
+Z časových nedostatků nebylo možno vytvořit komfortní uživatelský nástroj pro výběr off-line map, ale pouze rudimentární. Z kontextového menu uživatel zapne dialog zadávání bodů, čímž se uloží příznak do aplikace, že uživatel vybírá off-line region. Uživatel je následně instruován, aby klikal do mapy.
 
 \section{Implementace navigátorů}
 
