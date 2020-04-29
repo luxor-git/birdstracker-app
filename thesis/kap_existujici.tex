@@ -17,18 +17,22 @@ Nestrukturovaná data je obecné označení pro data, která se zpravidla nedaj�
 Metoda nestrukturovaného ručního zápisu spočívá v uchovávání papírových dokumentů vznikající při činnosti ornitologů. Je možné zapsat např. pozorování jedinců, kontroly hnízd, manipulace (např. nasazení kroužku), morfometrické údaje (délky křídel), obecné poznámky. Schéma zápisu nemusí být normalizované, je zde tedy nejjednoduší možnost schéma upravit pro potřeby ornitologa, případně ornitologické organisace.
 
 \begin{table}[h]
-	\begin{tabular}{ | l | l | }
+	\begin{tabularx}{\textwidth}{ | X | X | }
 		\hline
 		Kritérium                              & Hodnocení \\
  		\hline			
 		Informace o jedincích                  & 1 -- absence vynuceného schématu umožňuje uložit jakékoliv informace          \\
+		\hline
 		Práce s pozicemi z trackerů            & 4 -- informace musí být ručně vloženy          \\
+		\hline
 		Práce s uživatelsky vloženými pozicemi & 3 -- informace musí být ručně vloženy, ale schéma není pevně dané          \\
+		\hline
 		Přehlednost dat                        & 3 -- v datech se obtížně hledá, závisí primárně na zapisovateli, některé věci nejde visualizovat jednoduše          \\
+		\hline
 		Přenositelnost a sdílení dat           & 4 - data jsou složitě přenositelná, mohou být i obtížně pochopitelná          \\
 		\hline	
-	\end{tabular}
-	\caption{Hodnocení Nestrukturovaný zápis}
+	\end{tabularx}
+	\caption{Hodnocení nestrukturovaného zápisu}
 \end{table}
 
 \textbf{Výhody}
@@ -55,18 +59,22 @@ Označení \emph{strukturovaná} se přisuzuje datům, které explicitně zachyc
 Na rozdíl od ručního zápisu je zde možné vynutit schéma, přehlednost i přenositelnost dat je tedy nesrovnale vyšší. Změny schématu pro zaznamenání nového druhu informací mohou být komplikací, např. v případu rozdělení datového elementu na dva, nutnosti změnit procesy či procedury zapisování záznamu. Problematické je vkládání a zobrazování některých telemetrických dat z trackerů umístěných na zvířatech. Ačkoliv např. zobrazení numerických telemetrických dat (teplota, napětí na akumulátoru) je jednoduché a dá se v tabulkovém procesoru zobrazit jednoduše, geografické pozice nikoliv. Problém také nastává při přibývání dat s výkonem. Problém zde může nastat při spolupráci více uživatelů najednou, synchronizace dat se musí kontrolovat, aby nedošlo ke ztrátě dat.
 
 \begin{table}[h]
-	\begin{tabular}{ | l | l | }
+	\begin{tabularx}{\textwidth}{ | X | X | }
 		\hline
 		Kritérium                              & Hodnocení \\
 		\hline			
 		Informace o jedincích                  & 2 -- způsob dostačuje, ale změna schématu nemusí vždy být flexibilní          \\
+		\hline
 		Práce s pozicemi z trackerů            & 3 -- informace musí být ručně vloženy, případně integrovány službou          \\
+		\hline
 		Práce s uživatelsky vloženými pozicemi & 3 -- informace musí být ručně vloženy, ale schéma není pevně dané          \\
+		\hline
 		Přehlednost dat                        & 2 -- v datech se dá vcelku dobře hledat, ale některé metriky je obtížné visualizovat          \\
+		\hline
 		Přenositelnost a sdílení dat           & 3 - data jsou přenositelná do jiných formátů, ale díky absenci standardizovaného schématu se vždy musí data napárovat ručně, sdílení dat je jednoduché          \\
 		\hline	
-	\end{tabular}
-	\caption{Hodnocení Strukturovaný zápis}
+	\end{tabularx}
+	\caption{Hodnocení strukturovaného zápisu}
 \end{table}
 
 \textbf{Výhody}
@@ -101,17 +109,21 @@ Geografický informační systém je označení pro sadu hardware, software a ge
 Google MyMaps je produktem z portfolia mapových produktů společnosti Google. Google MyMaps slouží především k uchování bodů, čar a polygonů v mapě. Pro ukládání dat tabulkového charakteru má aplikace podporu pouze pro objekty viditelné v mapě ve formě atributu, výhodou je ale jim možnost definovat schéma. Software ze své obecné charakteristiky má vysokou míru personalizace a obecnosti. Nespornou výhodou je napojení na ekosystém Google Drive, který umožňuje nahradit nedostatky této aplikace jinými. Správa příloh je zde taktéž vyřešena velmi dobře.
 
 \begin{table}[h]
-	\begin{tabular}{ | l | l | }
+	\begin{tabularx}{\textwidth}{ | X | X | }
 		\hline
 		Kritérium                              & Hodnocení \\
 		\hline			
 		Informace o jedincích                  & 5 -- veškeré informace se vztahují k bodům, lze kategorizovat pouze jednodimenzionálně pomocí vrstev, které nemají metainformace          \\
+		\hline
 		Práce s pozicemi z trackerů            & 3 -- pozice musí být ručně vloženy ve formátu KML          \\
+		\hline
 		Práce s uživatelsky vloženými pozicemi & 1 -- vysoká míra personalizace, v podstatě universální          \\
+		\hline
 		Přehlednost dat                        & 2 -- mapová data lze ukládat vysoce přehledně za použití personalizace, informace k objektům v mapě jsou dostupná v tabulkovém editoru          \\
+		\hline
 		Přenositelnost a sdílení dat           & 2 - data lze jednoduše vyexportovat do standardního formátu KML          \\
 		\hline	
-	\end{tabular}
+	\end{tabularx}
 	\caption{Hodnocení Google MyMaps}
 \end{table}
 
@@ -147,17 +159,21 @@ Movebank je specializovanou aplikací vyvinutou Max Planck institutem v Německu
 
 
 \begin{table}[h]
-	\begin{tabular}{ | l | l | }
+	\begin{tabularx}{\textwidth}{ | X | X | }
 		\hline
 		Kritérium                              & Hodnocení \\
 		\hline			
 		Informace o jedincích                  & 1 --           \\
+		\hline
 		Práce s pozicemi z trackerů            & 1 -- aplikace přímo optimalizovaná pro tyto účely          \\
+		\hline
 		Práce s uživatelsky vloženými pozicemi & 2 -- ?          \\
+		\hline
 		Přehlednost dat                        & 1 -- platforma uzpůsobena pro prohlížení dat          \\
+		\hline
 		Přenositelnost a sdílení dat           & 2 -- data jsou vysoce přenositelná a dobře sdílená, problémem však je nutnost data publikovat          \\
 		\hline	
-	\end{tabular}
+	\end{tabularx}
 	\caption{Hodnocení Movebank}
 \end{table}
 
@@ -193,19 +209,23 @@ Od tvůrců aplikace Movebank pochází i mobilní aplikce \emph{Animal tracker}
 
 Anitra je českou ornitologickou značkou zabývající se vývojem a produkcí vlastních GPS-GSM trackovacích zařízení a poskytování softwarové platformy pro zobrazení dat a správu projektů. Rozdílem oproti platformám jiných výrobců je od základu jiná koncepce platformy. Platforma poskytovaná firmou Anitra průběžně integruje data z GPS-GSM trackerů od více výrobců a umožňuje nad daty dělat analýzy, automaticky je zpracovat dle předem stanovených pravidel, spravovat informace o jedincích, zadávat do aplikace vlastní body a přílohy. Od předem zmiňovaného Movebanku se aplikace liší především v možnosti ochranně vlastnictví dat, v aplikaci Anitra není povinnost data kdykoliv publikovat a majiteli dat zůstávají uživatelé. Aplikace taktéž umožňuje generovat uživatelsky přívětivé výstupy pro veřejnost či filtrovaná nebo plná data jednoduše sdílet mezi uživateli. Za podstatnou nevýhodu a nutnost využívat alternativní způsob zápisu v poli je především fakt, že platforma Anirta je řešena jako webová aplikace. V mobilních zařízeních je tedy obtížněji použitelná, ale hlavní nevýhodou je nutnost být stále připojen k internetu.
 
-\begin{table}[h]
-	\begin{tabular}{ | l | l | }
+\begin{table}[H]
+	\begin{tabularx}{\textwidth}{ | X | X | }
 		\hline			
 		Kritérium                              & Hodnocení \\
 		\hline			
 		Informace o jedincích                  & 1 -- detailní schéma vhodné pro ukládání informací o zvířatech          \\
+		\hline
 		Práce s pozicemi z trackerů            & 1 -- aplikace přímo optimalizovaná pro tyto účely          \\
+		\hline
 		Práce s uživatelsky vloženými pozicemi & 1 -- modul aplikace věnovaný pro vytváření těchto objektů          \\
+		\hline
 		Přehlednost dat                        & 1 -- data lze zobrazit v mapě, tabulce, vyexportovat          \\
+		\hline
 		Přenositelnost a sdílení dat           & 1 -- vlastník může vždy data vhodně vyexportovat          \\
 		\hline	
-	\end{tabular}
-	\caption{Hodnocení Movebank}
+	\end{tabularx}
+	\caption{Hodnocení Anitra}
 \end{table}
 
 \textbf{Výhody}

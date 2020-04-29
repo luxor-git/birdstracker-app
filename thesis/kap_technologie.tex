@@ -54,7 +54,7 @@ Pro užší posouzení byly vybrány následující technologie: React Native, X
 
 \begin{figure}[h]
 	\includegraphics[width=\linewidth]{img/google_trends.png}
-	\caption{Srovnání trendů v období 1. 1. 2016 až 11. 4. 2020; červená křivka -- React Native, modrá křivka -- Xamarin, žlutá křivka -- Flutter; -- Zdroj: Google Trends}
+	\caption[Srovnání trendů technologií pro mobilní vývoj]{Srovnání trendů v období 1. 1. 2016 až 11. 4. 2020; červená křivka -- React Native, modrá křivka -- Xamarin, žlutá křivka -- Flutter; -- Zdroj: Google Trends}
 	\label{fig:gtrends}
 \end{figure}
 
@@ -64,16 +64,24 @@ Pro užší posouzení byly vybrány následující technologie: React Native, X
 % http://pypl.github.io/PYPL.html
 React Native je framework pro vytváření nativních mobilních aplikací s JS frameworkem React. React Native je uveden v další kapitole. Tento framework byl vybrán k posouzení především kvůli obrovské komunitě a prověřenosti. Nespornou výhodou frameworku využití jazyku JavaScript, který je třetím nejvíce vyhledávaným programovacím jazykem. JavaScript (resp. EcmaScript) je uveden v následujících kapitolách a nebudou zde jeho výhody rozvedeny. Pod pojmem React Native je zde brána v potaz nadstavba Expo, která dále abstrahuje od nativního kódu.
 
-\begin{table}[h]
-	\begin{tabular}{lll}
+\begin{table}[H]
+	\begin{tabularx}{\textwidth}{| X | X | X |}
+		\hline
 		Kritérium                       & Hodnocení & Poznámka \\
+		\hline
 		Podpora platforem  & 2  & plně podporuje obě mobilní platformy, ale některá API jsou dostupná pouze pro jednu \\
+		\hline
 		Rychlost vývoje                 & 1 & kombinace jednoduchého jazyka, dobrých nástrojů a dostupných knihoven \\
+		\hline
 		Velikost komunity a dokumentace & 1  & z obrázku  \ref{fig:gtrends}  vyplývá obrovská popularita frameworku v posledních 3 letech \\
+		\hline
 		Programovací jazyk              & 1 &          \\
+		\hline
 		Vytváření UI                    & 2 &          \\
-		Hotové komponenty               & 1 & 24299 balíčků \footnote{\href{https://www.npmjs.com/search?q=react\%20native} k 11. 4.}   
-	\end{tabular}
+		\hline
+		Hotové komponenty               & 1 & 24299 balíčků \footnote{\href{https://www.npmjs.com/search?q=react\%20native} k 11. 4.}   \\
+		\hline
+	\end{tabularx}
 	\caption{Hodnocení React Native}
 \end{table}
 
@@ -83,16 +91,24 @@ React Native je framework pro vytváření nativních mobilních aplikací s JS 
 
 Xamarin je rozšíření platformy .NET pro vývoj multiplatformních aplikací nejen pro mobilní zařízení. Xamarin je postavený nad návrhovým vzorem Model-View-ViewModel, který odděluje uživatelské rozhraní, data a aplikační logiku do separátních vrstev. Uživatelské rozhraní je možno vytvářet deklarativně v jazyku XAML, případně v přímo v jazyku C\#. Změny v uživatelském rozhraní se zajišťují pomocí tzv. data bindingu, tedy navázání proměnné v uživatelském rozhraní s proměnnou ve view modelu. Za Xamarinem stojí technologický gigant Microsoft a je z vybraných technologií nejstarší.
 
-\begin{table}[h]
-	\begin{tabular}{lll}
+\begin{table}[H]
+	\begin{tabularx}{\textwidth}{| X | X | X |}
+		\hline
 		Kritérium                       & Hodnocení & Poznámka \\
+		\hline
 		Podpora platforem & 2 &          \\
+		\hline
 		Rychlost vývoje                 & 3 &          \\
+		\hline
 		Velikost komunity a dokumentace & 3 &          \\
+		\hline
 		Programovací jazyk              & 2 &          \\
+		\hline
 		Vytváření UI                    & 2 &          \\
-		Hotové komponenty               & 4 & 
-	\end{tabular}
+		\hline
+		Hotové komponenty               & 4 & \\
+		\hline
+	\end{tabularx}
 	\caption{Hodnocení Xamarin}
 \end{table}
 
@@ -103,15 +119,23 @@ Xamarin je rozšíření platformy .NET pro vývoj multiplatformních aplikací 
 Flutter je SDK od společnosti Google sloužící pro vytváření "nádherných, rychlých zážitků pro mobil, web a desktop s jedním zdrojovým kódem". Flutter je z vybraných technologií nejnovější, ale výrazně nejrychleji roste. Za obrovskou výhodu Flutteru se dá považovat vývojové prostředí s funkcemi live-reload, které na rozdíl od vývojových prostředí pro Xamarin a React Native má výrazně lepší zapamatování stavu. Flutter byl přímo navržen pro aplikace tohoto typu a obsahuje tedy mnoho optimalizací. Flutter aplikace jsou taktéž výrazně menší na stáhnutí, než aplikace React Native nebo Xamarin. Za nevýhodu Flutteru se dá považovat pouze jazyk Dart, který na rozdíl od C\# nebo JS není stále dostatečně viditelný ve vývojářské komunitě. Podstatnou nevýhodou je nízký počet komponent, vývojáři si tedy musí značnou část komponent psát sami.
 
 \begin{table}[h]
-	\begin{tabular}{lll}
+	\begin{tabularx}{\textwidth}{| X | X | X |}
+		\hline
 		Kritérium                       & Hodnocení & Poznámka \\
+		\hline
 		Podpora platforem               & 1 &          \\
+		\hline
 		Rychlost vývoje                 & 1 &          \\
+		\hline
 		Velikost komunity a dokumentace & 3 &          \\
+		\hline
 		Programovací jazyk              & 4 &          \\
+		\hline
 		Vytváření UI                    & 1 &          \\
-		Hotové komponenty               & 3 & 8450 balíčků \footnote{https://pub.dev/flutter/ k 11. 4.}      
-	\end{tabular}
+		\hline
+		Hotové komponenty               & 3 & 8450 balíčků \footnote{https://pub.dev/flutter/ k 11. 4.} \\
+		\hline    
+	\end{tabularx}
 	\caption{Hodnocení Flutter}
 \end{table}
 
