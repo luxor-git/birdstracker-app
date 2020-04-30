@@ -347,7 +347,7 @@ class TrackingStore extends BaseStore
             if (diff > Constants.CACHE_TIMEOUT && netStore.getOnline()) {
                 console.log('Cache expired, loading from API');
             } else {
-                console.log('From cache');
+                console.log('From cache', data);
                 return data as PositionData;
             }
         }
@@ -373,6 +373,8 @@ class TrackingStore extends BaseStore
         });
 
         await Storage.save(path, positionData);
+
+        console.log(positionData);
 
         return positionData;
     }

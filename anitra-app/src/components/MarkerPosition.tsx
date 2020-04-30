@@ -25,12 +25,16 @@ export default class MarkerPosition extends React.Component<MarkerPositionProps>
     @observable
     private positionData: PositionData;
 
-    async componentDidMount()
-    {
+    async componentDidMount() {
+        console.log('did mount');
         this.isLoading = true;
-        this.positionData = await TrackingStore.getPoint(this.props.id);
-        this.isLoading = false;
-        console.log(this.positionData);
+        try {
+            this.positionData = await TrackingStore.getPoint(this.props.id);
+        } catch {
+
+        } finally {
+            this.isLoading = false;
+        }
     }
 
     render () {

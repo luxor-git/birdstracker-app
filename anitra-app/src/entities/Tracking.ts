@@ -244,8 +244,12 @@ export class Track implements ISerializableEntity
     }
 
     getRegion() : Region {
-        let latitudes = this.positions.map((x) => x.lat);
-        let longitudes = this.positions.map((x) => x.lng);
+        let latitudes = this.positions.filter((x) => !isNaN(x) != false).map((x) => x.lat);
+        let longitudes = this.positions.filter((x) => !isNaN(x) != false).map((x) => x.lng);
+
+        if (latitudes.length === 0) {
+            return null;
+        }
 
         let minLat = Math.min(...latitudes);
         let maxLat = Math.max(...latitudes);
@@ -260,7 +264,6 @@ export class Track implements ISerializableEntity
             longitudeDelta: Math.abs(maxLon - minLon) * 1.05
         } as Region;
     }
-
 }
 
 export class PositionData implements ISerializableEntity, IEntity

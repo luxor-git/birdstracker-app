@@ -305,10 +305,13 @@ export default class Map extends React.Component {
     tracking.trackLoaded = true;
 
     if (this.loadedTrackingTracks.length === 1) {
-      console.log(track.getRegion());
-      this.mapComponent.animateToRegion(
-        track.getRegion()
-      );
+      let region = track.getRegion();
+
+      if (region) {
+        this.mapComponent.animateToRegion(
+          region
+        );
+      }
     }
 
     this.displayLastPositions = false;
@@ -645,7 +648,7 @@ export default class Map extends React.Component {
                         }
 
                         return (
-                          <React.Fragment key={point.id}>
+                          <React.Fragment key={point.id + '_' + (this.expandedPointId === point.id?'exp':'')}>
                             {this.expandedPointId === point.id &&  
                               <Marker
                                 coordinate={ { latitude: point.lat, longitude: point.lng } }
