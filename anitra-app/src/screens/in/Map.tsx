@@ -113,6 +113,8 @@ export default class Map extends React.Component {
 
   regionChangeTimeout : number = null;
 
+  mapComponent: MapView;
+
   @computed get selectedPolygon() : LatLng[] 
   {
     if (this.selectingPolygonLeadingPoints.length === 2) {
@@ -301,6 +303,17 @@ export default class Map extends React.Component {
     track.tracking = tracking;
     this.loadedTrackingTracks.push(track);
     tracking.trackLoaded = true;
+
+    if (this.loadedTrackingTracks.length === 1) {
+      let region = track.getRegion();
+
+      if (region) {
+        this.mapComponent.animateToRegion(
+          region
+        );
+      }
+    }
+
     this.displayLastPositions = false;
     this.loading = false;
   }
@@ -584,6 +597,7 @@ export default class Map extends React.Component {
 
               <MapView style={[styles.mapStyle, this.isOrientationLandscape && styles.mapStyleLandscape, !this.isOrientationLandscape && styles.mapStyleLandscapePortrait]}
                        rotateEnabled={false}
+                       ref={(c) => this.mapComponent = c}
                        mapType="none"
                        onLongPress={(event) => { console.log(event); this.openMenu(event); }}
                        onPress={async (event) => { await this.onMapClick(event); }}
@@ -634,7 +648,7 @@ export default class Map extends React.Component {
                         }
 
                         return (
-                          <React.Fragment key={point.id}>
+                          <React.Fragment key={point.id + '_' + (this.expandedPointId === point.id?'exp':'')}>
                             {this.expandedPointId === point.id &&  
                               <Marker
                                 coordinate={ { latitude: point.lat, longitude: point.lng } }

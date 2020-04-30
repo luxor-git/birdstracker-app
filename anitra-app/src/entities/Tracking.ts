@@ -1,4 +1,5 @@
 import { IEntity, ISerializableEntity } from './IEntity';
+import { Region } from 'react-native-maps';
 
 export function displayAge(age: number) : string
 {
@@ -199,6 +200,7 @@ export class Position
 
 export class Track implements ISerializableEntity
 {
+    
     id?: number;
     synchronized: boolean;
     lastSynchronized?: Date;
@@ -237,11 +239,31 @@ export class Track implements ISerializableEntity
         })
     }
 
-    getPoints() : Position[] 
-    {
+    getPoints() : Position[] {
         return this.positions;
     }
 
+    getRegion() : Region {
+        let latitudes = this.positions.filter((x) => !isNaN(x) != false).map((x) => x.lat);
+        let longitudes = this.positions.filter((x) => !isNaN(x) != false).map((x) => x.lng);
+
+        if (latitudes.length === 0) {
+            return null;
+        }
+
+        let minLat = Math.min(...latitudes);
+        let maxLat = Math.max(...latitudes);
+
+        let minLon = Math.min(...longitudes);
+        let maxLon = Math.max(...longitudes);
+
+        return {
+            latitude: minLat,
+            longitude: minLon,
+            latitudeDelta: Math.abs(maxLat - minLat) * 1.05,
+            longitudeDelta: Math.abs(maxLon - minLon) * 1.05
+        } as Region;
+    }
 }
 
 export class PositionData implements ISerializableEntity, IEntity
