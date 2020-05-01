@@ -1,5 +1,3 @@
-%%% Fiktivní kapitola s ukázkami sazby
-
 \chapter{Technologie}
 
 Kapitola technologie se zabývá využitými technologiemi a jakým způsobem byly vybrány. Jednotlivé technologie jsou představeny pro porozumění následující kapitole návrh, který byl proveden s ohledem na vybrané technologie.
@@ -199,7 +197,7 @@ TypeScript se běžně využívá ve větších projektech především kvůli p
 
 % https://reactjs.org/
 
-React je JS knihovna pro vytváření uživatelských rozhraní (ref) od společnosti Facebook. React je deklarativní, component-based knihovna s velkým spektrem potenciálních využití. Jako jiné moderní UI knihovny v JS je taktéž reaktivní, při změně dat se překreslí uživatelské rozhraní pouze tam, kde musí. Deklarativnost Reactu spočívá právě v zakládání si na komponentách. Uživatelské rozhraní se skládá z předdefinovaných, uživatelem vytvořených nebo komunitou vytvořených komponentách, které se do sebe skládají. Každá komponenta si uchovává vlastní data (popř. stav v atributu props) a může komunikovat s nadřazenou či podřazenou komponentou pomocí událostí nebo předáváním dat. Komponenty jsou v Reactu definovány pomocí speciální kombinace JS a HTML, tzv. JSX. JSX je vždy obaleno elementem, který může být HTML elementem či jinou komponentou. V JSX se na rozdíl od běžného HTML může vyskytovat aplikační logika, uvozena v složených závorkách.  Níže je uvedena kompletní komponenta z oficiální dokumentace (ref!), která při využití této komponenty \verb|<HelloComponent name="world"/>| vypíše do div tagu Hello world.
+React je JS knihovna pro vytváření uživatelských rozhraní od společnosti Facebook. React je deklarativní, component-based knihovna s velkým spektrem potenciálních využití \cite{boduch2018react}. Jako jiné moderní UI knihovny v JS je taktéž reaktivní, při změně dat se překreslí uživatelské rozhraní pouze tam, kde musí. Deklarativnost Reactu spočívá právě v zakládání si na komponentách. Uživatelské rozhraní se skládá z předdefinovaných, uživatelem vytvořených nebo komunitou vytvořených komponentách, které se do sebe skládají. Každá komponenta si uchovává vlastní data (popř. stav v atributu props) a může komunikovat s nadřazenou či podřazenou komponentou pomocí událostí nebo předáváním dat. Komponenty jsou v Reactu definovány pomocí speciální kombinace JS a HTML, tzv. JSX. JSX je vždy obaleno elementem, který může být HTML elementem či jinou komponentou. V JSX se na rozdíl od běžného HTML může vyskytovat aplikační logika, uvozena v složených závorkách.  Níže je uvedena kompletní komponenta z oficiální dokumentace \cite{reactjsorg}, která při využití této komponenty \verb|<HelloComponent name="world"/>| vypíše do div tagu Hello world.
 
 \begin{lstlisting}[language=JavaScript, caption=React komponenta]
 
@@ -214,7 +212,7 @@ class HelloMessage extends React.Component {
 }
 \end{lstlisting}
 
-Případně pro ilustraci podmíněné logiky lze uvést následující příklad:
+Případně pro ilustraci podmíněné logiky vykreslení lze uvést následující příklad:
 
 \begin{lstlisting}[language=JavaScript, caption=React komponenta s podmínkou]
 
@@ -244,29 +242,19 @@ React aplikce se ale nemusí skládat jen z komponent, modulární systém nové
 
 \subsection{React Native}
 
-React Native je framework pro vytváření mobilních aplikací postavený nad knihovnou React, opět od společnosti Facebook. React Native, na rozdíl např. od progresivních webových aplikací se chová jako nativní aplikace -- aplikace je vykreslovaná nativním kódem a nemá omezení typická pro webové aplikace, např. v přístupu k určitým API. Rozdílem od čistého Reactu je omezený výběr komponent a výrazně odlišný způsob jejich stylování. Zatímco v React je možno využít plného rozsahu CSS a všech HTML elementů, v React Native jsou v základu poskytnuty jen určité komponenty, nejpodstnější z nich jsou View, Text a Image. View je kontejnerovým prvkem, který nemá žádné specifikované využití. Používá se často pro držení jiných komponentů či stylování. Text je jediná komponenta, která může obsahovat text. Image je komponenta obsahující obrázek z lokálního nebo vzdáleného zdroje. Jsou poskytnuty i další komponenty pro formulářová pole (TextInput, Button, Picker), indikátory aktivity a seznamy. Jiné komponenty se dají složit z těchto základních komponent, jejich událostí a jejich stylů. 
-
-% co sem dál napsat?
+React Native je framework pro vytváření mobilních aplikací postavený nad knihovnou React \cite{novick2017react}, opět od společnosti Facebook. React Native, na rozdíl např. od progresivních webových aplikací se chová jako nativní aplikace -- aplikace je vykreslovaná nativním kódem a nemá omezení typická pro webové aplikace, např. v přístupu k určitým API. Rozdílem od čistého Reactu je omezený výběr komponent a výrazně odlišný způsob jejich stylování. Zatímco v React je možno využít plného rozsahu CSS a všech HTML elementů, v React Native jsou v základu poskytnuty jen určité komponenty, nejpodstnější z nich jsou View, Text a Image. View je kontejnerovým prvkem, který nemá žádné specifikované využití. Používá se často pro držení jiných komponentů či stylování. Text je jediná komponenta, která může obsahovat text. Image je komponenta obsahující obrázek z lokálního nebo vzdáleného zdroje. Jsou poskytnuty i další komponenty pro formulářová pole (TextInput, Button, Picker), indikátory aktivity a seznamy. Jiné komponenty se dají složit z těchto základních komponent, jejich událostí a jejich stylů. Konkrétní příklady jsou uvedeny dále v práci. 
 
 React Native umožňuje psát nativní kód a mnoho komponent této skutečnosti využívá. Nevýhodou tohoto přístupu je, že nativní kód se musí psát v Javě pro Android a v jazyce Swift pro iOS. Tímto vzniká prakticky vzato duplicita kódu a dvojnásobná nutnost testovat.
 
 \subsection{MobX}
 
-% https://books.google.nl/books?id=ALFmDwAAQBAJ&pg=PP1&lpg=PP1&dq=michel+weststrate+mobx+quick+start+guide:+supercharge+the+client+state+in+your+react+apps+with+mobx&source=bl&ots=D460fxti0F&sig=ivDGTxsPNwlOjLHrpKF1nweZFl8&hl=nl&sa=X&ved=2ahUKEwiwl8XO--ncAhWPmbQKHWOYBqIQ6AEwAnoECAkQAQ#v=onepage&q=michel%20weststrate%20mobx%20quick%20start%20guide%3A%20supercharge%20the%20client%20state%20in%20your%20react%20apps%20with%20mobx&f=false
-
-% str. 12
-
-MobX je knihovna pro reaktivní správu stavu aplikace (ref)
-. Knihovna zavádí koncept pozorovatelného stavu, tedy že se na objekt či kolekci objektů naváže pozorovatel, který automaticky zajišťuje změnu stavu pro React při změně pozorovaného. Tímto se výrazně zjednodušuje vývoj React Native aplikací tím, že se pro každou změnu stavu nemusí volat setState a nemusí se využívat pouze proměnné props. Na rozdíl od častěji využívané knihovny Redux je knihovna výrazně úspornější, přičemž obě knihovny zajišťují, že data tečou ze zdroje k cíli pouze jedním směrem a že na správné změny komponenty reagují.
+MobX je knihovna pro reaktivní správu stavu aplikace \cite{podila2018mobx}, často využívaná v ReactJS projektech. Knihovna zavádí koncept pozorovatelného stavu, tedy že se na objekt či kolekci objektů naváže pozorovatel, který automaticky zajišťuje změnu stavu pro React při změně pozorovaného. Tímto se výrazně zjednodušuje vývoj React Native aplikací tím, že se pro každou změnu stavu nemusí volat setState a nemusí se využívat pouze proměnné props. Na rozdíl od častěji využívané knihovny Redux je knihovna výrazně úspornější na kód i systémové prostředky, přičemž obě knihovny zajišťují, že data tečou ze zdroje k cíli pouze jedním směrem a že na správné změny komponenty reagují.
 
 \subsection{Expo}
 
-% https://docs.expo.io/versions/latest/
-% https://flatlogic.com/blog/why-i-don-t-want-to-use-react-native-with-expo/
+Expo je součástí nástrojů a služeb postavených nad React Native a nativními platformami sloužící k vývoji, sestavení, nasazení a rychlé iteraci iOS, Android a webových aplikací s jednotným zdrojovým kódem \cite{Vatne2020}. Expo je abstrakce oddělující React Native kompletně od nativního kódu a tedy od nutnosti vyvíjet i ReactNative aplikace ve třech jazycích (JS pro ReactNative, Java pro Android a Swift pro iOS). Expo poskytuje většinu API pro běžné mobilní aplikace (podstatnou výjimkou je Bluetooth a nákupy v aplikaci), nástroje pro rapidní vývoj a cloudovou infrastrukturu pro sestavení artefaktů, není tedy nutné pro sestavení např. iOS aplikace vlastnit stroj s operačním systémem MacOS. Nástroje pro rapidní vývoj jsou obrovské plus platformy Expo -- aplikační kód se odešle se na servery Expo jedním příkazem (viz ukázka kódu \ref{expostart}), uživateli se vygeneruje QR kód pro oskenování mobilní aplikací a aplikaci je možné spustit na jakémkoliv zařízení za pomocí speciální aplikace. Z tohoto zařízení je v realném čase možné sledovat běh událostí a ladících zpráv na stroji vývojáře. 
 
-Expo je součástí nástrojů a služeb postavených nad React Native a nativními platformami sloužící k vývoji, sestavení, nasazení a rychlé iteraci iOS, Android a webových aplikací s jednotným zdrojovým kódem (ref). Expo je abstrakce oddělující React Native kompletně od nativního kódu a tedy od nutnosti vyvíjet i ReactNative aplikace ve třech jazycích (JS pro ReactNative, Java pro Android a Swift pro iOS). Expo poskytuje většinu API pro běžné mobilní aplikace (podstatnou výjimkou je Bluetooth a nákupy v aplikaci), nástroje pro rapidní vývoj a cloudovou infrastrukturu pro sestavení artefaktů, není tedy nutné pro sestavení např. iOS aplikace vlastnit stroj s operačním systémem MacOS. Nástroje pro rapidní vývoj jsou obrovské plus platformy Expo -- aplikační kód se odešle se na servery Expo jedním příkazem (viz ukázka kódu \ref{expostart}), uživateli se vygeneruje QR kód pro oskenování mobilní aplikací a aplikaci je možné spustit na jakémkoliv zařízení za pomocí speciální aplikace. Z tohoto zařízení je v realném čase možné sledovat běh událostí a ladících zpráv na stroji vývojáře. 
-
-Mezi nevýhody Expo se udává následující:
+Mezi nevýhody Expo se udává následující \cite{Ovchinnikova2020}:
 
 \begin{itemize}
 	\item nepodporuje všechny API,
@@ -277,7 +265,7 @@ Mezi nevýhody Expo se udává následující:
 	\item zdlouhavé čekaní na sestavení ve veřejné infrastruktuře.
 \end{itemize}
 
-Mezi chyby se uvádí i nemožnost využívat nativní knihovny, ale zde těžko posoudit, zda se jedná o výhodu nebo nevýhodu. Expo slibuje některé z těchto problémů vyřešit, ale jedná se o dlouhodobé problémy a žádné odhadované datum řešení není stanoveno. 
+Mezi tyto nedostatky se uvádí i nemožnost využívat nativní knihovny, ale zde těžko posoudit, zda se jedná o výhodu nebo nevýhodu. Expo slibuje některé z těchto problémů vyřešit, ale jedná se o dlouhodobé problémy a žádné odhadované datum řešení není stanoveno. Pro některé případy užití tedy Expo není vhodné (např. pokud je potřeba přístup k Bluetooth).
 
 Při vývoji čistě React Native aplikací a Expo aplikací není poznat téměř žádný rozdíl, jediný rozdíl je v použitých knihovnách -- knihovny nesmí využívat nativní kód a pro práci s systémovými API se využívá API poskytované balíčkami Expo.
 
@@ -301,16 +289,16 @@ Po spuštění příkazu se načte ve webovém prohlížeči obrazovka obsahují
 	\begin{center}
 		\includegraphics[width=140mm]{img/expo.png}
 	\end{center}
-	\caption{Expo -- zdroj: autor}
+	\caption[Expo a MetroBundler]{Expo a MetroBundler -- zdroj: autor}
 \end{figure}
 
 \subsection{TurtleCLI}
 
-TurtleCLI je nástroj pro sestavení Expo aplikací z příkazové řádky. Nástroj je určen pro uživatele, kteří si nepřejí využívat infrastruktury poskytované od Expo pro sestavování vlastních aplikací, ale přejí si aplikaci sestavit například na vlastním stroji nebo na vlastním nástroji kontinuální integrace.
+TurtleCLI je nástroj pro sestavení Expo aplikací z příkazové řádky \cite{Sokal2019}. Nástroj je určen pro uživatele, kteří si nepřejí využívat infrastruktury poskytované od Expo pro sestavování vlastních aplikací, ale přejí si aplikaci sestavit například na vlastním stroji nebo na vlastním nástroji kontinuální integrace.
 
-Možnosti sestavení aplikací Expo jsou tedy dvojího typu, cloudové služby poskytované od Expo a TurtleCLI na vlastní infrastruktuře. Expo poskytuje cloudové služby zdarma ve variantě Community a placené prioritní zpracování ve variantě nazývané Priority.
+Možnosti sestavení aplikací Expo jsou tedy dvojího typu, cloudové služby poskytované od Expo a TurtleCLI na vlastní infrastruktuře. Expo poskytuje cloudové služby zdarma ve variantě Community a placené prioritní zpracování ve variantě nazývané Priority \cite{expoDevServices}.
 
-Autor práce vybral tuto technologi z důvodu vysoké vytíženosti veřejné infrastruktury společnosti Expo (varianta nazývaná Community), kde jeho build ve frontě čekal v jednotkách hodin, než se dostal na řadu. Společnost Expo nabízí placenou variantu svých služeb, ve kterých avizuje výrazně vyšší rychlost odbavení, než u varianty zdarma a nástroje pro týmovou práci. Za značnou nevýhodu se taktéž může brát fakt, že kód je vždy odesílán třetí straně k sestavení, což pro mnoho firem může být nepřípustné. Oproti tomu provozování na vlastní infrastruktuře skýtá mnoho potenciálních výhod, za zmínku stojí napojení na firemní CI procesy, testovací infrastrukturu, rapidní nasazení mnoha paralelních větví do testovacích kanálů, jednodušší napojení sestavení na jiné akce. Níže je uvedena tabulka popisující podstatné rozdíly mezi jednotlivými způsoby sestavení Expo aplikací. 
+Autor práce vybral tuto technologi z důvodu vysoké vytíženosti veřejné infrastruktury společnosti Expo (varianta nazývaná Community), kde jeho build ve frontě čekal v jednotkách hodin, než se dostal na řadu. Společnost Expo nabízí placenou variantu svých služeb, ve kterých avizuje výrazně vyšší rychlost odbavení, než u varianty zdarma a nástroje pro týmovou práci. Za značnou nevýhodu se taktéž může brát fakt, že kód je vždy odesílán třetí straně k sestavení, což pro mnoho firem může být nepřípustné. Oproti tomu provozování na vlastní infrastruktuře skýtá mnoho potenciálních výhod, za zmínku stojí jednodušší napojení na firemní CI procesy, testovací infrastrukturu, rapidní nasazení mnoha paralelních větví do testovacích kanálů, jednodušší napojení sestavení na jiné akce. Níže je uvedena tabulka popisující podstatné rozdíly mezi jednotlivými způsoby sestavení Expo aplikací. 
 
 \begin{table}[H]
 	\begin{tabularx}{\textwidth}{|X|X|X|X|}

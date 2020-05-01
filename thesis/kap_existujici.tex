@@ -2,13 +2,9 @@
 
 \chapter{Existující řešení}
 
-Tato kapitola se věnuje popisu již existujících řešení problémů nastíněných v předchozí kapitole. V této kapitole budou zhodnoceny i další problémy, např. administrativního rázu a problémy s bezpečností dat. Za konkrétní problémy se zde řadí: uchovávání informací o jedincích (morfometricé údaje, obrázky, místo označení), uchování pozic z GPS-GSM trackeru, uchování jiných geografických informací (např. lokace hnízdiště), přehlednost dat, přenositelnost a sdílení dat. Jednotlivá řešení budou popsána, zhodnocena z pohledu vydefinovaných kritérií a na konci bude vynesen verdikt, proč bylo rozhodnuto pro vývoj mobilní aplikace nad platformou Anitra. 
-
-% popsat, jak se současně využívá Google MyMaps, fyzický zápisník, (Anitra?), Movebank aplikace
+Tato kapitola se věnuje popisu již existujících řešení problémů nastíněných v předchozí kapitole. V této kapitole budou zhodnoceny i další problémy, např. administrativního rázu a problémy s bezpečností dat. Za konkrétní problémy se zde řadí: uchovávání informací o jedincích (morfometricé údaje, obrázky, místo označení), uchování pozic z GPS-GSM trackeru, uchování jiných geografických informací (např. lokace hnízdiště), přehlednost dat, přenositelnost a sdílení dat. Tato kritéria i vybrané způsoby řešení byly vybrány konzultací se stakeholdery projektu, kteří jsou uvedeni v následujcí kapitole. Jednotlivá řešení budou popsána, zhodnocena z pohledu vydefinovaných kritérií a na konci bude vynesen verdikt, proč bylo rozhodnuto pro vývoj mobilní aplikace nad platformou Anitra. 
 
 \section{Nestrukturovaný zápis}
-
-ruční poznámky - obrázek od D.
 
 Nestrukturovaná data je obecné označení pro data, která se zpravidla nedají popsat exaktním formálním schématem. Nejčastěji se jedná o textové dokumenty, obrázky či jiná multimédia \cite{podnikovaInformatikaNestrukturovanaData}. Pro lidské zpracování bývají nestrukturované dokumenty přirozenější, než strukturované dokumenty s exaktním schématem. Autory nestrukturovaných dat nemusí být pouze lidé, ale pro tento kontext budou uvažovány pouze artefakty lidské činnosti.
 
@@ -49,8 +45,6 @@ Metoda nestrukturovaného ručního zápisu spočívá v uchovávání papírov�
 \end{itemize}
 
 \section{Strukturovaný zápis}
-
-%https://books.google.cz/books/about/Data_informace_znalosti_a_Internet.html?id=UJh-gLdTH8IC&printsec=frontcover&source=kp_read_button&redir_esc=y#v=onepage&q&f=false stránka 2, 1.1.1
 
 Označení \emph{strukturovaná} se přisuzuje datům, které explicitně zachycují fakta, atributy, objekty, u kterých je významným rysem existence elementů dat. Strukturované ukládání dat je strojově zpracovatelné počítači a ukládá se často v databázových systémech \cite{sklenák2001data} nebo tabulkových procesorech. V této podkapitole bude popsán zápis pomocí tabulkového procesoru.
 
@@ -96,13 +90,9 @@ Na rozdíl od ručního zápisu je zde možné vynutit schéma, přehlednost i p
 
 \section{Geografické informační systémy}
 
-% https://www.gartner.com/en/information-technology/glossary/geographic-information-systems-gis
-
 Geografický informační systém je označení pro sadu hardware, software a geografických dat pro sbět, správu, analýzu a zobrazení všechn způsobů geograficky referencovaných informací, neboli také prostorových dat \cite{gartnerGlossary}. Z geografické povahy dat tedy vyplývá, že některé GIS softwary by mohly být pro ornitologickou aplikaci vhodné. 
 
 \subsection{Google MyMaps}
-
-% - obrázek od D.
 
 Google MyMaps je produktem z portfolia mapových produktů společnosti Google. Google MyMaps slouží především k uchování bodů, čar a polygonů v mapě. Pro ukládání dat tabulkového charakteru má aplikace podporu pouze pro objekty viditelné v mapě ve formě atributu, výhodou je ale jim možnost definovat schéma. Software ze své obecné charakteristiky má vysokou míru personalizace a obecnosti. Nespornou výhodou je napojení na ekosystém Google Drive, který umožňuje nahradit nedostatky této aplikace jinými. Správa příloh je zde taktéž vyřešena velmi dobře.
 
@@ -141,31 +131,24 @@ Google MyMaps je produktem z portfolia mapových produktů společnosti Google. 
 	\item složité vytváření struktur nad objekty v mapě (taxonomie, metainformace),
 \end{itemize}
 
-%\subsection{ArcGIS}
-
-%tady nevím, co napíšu :) nic o něm nevím
-
 \section{Specializovaný software}
 
-Specializované softwarové produkty vyvíjené přímo pro doménu ornitologie mohou kombinovat přístupy GISových aplikací i tabulkových procesorů, případně i dokumentových nástrojů. % víc
+Specializované softwarové produkty vyvíjené přímo pro doménu ornitologie mohou kombinovat přístupy GISových aplikací i tabulkových procesorů, případně i dokumentových nástrojů.
 
 \subsection{Movebank}
 
-Movebank je specializovanou aplikací vyvinutou Max Planck institutem v Německu. Aplikace se zabývá ukládáním dat o zvířatech, ať již pozičních, senzorických i vygenerovanými uživateli (např. pozorování). Aplikace není vyvinuta primárně pro ornitologické potřeby, ale její datový model obsahuje desítky datových položek vhodných pro ornitology. Značnou výhodou je podpora výrobců trackerů pro kontinuální export dat přímo do Movebank a možnost data z Movebank exportovat, či využít v doménově specickém softwaru. Za nevýhodu pro některé ornitology může být nutnost data uveřejnit, případně o ně po 90 dnech přijít. Movebank taktéž obsahuje funkce pro správu projektů a publikování studií a je mezi ornitology často citovaným zdrojem.
+Movebank je specializovanou aplikací vyvinutou Max Planck institutem v Německu a uchovává více než 600 milionů pozičních dat od jednotlivých trackerů  \cite{mrozewski2018movebank}. Aplikace se zabývá ukládáním dat o zvířatech, ať již pozičních, senzorických i vygenerovanými uživateli, např. pozorování \cite{kranstauber2011movebank}. Aplikace není vyvinuta primárně pro ornitologické potřeby, ale její datový model obsahuje desítky datových položek vhodných i pro ornitology. Značnou výhodou je podpora výrobců trackerů pro kontinuální export dat přímo do Movebank a možnost data z Movebank exportovat, či jednoduché využití v doménově specickém softwaru. Za nevýhodu pro některé ornitology může být nutnost data uveřejnit, případně o ně po 90 dnech přijít. Movebank taktéž obsahuje funkce pro správu projektů a publikování studií a je mezi ornitology často citovaným zdrojem.
 
-%https://www.movebank.org/cms/movebank-content/studies-page#owner_defined_details
-
-
-\begin{table}[h]
+\begin{table}[H]
 	\begin{tabularx}{\textwidth}{ | X | X | }
 		\hline
 		Kritérium                              & Hodnocení \\
 		\hline			
-		Informace o jedincích                  & 1 --           \\
+		Informace o jedincích                  & 2 -- základní informace o jedincích          \\
 		\hline
 		Práce s pozicemi z trackerů            & 1 -- aplikace přímo optimalizovaná pro tyto účely          \\
 		\hline
-		Práce s uživatelsky vloženými pozicemi & 2 -- ?          \\
+		Práce s uživatelsky vloženými pozicemi & 2 -- pouze pozorování          \\
 		\hline
 		Přehlednost dat                        & 1 -- platforma uzpůsobena pro prohlížení dat          \\
 		\hline
@@ -176,17 +159,15 @@ Movebank je specializovanou aplikací vyvinutou Max Planck institutem v Německu
 \end{table}
 
 \textbf{Výhody}
-
 \begin{itemize}
 	\item doménová specializace,
 	\item dlouholetý vývoj aplikace -- komplexní datový model,
 	\item komplexní možnosti publikování dat,
 	\item dobrá integrace s doménově specifickými nástroji
 \end{itemize}
-
 \textbf{Nevýhody}
-
 \begin{itemize}
+	\item nutnost zprovoznit kontiuální export do Movebank,
 	\item nutnost data vždy v určité formě publikovat.
 \end{itemize}
 
@@ -194,7 +175,7 @@ Movebank je specializovanou aplikací vyvinutou Max Planck institutem v Německu
 
 Od tvůrců aplikace Movebank pochází i mobilní aplikce \emph{Animal tracker}, která umožňuje zobrazení tras od jednotlivých trackerů i zobrazení informací o zvířeti, co tracker nosí. Aplikace nevyžaduje žádné přihlašovací údaje a umožňuje veřejnosti nahlásit pozorování konkrétních jedinců. Za největší slabinu aplikace se dá považovat nutnost připojení k internetu, aplikace si neukládá informace do mezipaměti. Pro hledání jedinců v oblasti nižší kvality signálu tedy aplikace není vhodná. Aplikace je ale jinak velmi přehledná i rychlá. Pro aplikaci nebude uvedeno vlastní hodnocení, jelikož se jedná o rozšíření zmíněné aplikace Movebank pro mobilní zařízení.
 
-\begin{figure}[h]
+\begin{figure}[H]
 	\begin{center}
 		\includegraphics[width=70mm]{img/animaltracker_app_movebank.png}
 	\end{center}
@@ -202,10 +183,9 @@ Od tvůrců aplikace Movebank pochází i mobilní aplikce \emph{Animal tracker}
 	\label{fig:movebank}
 \end{figure}
 
-
 \subsection{Anitra}
 
-Anitra je českou ornitologickou značkou zabývající se vývojem a produkcí vlastních GPS-GSM trackovacích zařízení a poskytování softwarové platformy pro zobrazení dat a správu projektů. Rozdílem oproti platformám jiných výrobců je od základu jiná koncepce platformy. Platforma poskytovaná firmou Anitra průběžně integruje data z GPS-GSM trackerů od více výrobců a umožňuje nad daty dělat analýzy, automaticky je zpracovat dle předem stanovených pravidel, spravovat informace o jedincích, zadávat do aplikace vlastní body a přílohy. Od předem zmiňovaného Movebanku se aplikace liší především v možnosti ochranně vlastnictví dat, v aplikaci Anitra není povinnost data kdykoliv publikovat a majiteli dat zůstávají uživatelé. Aplikace taktéž umožňuje generovat uživatelsky přívětivé výstupy pro veřejnost či filtrovaná nebo plná data jednoduše sdílet mezi uživateli. Za podstatnou nevýhodu a nutnost využívat alternativní způsob zápisu v poli je především fakt, že platforma Anirta je řešena jako webová aplikace. V mobilních zařízeních je tedy obtížněji použitelná, ale hlavní nevýhodou je nutnost být stále připojen k internetu.
+Anitra je českou ornitologickou značkou zabývající se vývojem a produkcí vlastních GPS-GSM trackovacích zařízení a poskytování softwarové platformy pro zobrazení dat a správu projektů \cite{krouzkovaniPtakuAnitra}. Rozdílem oproti platformám jiných výrobců je od základu jiná koncepce platformy. Platforma poskytovaná firmou Anitra průběžně integruje data z GPS-GSM trackerů od více výrobců a umožňuje nad daty dělat analýzy, automaticky je zpracovat dle předem stanovených pravidel, spravovat informace o jedincích, zadávat do aplikace vlastní body a přílohy. Od předem zmiňovaného Movebanku se aplikace liší především v možnosti ochranně vlastnictví dat, v aplikaci Anitra není povinnost data kdykoliv publikovat a majiteli dat zůstávají uživatelé platformy. Aplikace taktéž umožňuje generovat uživatelsky přívětivé výstupy pro veřejnost či filtrovaná nebo plná data jednoduše sdílet mezi uživateli. Za podstatnou nevýhodu způsobující nutnost využívat alternativní způsob zápisu v poli je především fakt, že platforma Anirta je řešena jako desktop-first webová aplikace. V mobilních zařízeních je tedy obtížněji použitelná, ale hlavní nevýhodou je nutnost být stále připojen k internetu.
 
 \begin{table}[H]
 	\begin{tabularx}{\textwidth}{ | X | X | }
@@ -225,17 +205,15 @@ Anitra je českou ornitologickou značkou zabývající se vývojem a produkcí 
 	\end{tabularx}
 	\caption{Hodnocení Anitra}
 \end{table}
-
 \textbf{Výhody}
-
 \begin{itemize}
 	\item doménová specializace,
-	\item dynamický rozvoj aplikace,
-	\item 
+	\item možnosti integrace dat,
+	\item sdílení dat,
+	\item dynamický rozvoj aplikace.
 \end{itemize}
 
 \textbf{Nevýhody}
-
 \begin{itemize}
 	\item webová aplikace není vhodná pro použití v terénu,
 	\item platforma není mezi ornitology příliš rozšířená,
