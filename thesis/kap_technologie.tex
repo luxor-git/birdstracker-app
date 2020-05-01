@@ -15,8 +15,6 @@ Pro výběr technologií byla stanovena následující kritéria:
 
 Jednotlivá kritéria jsou rozebrána níže.
 
-% vlastní oddělení
-
 \section{Kritéria výběru}
 
 \subsection{Podpora více platforem}
@@ -37,7 +35,6 @@ Programovací jazyk technologie je taktéž podstatný faktor. Standardní kniho
 
 \subsection{Vytváření uživatelského rozhraní}
 
-% https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox
 Aspekty vytváření uživatelského rozhraní spočívají především v možnostech technologie. Technologie by měla umožnit vytvářet reaktivní a moderně vypadající uživatelská rozhraní, podporovat animace, reagovat na uživatelské interakce. Na těchto principech je založen například Material Design od společnosti Google. Výhodou nástroje pro vytváření uživatelského rozhraní je moderní přístup k vytváření uživatelského rozhraní např. s tzv. \emph{flexboxem}, nástrojem pro jednodimenzionálně řazená uživatelská rozhraní s rožšířenou podporou zarovnání \cite{FlexboxMDN}. Nativní podpora stylování v podobě webových CSS je taktéž vyhodou, jelikož ji nezanedbatelná vývojářů do jisté míry rozumí.
 
 \subsection{Hotové komponenty}
@@ -46,9 +43,7 @@ Hotové komponenty umožňují se při vývoji věnovat pouze řešení potřebn
 
 \section{Výběr technologie}
 
-% jak? byly vybrány technologie
-
-Pro užší posouzení byly vybrány následující technologie: React Native, Xamarin a Flutter. Technologie jsou ve zkratce popsány níže a zhodnoceny.
+Pro užší posouzení byly vybrány následující technologie: React Native, Xamarin a Flutter. Všechny tyto technologie do určité míry splňují kritéria a jsou často udávány za příklad nástrojů pro vývoj multiplatformních nativních mobilních aplikací. Technologie jsou ve zkratce popsány níže a zhodnoceny.
 
 \begin{figure}[h]
 	\includegraphics[width=\linewidth]{img/google_trends.png}
@@ -58,26 +53,24 @@ Pro užší posouzení byly vybrány následující technologie: React Native, X
 
 \subsection{Hodnocení React Native}
 
-%https://github.com/facebook/react-native
-% http://pypl.github.io/PYPL.html
-React Native je framework pro vytváření nativních mobilních aplikací s JS frameworkem React. React Native je uveden v další kapitole. Tento framework byl vybrán k posouzení především kvůli obrovské komunitě a prověřenosti. Nespornou výhodou frameworku využití jazyku JavaScript, který je třetím nejvíce vyhledávaným programovacím jazykem. JavaScript (resp. EcmaScript) je uveden v následujících kapitolách a nebudou zde jeho výhody rozvedeny. Pod pojmem React Native je zde brána v potaz nadstavba Expo, která dále abstrahuje od nativního kódu.
+React Native je framework pro vytváření nativních mobilních aplikací s JS frameworkem React \cite{novick2017react}. React Native je komplexněji uveden v následujích kapitolách. Tento framework byl vybrán k posouzení především kvůli obrovské komunitě a prověřenosti. Nespornou výhodou frameworku využití jazyku JavaScript, který je třetím nejvíce vyhledávaným programovacím jazykem \cite{Carbonnelle2020}. JavaScript (resp. EcmaScript) je uveden v následujících kapitolách a nebudou zde jeho výhody rozvedeny. Pod pojmem React Native je zde brána v potaz nadstavba Expo, která dále abstrahuje od nativního kódu.
 
 \begin{table}[H]
 	\begin{tabularx}{\textwidth}{| X | X | X |}
 		\hline
 		Kritérium                       & Hodnocení & Poznámka \\
 		\hline
-		Podpora platforem  & 2  & plně podporuje obě mobilní platformy, ale některá API jsou dostupná pouze pro jednu \\
+		Podpora platforem  & 1  & plně podporuje obě mobilní platformy \\
 		\hline
 		Rychlost vývoje                 & 1 & kombinace jednoduchého jazyka, dobrých nástrojů a dostupných knihoven \\
 		\hline
-		Velikost komunity a dokumentace & 1  & z obrázku  \ref{fig:gtrends}  vyplývá obrovská popularita frameworku v posledních 3 letech \\
+		Velikost komunity a dokumentace & 1  & z obrázku \ref{fig:gtrends} vyplývá obrovská popularita frameworku v posledních 3 letech \\
 		\hline
-		Programovací jazyk              & 1 &          \\
+		Programovací jazyk              & 1 & programování v JS dnes zvládá naprostá většina vývojářů, jazyk je syntakticky velmi jednoduchý a vysoce populární         \\
 		\hline
-		Vytváření UI                    & 2 &          \\
+		Vytváření UI                    & 2 & stylování je poněkud komplikovanější, animace jsou složité         \\
 		\hline
-		Hotové komponenty               & 1 & 24299 balíčků \footnote{\href{https://www.npmjs.com/search?q=react\%20native} k 11. 4.}   \\
+		Hotové komponenty               & 1 & 24299 balíčků k 11. 4. 2020  \\
 		\hline
 	\end{tabularx}
 	\caption{Hodnocení React Native}
@@ -87,24 +80,24 @@ React Native je framework pro vytváření nativních mobilních aplikací s JS 
 
 % https://dotnet.microsoft.com/apps/xamarin
 
-Xamarin je rozšíření platformy .NET pro vývoj multiplatformních aplikací nejen pro mobilní zařízení. Xamarin je postavený nad návrhovým vzorem Model-View-ViewModel, který odděluje uživatelské rozhraní, data a aplikační logiku do separátních vrstev. Uživatelské rozhraní je možno vytvářet deklarativně v jazyku XAML, případně v přímo v jazyku C\#. Změny v uživatelském rozhraní se zajišťují pomocí tzv. data bindingu, tedy navázání proměnné v uživatelském rozhraní s proměnnou ve view modelu. Za Xamarinem stojí technologický gigant Microsoft a je z vybraných technologií nejstarší.
+Xamarin je rozšíření platformy .NET pro vývoj multiplatformních aplikací nejen pro mobilní zařízení \cite{microsoftXamarin}. Xamarin je postavený nad návrhovým vzorem Model-View-ViewModel, který odděluje uživatelské rozhraní, data a aplikační logiku do separátních vrstev. Uživatelské rozhraní je možno vytvářet deklarativně v jazyku XAML, případně v přímo v jazyku C\#. Změny v uživatelském rozhraní se zajišťují pomocí tzv. data bindingu, tedy navázání proměnné v uživatelském rozhraní s proměnnou ve view modelu. Za Xamarinem stojí technologický gigant Microsoft a je z vybraných technologií nejstarší.
 
 \begin{table}[H]
 	\begin{tabularx}{\textwidth}{| X | X | X |}
 		\hline
 		Kritérium                       & Hodnocení & Poznámka \\
 		\hline
-		Podpora platforem & 2 &          \\
+		Podpora platforem & 2 & plně podporuje obě mobilní platformy, možnost využít         \\
 		\hline
-		Rychlost vývoje                 & 3 &          \\
+		Rychlost vývoje                 & 3 & aplikaci je vždy nutno překompilovat         \\
 		\hline
-		Velikost komunity a dokumentace & 3 &          \\
+		Velikost komunity a dokumentace & 3 & technologie se spíše zdá být na ústupu, vysoce populární byla před mnoha lety zpátky, viz obrázek \ref{fig:gtrends}         \\
 		\hline
-		Programovací jazyk              & 2 &          \\
+		Programovací jazyk              & 2 & popularitou je C\# ihned za JS \cite{novick2017react}         \\
 		\hline
-		Vytváření UI                    & 2 &          \\
+		Vytváření UI                    & 3 & UI se vytváří za pomocí jazyka XAML, komplikovanější data binding         \\
 		\hline
-		Hotové komponenty               & 4 & \\
+		Hotové komponenty               & 4 & komponenty nejsou udržované a se současnými verzemi bývají nekompatibilní \\
 		\hline
 	\end{tabularx}
 	\caption{Hodnocení Xamarin}
@@ -114,31 +107,30 @@ Xamarin je rozšíření platformy .NET pro vývoj multiplatformních aplikací 
 
 %https://github.com/flutter/flutter
 
-Flutter je SDK od společnosti Google sloužící pro vytváření "nádherných, rychlých zážitků pro mobil, web a desktop s jedním zdrojovým kódem". Flutter je z vybraných technologií nejnovější, ale výrazně nejrychleji roste. Za obrovskou výhodu Flutteru se dá považovat vývojové prostředí s funkcemi live-reload, které na rozdíl od vývojových prostředí pro Xamarin a React Native má výrazně lepší zapamatování stavu. Flutter byl přímo navržen pro aplikace tohoto typu a obsahuje tedy mnoho optimalizací. Flutter aplikace jsou taktéž výrazně menší na stáhnutí, než aplikace React Native nebo Xamarin. Za nevýhodu Flutteru se dá považovat pouze jazyk Dart, který na rozdíl od C\# nebo JS není stále dostatečně viditelný ve vývojářské komunitě. Podstatnou nevýhodou je nízký počet komponent, vývojáři si tedy musí značnou část komponent psát sami.
+Flutter je SDK od společnosti Google sloužící pro vytváření "nádherných, rychlých zážitků pro mobil, web a desktop s jedním zdrojovým kódem" \cite{flutter}. Flutter je z vybraných technologií nejnovější, ale výrazně nejrychleji roste, viz. obrázek \ref{fig:gtrends}. Za obrovskou výhodu Flutteru se dá považovat vývojové prostředí s funkcemi live-reload, které na rozdíl od vývojových prostředí pro Xamarin a React Native má výrazně lepší zapamatování stavu i rychlost načtení změn. Flutter byl přímo navržen pro aplikace tohoto typu a obsahuje tedy mnoho optimalizací. Flutter aplikace jsou taktéž výrazně menší na stáhnutí, než aplikace React Native nebo Xamarin. Za nevýhodu Flutteru se dá považovat pouze jazyk Dart, který na rozdíl od C\# nebo JS není stále dostatečně viditelný ve vývojářské komunitě, mezi vývojáři se umísťuje až na 20. místě ve vyhledávání \cite{novick2017react}. Podstatnou nevýhodou je nízký počet komponent, vývojáři si tedy musí značnou část komponent psát sami.
 
 \begin{table}[h]
 	\begin{tabularx}{\textwidth}{| X | X | X |}
 		\hline
 		Kritérium                       & Hodnocení & Poznámka \\
 		\hline
-		Podpora platforem               & 1 &          \\
+		Podpora platforem               & 1 & platformy jsou podporovány plně          \\
 		\hline
-		Rychlost vývoje                 & 1 &          \\
+		Rychlost vývoje                 & 1 & vývoj je rapidní díky poskytnutým nástrojům         \\
 		\hline
-		Velikost komunity a dokumentace & 3 &          \\
+		Velikost komunity a dokumentace & 3 & technologie je ve fázi nástupu, dokumentace nebývá aktuální a komuntní návody chybí         \\
 		\hline
-		Programovací jazyk              & 4 &          \\
+		Programovací jazyk              & 4 & Dart není příliš známý \\
 		\hline
-		Vytváření UI                    & 1 &          \\
+		Vytváření UI                    & 1 & nástroje na vytváření UI jsou ze srovnávaných technologií nejlepší \\
 		\hline
-		Hotové komponenty               & 3 & 8450 balíčků \footnote{https://pub.dev/flutter/ k 11. 4.} \\
+		Hotové komponenty               & 3 & 8450 balíčků k 11. 4. 2020 \\
 		\hline    
 	\end{tabularx}
 	\caption{Hodnocení Flutter}
 \end{table}
 
 \textbf{Výhody}
-
 \begin{itemize}
 	\item dynamická technologie,
 	\item vysoce kvalitní vývojářské nástroje,
@@ -148,7 +140,6 @@ Flutter je SDK od společnosti Google sloužící pro vytváření "nádherných
 \end{itemize}
 
 \textbf{Nevýhody}
-
 \begin{itemize}
 	\item relativně obskurní jazyk Dart,
 	\item nížký počet aktuálních návodů,
@@ -159,7 +150,7 @@ Flutter je SDK od společnosti Google sloužící pro vytváření "nádherných
 
 \subsection{Vybraná technologie}
 
-Pro řešení práce byla vybraná technologie React Native (resp. Expo), jelikož ze srování vyšla nejlépe. Dále bylo rozhodnuto o využití nadstavby TypeScript na JS a správce stavů MobX. Popis technologie je uveden v další kapitole.
+Pro řešení práce byla vybraná technologie React Native (resp. Expo -- viz. níže), jelikož ze srování vyšla nejlépe. Dále bylo rozhodnuto o využití nadstavby TypeScript na JS a správce stavů MobX. Popis technologie je uveden v další kapitole.
 
 \section{React Native}
 
@@ -172,17 +163,25 @@ Technologie React Native je postavena na mnoha dílčích částech, které se m
 % https://github.com/nodejs/node-v0.x-archive/tags?after=v0.0.4
 % https://github.com/angular/angular.js/releases?after=v0.9.4
 
-JavaScript je multiparadigmatický interpretovaný slabě typovaný programovací jazyk určen primárně pro webové prohlížeče. JavaScript vznikl v roce 1995 Brendanem Eichem pod firmou Netscape. Cílem bylo přidat interaktivitu do čistě statických webových stránek a reagovat tedy na interakci uživatele i jinak, než jen přenačtením celé stránky. S obrovským rozvojem domacích počítačů přišel i rozvoj internetu a internetových prohlížečů. Od již zmíněného roku 1995 do roku 2004 byl trh webových prohlížečů dominován verzemi prohlížeče Internet Explorer od firmy Microsoft, která přišla s vlastní implementací JavaScriptu, tzv. JScriptem. Kvůli nespolupráci mezi vývojáři různých implementací vznikaly v jazyku nekonzistence mezi prohlížeči, ale i přesto se jazyk určitým směrem ubíral. V roce 2005 byl zaveden termín AJAX, který znamenal obrovskou změnu v interaktivitě webových aplikací. Zkratka AJAX, neboli Asynchronous JavaScript and XML byla revoluční ve změně komunikace serveru s JavaScriptem. JavaScript dříve obdržoval fragmenty HTML od serveru a tím aktualizoval stránku, případně se stránka po každé významné interakci uživatele překreslila sama. AJAX zavedl možnost jak na pozadí získat z určitých vstupů určité výstupy v lépe strojově zpracovatelném formátu. S tímto revolučním nápadem začaly vznikat první JavaScript knihovny a frameworky pro interaktivní webové \emph{aplikace}, např. dodnes používaná knihovna jQuery. Dalším podstaným krokem byl vývoj webového prohlížeče Google Chrome, resp. jeho JavaScript interpreteru V8. V8 je open-source JS interpreter s just-in-time kompilací, který byl revoluční primárně ve své rychlosti. Tento interpreter byl také zařazený i do aplikací mimo webové prohlížeče, čímž se případy užití pro jazyk výrazně rozšířily. Zde za zmínku stojí node.js (vznik datovaný do roku 2009) a jeho ekosystém NPM, který je rozveden níže. Dalším milníkem podstatným pro tuto práci je rozšíření frameworků pro single-page aplikace, které emulují chování běžných nativních aplikací v prohlížeči. Aplikace fungují na komponentovém systému a aktualizují se při změně dat. Aplikace jsou tedy uživatelsky i programátorsky komfortnější a jejich vývoj je značně rychlejší. Aplikace tohoto typu se rozšiřují od roku 2010.
+JavaScript je multiparadigmatický interpretovaný slabě typovaný programovací jazyk určen primárně pro webové prohlížeče. JavaScript vznikl v roce 1995 Brendanem Eichem pod firmou Netscape. Cílem bylo přidat interaktivitu do čistě statických webových stránek a reagovat tedy na interakci uživatele i jinak, než jen přenačtením celé stránky \cite{Hamilton2008}. S obrovským rozvojem domacích počítačů přišel i rozvoj internetu a internetových prohlížečů.
+
+Od již zmíněného roku 1995 do roku 2004 byl trh webových prohlížečů dominován verzemi prohlížeče Internet Explorer od firmy Microsoft, která přišla s vlastní implementací JavaScriptu, tzv. JScriptem. Kvůli nespolupráci mezi vývojáři různých implementací vznikaly v jazyku nekonzistence mezi prohlížeči, ale i přesto se jazyk určitým směrem ubíral.
+
+V roce 2005 byl zaveden termín AJAX \cite{Garrett2005}, který znamenal obrovskou změnu v interaktivitě webových aplikací. Zkratka AJAX, neboli Asynchronous JavaScript and XML byla revoluční ve změně komunikace serveru s JavaScriptem. JavaScript dříve obdržoval fragmenty HTML od serveru a tím aktualizoval stránku, případně se stránka po každé významné interakci uživatele překreslila sama. AJAX zavedl možnost jak na pozadí získat z určitých vstupů určité výstupy v lépe strojově zpracovatelném formátu. S tímto revolučním nápadem začaly vznikat první JavaScript knihovny a frameworky pro interaktivní webové \emph{aplikace}, např. dodnes používaná knihovna jQuery.
+
+Dalším podstaným krokem byl vývoj webového prohlížeče Google Chrome, resp. jeho JavaScript interpreteru V8. V8 je open-source JS interpreter s just-in-time kompilací, který byl revoluční primárně ve své rychlosti. Tento interpreter byl také zařazený i do aplikací mimo webové prohlížeče, čímž se případy užití pro jazyk výrazně rozšířily. Tímto byl položen v roce 2009 základ node.js \cite{satheesh2015web} a jeho ekosystém NPM, který je rozveden níže.
+
+Dalším milníkem podstatným pro tuto práci je rozšíření frameworků pro single-page aplikace, které emulují chování běžných nativních aplikací v prohlížeči. Aplikace fungují na komponentovém systému a aktualizují se při změně dat, aniž by se přenačítala celá webová stránka. Uživatelům se tedy načte jedna stránka a veškeré následné překreslování uživatelského rozhraní má na starosti JavaScript \cite{fink2014pro}. Aplikace jsou tedy uživatelsky i programátorsky komfortnější a jejich vývoj je značně rychlejší. Aplikace tohoto typu se rozšiřují od roku 2010 a první úspěšným frameworkem byl Angular.js.
 
 %https://tc39.es/ecma262/#sec-overview
 
-EcmaScript je specifikací jazyka JavaScript, kterou musí každé prostředí implementovat. EcmaScript definuje pouze jazyk, ale ne objekty kontextu, např. ve webových prohlížečích není definována interakce s DOM. JavaScript je ale dnes používán i na serverech, embedded zařízeních či jako skriptovací jazyk mnoha programů, bylo nutno od těchto specifikací abstrahovat, aby základ jazyka zůstal stejný. Tímto ale vznikají jisté nekonzistence mezi implementacemi v různých prohlížečích, obzvláště napříč verzemi, kde se jádro interpreteru již neaktualizuje. Pro řešení těchto problémů byly mimojiné zavedeny tzv. \emph{polyfilly}, které doplňují určité funkce z nové verze zpětně do staré a \emph{transpilátory} (např. Babel), které některé nové jazykové funkce umí převést do verze ES kompatibilní se starým interpreterem. V čase psaní této práce je aktuální verzí EcmaScript 2018.
+EcmaScript je specifikací jazyka JavaScript, kterou musí každé prostředí implementovat \cite{ecmascript}. EcmaScript definuje pouze jazyk, ale ne objekty kontextu, např. ve webových prohlížečích není definována interakce s DOM. JavaScript je ale dnes používán i na serverech, embedded zařízeních či jako skriptovací jazyk mnoha programů, bylo nutno od těchto specifikací abstrahovat, aby základ jazyka zůstal stejný. Tímto ale vznikají jisté nekonzistence mezi implementacemi v různých prohlížečích, obzvláště napříč verzemi, kde se jádro interpreteru již neaktualizuje. Pro řešení těchto problémů byly mimojiné zavedeny tzv. \emph{polyfilly}, které doplňují určité funkce z nové verze zpětně do staré a \emph{transpilátory} (např. Babel), které některé nové jazykové funkce umí převést do verze ES kompatibilní se starým interpreterem. V čase psaní této práce je aktuální verzí EcmaScript 2018.
 
 S příchodem node.js ekosystému vznikl v JS světě koncept NPM balíčků. Balíčky jsou publikovány autorem do centrálního repozitáře balíčků a každý programátor si tento balíček může nainstalovat. Balíčky jsou typicky knihovny, malého či velké rázu, frameworky, nástroje, samostatné programy či kompletní projekty. Koncept balíčků výrazně urychluje vytváření projektů a instalaci knihoven. Příklady práce s NPM jsou uvedeny v kapitolách React a React Native.
 
 \subsection{TypeScript}
 
-TypeScript je nadstavbou jazyka ECMAScript. TypeScript rozšiřuje jazyk o kontrolu typů a běžné konstrukty známé z jiných jazyků (např. rozhraní). Jazyk je plně kompabitilní s ES, ale samotný TypeScript není přímo většinou interpeterů spustitelný. Při sestavování projektů s TypeScriptem se využívá tzv. transpilace, převedení z jednoho programovacího jazyka do druhého. TypeScript vyšel v roce 2012 pod křídly firmy Microsoft a je aktivně vyvíjen dodnes.
+TypeScript je nadmnožninou jazyka ECMAScript. TypeScript rozšiřuje jazyk o kontrolu typů a běžné konstrukty známé z jiných jazyků \cite{freeman2019essential} (např. rozhraní). Jazyk je plně kompabitilní s ES, ale samotný TypeScript není přímo většinou interpeterů spustitelný. Při sestavování projektů s TypeScriptem se využívá tzv. transpilace, převedení z jednoho programovacího jazyka do druhého. TypeScript vyšel v roce 2012 pod křídly firmy Microsoft a je aktivně vyvíjen dodnes.
 
 TypeScript se běžně využívá ve větších projektech především kvůli prevenci chyb a zvýšení přehlednosti kódu. Vývojová prostředí taktéž lépe rozumí typovaným jazykům a tímto se může i zrychlit vývoj. Zaintegrovat TypeScript do existujícího projektu také není problém, jelikož jakýkoliv validní kód v ES je validní kód v TypeScript.
 
