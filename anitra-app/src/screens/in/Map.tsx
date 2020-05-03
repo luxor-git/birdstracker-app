@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions, Alert, TextInput, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, AppState, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Alert, TextInput, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, AppState, SafeAreaView, TouchableHighlightBase } from 'react-native';
 import Theme from "../../constants/Theme.js";
 import MapView, { Callout, MapEvent, LatLng, Polygon } from 'react-native-maps';
 import { SearchBar, Button, Icon } from 'react-native-elements';
 import { UrlTile, Marker, Polyline } from 'react-native-maps';
-import { observable, ObservableMap, computed } from 'mobx';
+import { observable, ObservableMap, computed, action, get } from 'mobx';
 import { observer } from 'mobx-react';
 import { ScreenOrientation } from 'expo';
 import LoadingOverlay from '../../components/LoadingOverlay';
@@ -32,6 +32,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import MarkerPosition from '../../components/MarkerPosition';
 import { MaterialIndicator } from 'react-native-indicators';
 import NotificationStore from '../../store/NotificationStore';
+import LocationStore from '../../store/LocationStore';
 
 @observer
 export default class Map extends React.Component {
@@ -111,12 +112,23 @@ export default class Map extends React.Component {
   @observable
   expandedPointId: number = null;
 
+  @observable
+  userPosition: LatLng = { latitude: 0, longitude: 0};
+
+  @observable
+  track: LatLng[] = [];
+
+  @observable
+  showUserPosition: boolean = false;
+
+  @observable
+  userPositionIncrement : number = 0;
+
   regionChangeTimeout : number = null;
 
   mapComponent: MapView;
 
-  @computed get selectedPolygon() : LatLng[] 
-  {
+  @computed get selectedPolygon() : LatLng[] {
     if (this.selectingPolygonLeadingPoints.length === 2) {
       return [
         { latitude: this.selectingPolygonLeadingPoints[0].latitude, longitude: this.selectingPolygonLeadingPoints[0].longitude },
@@ -127,6 +139,46 @@ export default class Map extends React.Component {
     }
 
     return [];
+  }
+
+  
+  /**
+   * Sets current position.
+   *
+   * @param {*} data
+   * @memberof Map
+   */
+  @action setCurrentPosition(data)
+  {
+    if (!data) {
+      return;
+    }
+
+    this.userPosition.latitude = data.lat;
+    this.userPosition.longitude = data.lng;
+    this.userPositionIncrement++;
+  }
+
+  @computed get currentLatitude()
+  {
+    return this.userPosition.latitude;
+  }
+
+  @computed get currentLongitude()
+  {
+    return this.userPosition.longitude;
+  }
+
+  @action setRecordedTrack(data: LatLng[])
+  {
+    this.track = data;
+  }
+
+  @computed get recordedTrack()
+  {
+    console.log(this.track);
+    console.log('get track', this.track.length);
+    return JSON.parse(JSON.stringify(this.track));
   }
 
   private searchTimeout;
@@ -142,6 +194,7 @@ export default class Map extends React.Component {
     markerElse: require('../../assets/markers/markerElse.png'),
     markerFirst: require('../../assets/markers/markerFirst.png'),
     markerLast: require('../../assets/markers/markerLast.png'),
+    markerUser: require('../../assets/markers/markerUser.png'),
   };
 
   async componentDidMount () {
@@ -367,6 +420,7 @@ export default class Map extends React.Component {
     }
   }
 
+
   getContextMenuActions() : ContextMenuActions {
     return {
       closeMenu: async () => {
@@ -432,6 +486,120 @@ export default class Map extends React.Component {
       showTrackingList: async () => {
         this.contextMenuVisible = false;
         this.showTrackingListOverlay = true;
+      },
+
+      startLocationUpdates: async () => {
+        this.contextMenuVisible = false;
+
+
+        let result = await LocationStore.startLocationUpdates();
+        
+     
+        if (result.success) {
+          showMessage({
+            message: "Updating position",
+            type: "success",
+            icon: 'success'
+          });
+
+          LocationStore.clearLocationListeners();
+
+          LocationStore.addLocationListener((data) => {
+            this.setCurrentPosition(data);
+            console.log('got new data');
+          });
+
+          this.showUserPosition = true;
+        } else {
+          this.showUserPosition = false;
+        }
+      },
+
+      stopLocationUpdates: async () => {
+        this.contextMenuVisible = false;
+        LocationStore.pauseLocationUpdates();
+
+        let fnStop = async () => {
+          await LocationStore.stopLocationUpdates();
+          this.userPosition = { latitude: 0, longitude: 0};
+          this.showUserPosition = false;
+        };
+
+        if (LocationStore.isTrackRecordRunning()) {
+          Alert.alert("Are you sure you want to stop location updates?", "This will stop and remove the track recording", [
+            {
+              text: "Yes",
+              onPress: () => {
+                fnStop();
+              }
+            },
+            {
+              text: "Cancel",
+              onPress: () => {
+                LocationStore.pauseLocationUpdates();
+              }
+            }
+          ])
+        } else {
+          fnStop();
+        }
+      },
+
+      zoomToMyLocation: async () => {
+        this.contextMenuVisible = false;
+
+        this.mapComponent.fitToCoordinates([
+          {
+            latitude: this.currentLatitude,
+            longitude: this.currentLongitude
+          }
+        ]);
+      },
+
+      startTrackRecord: async () => {
+        this.contextMenuVisible = false;
+        if (!LocationStore.isLocationUpdateRunning()) {
+          showMessage({
+            message: "Location update must be running first",
+            type: "warning",
+            icon: 'warning'
+          });
+
+          return;
+        }
+
+
+        await LocationStore.startRecordingTrack(
+          (data) => {
+            this.setRecordedTrack(data); 
+          }
+        );
+      },
+
+      stopTrackRecord: async () => {
+        this.contextMenuVisible = false;
+        await LocationStore.stopRecordingTrack();
+        LocationStore.pauseLocationUpdates();
+        Alert.alert(
+          "Save recorded track?",
+          "Do you want to save the recorded track?", [
+            {
+              text: 'Yes',
+              onPress: async () => {
+                await LocationStore.saveCurrentTrack();
+                this.setRecordedTrack([]);
+                LocationStore.resumeLocationUpdates();
+              }
+            },
+            {
+              text: 'No',
+              onPress: () => {
+                this.setRecordedTrack([]);
+                LocationStore.resumeLocationUpdates();
+              }
+            }
+          ]
+        )
       }
 
     } as ContextMenuActions;
@@ -465,13 +633,11 @@ export default class Map extends React.Component {
   }
 
   async downloadSelectedRange(range: BoundingTileDefinition) {
-
     this.showRegionDownload = false;
 
     this.loading = true;
 
     this.loadingText = 'Downloading...';
-
 
     await OverlayStore.downloadRange(range, range.corners, ((progress) => {
       this.loadingText = 'Downloading: ' + progress + ' / ' + range.tileCount;
@@ -708,6 +874,19 @@ export default class Map extends React.Component {
                       )
                     })
                 }
+
+                <Marker
+                  coordinate={ { latitude: this.currentLatitude, longitude: this.currentLongitude } }
+                  icon={this.markers.markerUser}
+                  image={this.markers.markerUser}
+                />
+
+                <Polyline
+                  coordinates={this.recordedTrack}
+                  strokeWidth={5}
+                  strokeColor="#00f"
+                  zIndex={1}
+                />
 
                 {this.layer && <UrlTile urlTemplate={this.layer.getTileUrl()} zIndex={-1} />}
                 {this.displayLastPositions && this.mapTrackings.map(tracking => {

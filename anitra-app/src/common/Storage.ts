@@ -4,6 +4,7 @@ import { ISerializableEntity } from '../entities/IEntity';
 import EntityFactory from '../entities/EntityFactory';
 import NetStore from '../store/NetStore';
 import Constants from '../constants/Constants';
+import { SyncTask } from './BackgroundSync';
 
 /**
  * Persistent storage class.
@@ -13,6 +14,7 @@ import Constants from '../constants/Constants';
  */
 class PersistentStorage
 {
+ 
 
     /**
      * Initializes folders.
@@ -206,6 +208,80 @@ class PersistentStorage
         return PATH_MAPPING.TILE + '/{z}/{x}/{y}.png';
     }
 
+    /**
+     * Deletes files that are safe to delete.
+     *
+     * @memberof PersistentStorage
+     */
+    public async deleteSafe()
+    {
+        for (let i of DELETE_AFTER_LOG_OFF) {
+            await FileSystem.deleteAsync(i);
+        }
+    }
+
+    /**
+     * Returns next task name.
+     *
+     * @returns {string}
+     * @memberof PersistentStorage
+     */
+    public async nextSyncTaskName() : Promise<string>
+    {
+        return (await FileSystem.readDirectoryAsync(PATH_MAPPING.SYNC_TASKS)).length + '_task.json';
+    }
+
+    /**
+     *
+     *
+     * @param {SyncTask} task
+     * @memberof PersistentStorage
+     */
+    public async saveSyncTask(task: SyncTask) : Promise<void>
+    {
+        await FileSystem.writeAsStringAsync(await this.nextSyncTaskName(), JSON.stringify(task));
+    }
+    
+    /**
+     * Returns a list of sync tasks.
+     *
+     * @returns {Promise<SyncTask[]>}
+     * @memberof PersistentStorage
+     */
+    public async getSyncTasks() : Promise<SyncTask[]>
+    {
+        const fileNames = await FileSystem.readDirectoryAsync(PATH_MAPPING.SYNC_TASKS);
+        let tasks : SyncTask[] = [];
+
+        for (let i = 0; i < fileNames.length; i++) {
+            let file = JSON.stringify(await FileSystem.readAsStringAsync(fileNames[i]));
+            console.log(file);
+
+            tasks.push({
+                fileName: fileNames[i],
+                body: file.body,
+                method: file.method,
+                bodyType: file.bodyType,
+                url: file.url,
+                savedAt: file.savedAt
+            } as SyncTask);
+        }
+
+        return tasks;
+    }
+
+    /**
+     * Deletes a sync task.
+     *
+     * @param {string} name
+     * @returns {Promise<void>}
+     * @memberof PersistentStorage
+     */
+    public async completeSyncTask(task: SyncTask) : Promise<void>
+    {
+        await FileSystem.deleteAsync(task.fileName);
+    }
+
 }
 
 /** Filesystem path mappings */
@@ -218,6 +294,7 @@ const PATH_MAPPING = {
     TILE:            FileSystem.documentDirectory + 'tile',
     TRACKS:          FileSystem.documentDirectory + "tracks",
     TRACKING_POINT:  FileSystem.documentDirectory + "data/point",
+    SYNC_TASKS:      FileSystem.documentDirectory + "sync"
 };
 
 /** Mapping to individual files */
@@ -227,6 +304,10 @@ const FILE_MAPPING = {
     SYNC: PATH_MAPPING.COMMON + '/sync.json',
     PREFERENCES: PATH_MAPPING.COMMON + '/pref.json',
 };
+
+const DELETE_AFTER_LOG_OFF = [
+    FILE_MAPPING.TRACKINGS
+];
 
 const Storage = new PersistentStorage();
 

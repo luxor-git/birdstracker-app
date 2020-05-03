@@ -1,3 +1,5 @@
+import { BaseActionResult } from "./ActionResult";
+
 /**
  * List of actions for the context menu.
  *
@@ -53,5 +55,47 @@ export default interface ContextActions {
      * @memberof ContextActions
      */
     showTrackingList() : Promise<void>;
+
+    /**
+     * Starts location updates.
+     *
+     * @returns {Promise<void>}
+     * @memberof ContextActions
+     */
+    startLocationUpdates() : Promise<void>;
+
+    /**
+     * Stops location updates.
+     *
+     * @returns {Promise<void>}
+     * @memberof ContextActions
+     */
+    stopLocationUpdates() : Promise<void>;
+
+    /**
+     * Zooms to user's location.
+     *
+     * @returns {Promise<void>}
+     * @memberof ContextActions
+     */
+    zoomToMyLocation() : Promise<void>;
+
+    /**
+     * Starts recording track.
+     * GPS location must be running first.
+     *
+     * @returns {Promise<void>}
+     * @memberof ContextActions
+     */
+    startTrackRecord() : Promise<void>;
+
+    /**
+     * Stops recording the track.
+     *
+     * @returns {Promise<void>}
+     * @memberof ContextActions
+     */
+    stopTrackRecord() : Promise<void>;
+
 }
   

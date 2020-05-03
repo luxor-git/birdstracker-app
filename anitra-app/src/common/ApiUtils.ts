@@ -13,7 +13,8 @@ export const ApiConstants = {
     API_TRACK: 'data',
     API_POINT: 'get-point',
     API_NOTIFICATION_URL: 'notification',
-    API_USER: 'user'
+    API_USER: 'user',
+    API_TRACK_URL: ''
 };
 
 /**

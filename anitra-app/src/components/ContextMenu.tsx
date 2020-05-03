@@ -3,13 +3,14 @@ import { StyleSheet, Text, View, TouchableHighlight, TouchableOpacity  } from 'r
 import { MaterialIndicator } from 'react-native-indicators';
 import { Overlay, ListItem } from 'react-native-elements';
 import Theme from "../constants/Theme.js";
-import OverlayStore from "../store/OverlayStore";
+import LocationStore from "../store/LocationStore";
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import Layer from '../entities/Layer.js';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Icon } from 'react-native-elements'
 import ContextMenuActions from '../common/ContextMenuActions';
+
 
 interface ContextMenuProps {
     actions: ContextMenuActions;
@@ -71,6 +72,27 @@ export default class ContextMenu extends React.Component<ContextMenuProps> {
                         {this.props.hasTracks && 
                             this.button('strikethrough', 'Unload tracks', async () => { await this.actions.unloadTracks(); })
                         }
+
+                        {!LocationStore.isLocationUpdateRunning() &&
+                            this.button('location-arrow', 'Show current location', async () => { await this.actions.startLocationUpdates(); })
+                        }
+
+                        {LocationStore.isLocationUpdateRunning() &&
+                            this.button('search', 'Zoom to my location', async () => { await this.actions.zoomToMyLocation(); })
+                        }
+
+                        {LocationStore.isLocationUpdateRunning() && !LocationStore.isTrackRecordRunning() &&
+                            this.button('location-arrow', 'Show and record track', async () => { await this.actions.startTrackRecord(); })
+                        }
+
+                        {LocationStore.isLocationUpdateRunning() && LocationStore.isTrackRecordRunning() &&
+                            this.button('location-arrow', 'Stop recording track', async () => { await this.actions.stopTrackRecord(); })
+                        }
+
+                        {LocationStore.isLocationUpdateRunning() &&
+                            this.button('location-arrow', 'Stop displaying location', async () => { await this.actions.stopLocationUpdates(); })
+                        }
+
                         {this.button('user', 'Sign out', async () => { await this.actions.signOut(); })}
                     </ScrollView>
                 </View>

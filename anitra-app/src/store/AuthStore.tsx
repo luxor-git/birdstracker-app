@@ -6,6 +6,7 @@ import { getString, ApiStrings } from "../common/ApiStrings";
 import { AsyncStorage } from 'react-native';
 import { observable } from "mobx";
 import * as SecureStore from 'expo-secure-store';
+import Storage from '../common/Storage';
 import User from '../entities/User';
 
 /**
@@ -208,6 +209,7 @@ class AuthStore extends BaseStore
      */
     public async logout() : Promise<void>
     {
+        await Storage.deleteSafe();
         await AsyncStorage.clear();
         this.user = null;
     }

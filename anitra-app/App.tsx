@@ -9,6 +9,7 @@ import * as TaskManager from 'expo-task-manager';
 
 import BackgroundSync from './src/common/BackgroundSync';
 import { TASK_NAMES } from './src/common/BackgroundSync';
+import LocationStore from './src/store/LocationStore';
 
 import AuthStore from './src/store/AuthStore';
 import Storage from './src/common/Storage';
@@ -24,9 +25,9 @@ import MapScreen from './src/screens/in/Map';
 import { Alert } from 'react-native';
 import FlashMessage from "react-native-flash-message";
 
-TaskManager.defineTask(TASK_NAMES.TASK_UPDATE_TRACKINGS, async () => {
+/*TaskManager.defineTask(TASK_NAMES.TASK_UPDATE_TRACKINGS, async () => {
   await BackgroundSync.syncTrackings();
-});
+});*/
 
 // authentication flow container
 const AuthContainer = createStackNavigator({
@@ -85,9 +86,11 @@ addInvalidTokenListener(async () => {
   navigate("AuthLoading", {});
 });
 
+/*
 BackgroundFetch.registerTaskAsync(
   TASK_NAMES.TASK_UPDATE_TRACKINGS,
   {
       minimumInterval: 10
   }
 );
+*/

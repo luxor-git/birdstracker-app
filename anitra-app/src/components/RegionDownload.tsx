@@ -41,10 +41,8 @@ export default class RegionDownload extends React.Component<RegionDownloadProps>
     {
         this.loading = true;
         let region = getBoundingTileArray(this.props.region, Constants.DEFAULT_CACHE_ZOOM_LEVELS);
-        console.log(region);
         this.tileCount = region.tileCount;
         this.range = region;
-        console.log(region.tileCount);
         this.loading = false;
     }
 
