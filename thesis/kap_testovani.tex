@@ -1,0 +1,100 @@
+\chapter{Nasazení a testování}
+
+Tato kapitola se zabývá vytvořením aplikačního artefaktu, publikování tohoto artefaktu na distribuční platformy a následným otestováním aplikace na cílových zařízeních.
+
+\section{Vytvoření artefaktu}
+
+Pro vytvoření spustitelných a publikovatelných artefaktů byl vybrán již zmiňovaný způsob přes TurtleCLI. Tímto se docílí rychlého sestavení na lokálním stroji a aplikaci je možno téměř ihned nahrát do distribučních platforem Google Play a App Store.
+
+TurtleCLI samotné lze nainstalovat přes NPM.
+
+\begin{lstlisting}[language=Bash, caption=Instalace TurtleCLI]
+npm install -g turtle-cli
+\end{lstlisting}
+
+Vytvoření artefaktu pro Android lze docílit následujícím způsobem:
+
+\begin{lstlisting}[language=Bash, caption=Sestavení na Android,label={androidbuild}]
+export EXPO_ANDROID_KEY_PASSWORD=""
+export EXPO_ANDROID_KEYSTORE_PASSWORD=""
+turtle build:android \
+--keystore-path keystore.jks \
+--keystore-alias alias -u username -p password
+\end{lstlisting}
+
+Vývojář pravděpodobně soubory pro kryptografický podpis aplikace v této fázi nemá. Stačí tedy pouze zavolat následující ukázku kódu.
+
+\begin{lstlisting}[language=Bash, caption=Sestavení na Android]
+turtle build:android
+\end{lstlisting}
+
+Turtle automaticky uživateli vygeneruje soubory pro kryptografický podpis aplikace, nebo umožní vývojáři dodat vlastní. Po vygenerování klíčů je podstatné si soubory i heslo zálohovat na bezpečné místo, jelikož by bez těchto údajů nešlo aplikaci aktualizovat. Po vygenerování a zálohování těchto údajů lze spustit ukázku kódu \ref{androidbuild} a podepsaný soubor ve formátu \emph{.aab} se uloží do výchozí složky pro sestavené Expo aplikace, nebo do složky, kterou uživatel specifikuje.
+
+Sestavení artefaktu pro iOS je poněkud komplikovanější záležitostí. Zprvu je nutné napsat, že sestavení pro iOS je možné jen na zařízeních s operačním systémem MacOS. Pro instalaci je taktéž potřeba více softwarových nástrojů. Zprvopočátku je potřeba nainstalovat Xcode, prostředí pro vývoj iOS aplikací, a CLI nástroje pro Xcode. Pro instalaci se také předpokládá, že bude nainstalovaný balíčkový manažer Homebrew, kterým se nainstaluje ekosystém Fastlane. Fastlane je sada CLI nástrojů, která zjednodušuje proces vydání aplikací pro iOS i Android. Pro sestavení Android aplikací není povinná, ale iOS aplikace bez tohoto nástroje TurtleCLI sestavit nedovolí.
+
+\begin{lstlisting}[language=Bash, caption=Sestavení na Android]
+xcode-select --install #nainstaluje CLI nastroje Xcode 
+brew install fastlane #nainstaluje Fastlane
+fastlane init
+expo build:ios #vygeneruje klice
+expo fetch:ios:certs # vyexpoertuje klice 
+turtle build:ios
+\end{lstlisting}
+
+Po spuštění \emph{expo build:ios} Expo CLI umožní vygenerovat distribuční certifikát, notifikační certifikát a profil fondu zařízení, které svazují testovací zařízení s autorizovanými vývojáři. Podstatné je si tyto certifikáty opět zálohovat, stejně tak vygenerované heslo k P12 distribučnímu certifikátu. Expo tyto soubory vytvoří v lokální složce, je potřeba zajistit, že se omylem nenahrají do verzovacího systému.
+
+Při prvním spuštění se citelně dlouho stahují závislosti Expo pro sestavení aplikace.
+
+\section{Publikování}
+
+Publikování aplikace bylo zkomplikováno globální situací spojenou s COVID-19. I interní testovací verze aplikací nebylo možné ani po třech týdnech publikovat, nebylo tedy možné aplikaci efektivně distribuovat vybraným testovacím uživatelům.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=140mm]{img/covid19.png}
+	\end{center}
+	\caption[Varování před publikováním aplikace na Google Play]{Varování před publikováním aplikace na Google Play -- zdroj: Google Inc.}
+\end{figure}
+
+Autor aplikaci tedy otestoval sám vytvoření APK pro platformu Android a přes TestFlight na zařízeních s iOS.
+
+\section{Testování}
+Pro testování byla využita následující zařízení:
+\begin{itemize}
+	\item iPhone XS
+	\item iPad
+	\item Android tablet nVidia Shield
+	\item ---
+\end{itemize}
+
+Zařízení byla vybrána z dostupnosti a všechna zařízení jsou fyzická. Zařízení taktéž vcelku dobře reprezentují rozsah používaných zařízení potenciálními uživateli i uživateli mobilních zařízení obecně.
+
+Na každém zařízení byla aplikace nainstalována a byl proveden následující zjednodušený testovací scénář:
+
+\begin{itemize}
+	\item otevření aplikace,
+	\item přihlášení přes stejný testovací účet,
+	\item zobrazení posledních pozic v mapě,
+	\item zapnutí aktuální pozice v mapě,
+	\item zobrazení detailu pozice,
+	\item zobrazení detailu trackeru,
+	\item zobrazení fotky z fotogalerie,
+	\item načtení trasy trackeru,
+	\item načtení detailu bodu v trase,
+	\item odnačtení trasy trackeru.
+\end{itemize}
+
+Cílem tohoto scénáře bylo prověřit hlavní funkce aplikace v logické návaznosti. Výsledek totoho testovacího scénáře je uveden v následující tabulce. Za neúspěch je považováno nemožnost dokončení testovacího scénáře, např. pádem aplikace, nedokončeným načítáním či jakékoliv jiné situace, která znemnožní dokončení akce.
+
+\begin{table}[H]
+	\begin{tabularx}{\textwidth}{|X|X|X|X|X|}
+		\hline
+		Zařízení        & OS      & Verze  & Výsledky testů & Komentář \\ \hline
+		nVidia Shield   & Android & 5.1.1  &                &          \\ \hline
+		?Android tablet?  &         &        &                &          \\ \hline
+		?Android telefon? &         &        &                &          \\ \hline
+		iPad            & iOS     &        &                &          \\ \hline
+		iPhone XS       & iOS     & 13.3.1 &                &          \\ \hline
+	\end{tabularx}
+	\caption{Výsledky testování aplikace}
+\end{table}
