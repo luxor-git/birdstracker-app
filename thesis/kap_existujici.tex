@@ -10,7 +10,7 @@ Nestrukturovaná data je obecné označení pro data, která se zpravidla nedaj�
 
 Metoda nestrukturovaného ručního zápisu spočívá v uchovávání papírových dokumentů vznikající při činnosti ornitologů. Je možné zapsat např. pozorování jedinců, kontroly hnízd, manipulace (např. nasazení kroužku), morfometrické údaje (délky křídel), obecné poznámky. Schéma zápisu nemusí být normalizované, je zde tedy nejjednoduší možnost schéma upravit pro potřeby ornitologa, případně ornitologické organisace.
 
-\begin{table}[h]
+\begin{table}[H]
 	\begin{tabularx}{\textwidth}{ | X | X | }
 		\hline
 		Kritérium                              & Hodnocení \\
@@ -28,9 +28,9 @@ Metoda nestrukturovaného ručního zápisu spočívá v uchovávání papírov�
 	\end{tabularx}
 	\caption{Hodnocení nestrukturovaného zápisu}
 \end{table}
-
+\clearpage
 \textbf{Výhody}
-
+\nolisttopbreak
 \begin{itemize}
 	\item možnost kdykoliv upravit schéma,
 	\item nízká náročnost na technologie,
@@ -38,19 +38,19 @@ Metoda nestrukturovaného ručního zápisu spočívá v uchovávání papírov�
 \end{itemize}
 
 \textbf{Nevýhody}
-
+\nolisttopbreak
 \begin{itemize}
-	\item obtižné vkládání fotodokumentace, o
+	\item obtižné vkládání fotodokumentace,
 	\item data jsou složitě přenositelná, obvykle pouze ručním přepisem do jiného systému.
 \end{itemize}
 
 \section{Strukturovaný zápis}
 
-Označení \emph{strukturovaná} se přisuzuje datům, které explicitně zachycují fakta, atributy, objekty, u kterých je významným rysem existence elementů dat. Strukturované ukládání dat je strojově zpracovatelné počítači a ukládá se často v databázových systémech \cite{sklenák2001data} nebo tabulkových procesorech. V této podkapitole bude popsán zápis pomocí tabulkového procesoru.
+Označení \emph{strukturovaná} se přisuzuje datům, která explicitně zachycují fakta, atributy, objekty, u kterých je významným rysem existence elementů dat. Strukturované ukládání dat je strojově zpracovatelné počítači a ukládá se často v databázových systémech \cite{sklenák2001data} nebo tabulkových procesorech. V této podkapitole bude popsán zápis pomocí tabulkového procesoru.
 
 Na rozdíl od ručního zápisu je zde možné vynutit schéma, přehlednost i přenositelnost dat je tedy nesrovnale vyšší. Změny schématu pro zaznamenání nového druhu informací mohou být komplikací, např. v případu rozdělení datového elementu na dva, nutnosti změnit procesy či procedury zapisování záznamu. Problematické je vkládání a zobrazování některých telemetrických dat z trackerů umístěných na zvířatech. Ačkoliv např. zobrazení numerických telemetrických dat (teplota, napětí na akumulátoru) je jednoduché a dá se v tabulkovém procesoru zobrazit jednoduše, geografické pozice nikoliv. Problém také nastává při přibývání dat s výkonem. Problém zde může nastat při spolupráci více uživatelů najednou, synchronizace dat se musí kontrolovat, aby nedošlo ke ztrátě dat.
 
-\begin{table}[h]
+\begin{table}[H]
 	\begin{tabularx}{\textwidth}{ | X | X | }
 		\hline
 		Kritérium                              & Hodnocení \\
@@ -70,7 +70,7 @@ Na rozdíl od ručního zápisu je zde možné vynutit schéma, přehlednost i p
 \end{table}
 
 \textbf{Výhody}
-
+\nolisttopbreak
 \begin{itemize}
 	\item možnost kdykoliv upravit schéma,
 	\item nízká náročnost na technologie,
@@ -80,7 +80,7 @@ Na rozdíl od ručního zápisu je zde možné vynutit schéma, přehlednost i p
 \end{itemize}
 
 \textbf{Nevýhody}
-
+\nolisttopbreak
 \begin{itemize}
 	\item závislost na přístupu k souborům tabulkového procesoru,
 	\item obtížné či neefektivní zachycení nestrukturovaných dat (obrázků, volných textů),
@@ -90,13 +90,13 @@ Na rozdíl od ručního zápisu je zde možné vynutit schéma, přehlednost i p
 
 \section{Geografické informační systémy}
 
-Geografický informační systém je označení pro sadu hardware, software a geografických dat pro sbět, správu, analýzu a zobrazení všechn způsobů geograficky referencovaných informací, neboli také prostorových dat \cite{gartnerGlossary}. Z geografické povahy dat tedy vyplývá, že některé GIS softwary by mohly být pro ornitologickou aplikaci vhodné. 
+Geografický informační systém je označení pro sadu hardware, software a geografických dat pro sběř, správu, analýzu a zobrazení všech způsobů geograficky referencovaných informací, neboli také prostorových dat \cite{gartnerGlossary}. Z geografické povahy dat tedy vyplývá, že některé GIS softwary by mohly být pro ornitologickou aplikaci vhodné. 
 
 \subsection{Google MyMaps}
 
-Google MyMaps je produktem z portfolia mapových produktů společnosti Google. Google MyMaps slouží především k uchování bodů, čar a polygonů v mapě. Pro ukládání dat tabulkového charakteru má aplikace podporu pouze pro objekty viditelné v mapě ve formě atributu, výhodou je ale jim možnost definovat schéma. Software ze své obecné charakteristiky má vysokou míru personalizace a obecnosti. Nespornou výhodou je napojení na ekosystém Google Drive, který umožňuje nahradit nedostatky této aplikace jinými. Správa příloh je zde taktéž vyřešena velmi dobře.
+Google MyMaps je produktem z portfolia mapových produktů společnosti Google. Google MyMaps slouží především k uchování bodů, čar a polygonů v mapě. Pro ukládání dat tabulkového charakteru má aplikace podporu pouze pro objekty viditelné v mapě ve formě atributu, výhodou je ale jim možnost definovat schéma. Software ze své obecné charakteristiky má vysokou míru personalizace a obecnosti. Nespornou výhodou je napojení na ekosystém Google Drive, který umožňuje nahradit nedostatky této aplikace jinými aplikacemi. Správa příloh je zde taktéž vyřešena velmi dobře.
 
-\begin{table}[h]
+\begin{table}[H]
 	\begin{tabularx}{\textwidth}{ | X | X | }
 		\hline
 		Kritérium                              & Hodnocení \\
@@ -116,7 +116,7 @@ Google MyMaps je produktem z portfolia mapových produktů společnosti Google. 
 \end{table}
 
 \textbf{Výhody}
-
+\nolisttopbreak
 \begin{itemize}
 	\item vysoká míra personalizace,
 	\item jednoduchost softwaru,
@@ -125,7 +125,7 @@ Google MyMaps je produktem z portfolia mapových produktů společnosti Google. 
 \end{itemize}
 
 \textbf{Nevýhody}
-
+\nolisttopbreak
 \begin{itemize}
 	\item zaměřeno především na objekty v mapě,
 	\item složité vytváření struktur nad objekty v mapě (taxonomie, metainformace),
@@ -137,7 +137,7 @@ Specializované softwarové produkty vyvíjené přímo pro doménu ornitologie 
 
 \subsection{Movebank}
 
-Movebank je specializovanou aplikací vyvinutou Max Planck institutem v Německu a uchovává více než 600 milionů pozičních dat od jednotlivých trackerů  \cite{mrozewski2018movebank}. Aplikace se zabývá ukládáním dat o zvířatech, ať již pozičních, senzorických i vygenerovanými uživateli, např. pozorování \cite{kranstauber2011movebank}. Aplikace není vyvinuta primárně pro ornitologické potřeby, ale její datový model obsahuje desítky datových položek vhodných i pro ornitology. Značnou výhodou je podpora výrobců trackerů pro kontinuální export dat přímo do Movebank a možnost data z Movebank exportovat, či jednoduché využití v doménově specickém softwaru. Za nevýhodu pro některé ornitology může být nutnost data uveřejnit, případně o ně po 90 dnech přijít. Movebank taktéž obsahuje funkce pro správu projektů a publikování studií a je mezi ornitology často citovaným zdrojem.
+Movebank je specializovanou aplikací vyvinutou Max Planck institutem v Německu a uchovává více než 600 milionů pozičních dat od jednotlivých trackerů  \cite{mrozewski2018movebank}. Aplikace se zabývá ukládáním dat o zvířatech, ať již pozičních, senzorických i dat vygenerovanými uživateli, např. pozorování \cite{kranstauber2011movebank}. Aplikace není vyvinuta primárně pro ornitologické potřeby, ale její datový model obsahuje desítky datových položek vhodných i pro ornitology. Značnou výhodou je podpora výrobců trackerů pro kontinuální export dat přímo do Movebank a možnost data z Movebank exportovat, s tím i související jednoduché využití v doménově specickém softwaru. Za nevýhodu pro některé ornitology může být nutnost data uveřejnit, případně o ně po 90 dnech přijít. Movebank taktéž obsahuje funkce pro správu projektů a publikování studií a je mezi ornitology často citovaným zdrojem.
 
 \begin{table}[H]
 	\begin{tabularx}{\textwidth}{ | X | X | }
@@ -159,6 +159,7 @@ Movebank je specializovanou aplikací vyvinutou Max Planck institutem v Německu
 \end{table}
 
 \textbf{Výhody}
+\nolisttopbreak
 \begin{itemize}
 	\item doménová specializace,
 	\item dlouholetý vývoj aplikace -- komplexní datový model,
@@ -166,6 +167,7 @@ Movebank je specializovanou aplikací vyvinutou Max Planck institutem v Německu
 	\item dobrá integrace s doménově specifickými nástroji
 \end{itemize}
 \textbf{Nevýhody}
+\nolisttopbreak
 \begin{itemize}
 	\item nutnost zprovoznit kontiuální export do Movebank,
 	\item nutnost data vždy v určité formě publikovat.
@@ -206,6 +208,7 @@ Anitra je českou ornitologickou značkou zabývající se vývojem a produkcí 
 	\caption{Hodnocení Anitra}
 \end{table}
 \textbf{Výhody}
+\nolisttopbreak
 \begin{itemize}
 	\item doménová specializace,
 	\item možnosti integrace dat,
@@ -214,6 +217,7 @@ Anitra je českou ornitologickou značkou zabývající se vývojem a produkcí 
 \end{itemize}
 
 \textbf{Nevýhody}
+\nolisttopbreak
 \begin{itemize}
 	\item webová aplikace není vhodná pro použití v terénu,
 	\item platforma není mezi ornitology příliš rozšířená,
