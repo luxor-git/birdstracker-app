@@ -41,9 +41,9 @@ expo fetch:ios:certs # vyexpoertuje klice
 turtle build:ios
 \end{lstlisting}
 
-Po spuštění \emph{expo build:ios} Expo CLI umožní vygenerovat distribuční certifikát, notifikační certifikát a profil fondu zařízení, které svazují testovací zařízení s autorizovanými vývojáři. Podstatné je si tyto certifikáty opět zálohovat, stejně tak vygenerované heslo k P12 distribučnímu certifikátu. Expo tyto soubory vytvoří v lokální složce, je potřeba zajistit, že se omylem nenahrají do verzovacího systému.
+Po spuštění \emph{expo build:ios} Expo CLI umožní vygenerovat distribuční certifikát, notifikační certifikát a profil fondu zařízení, které svazují testovací zařízení s autorizovanými vývojáři. Aplikaci se také vytvoří bundle ID, které slouží pro její unikátní identifikaci. Podstatné je si tyto certifikáty opět zálohovat, stejně tak vygenerované heslo k P12 distribučnímu certifikátu. Expo tyto soubory vytvoří v lokální složce, je potřeba zajistit, že se omylem nenahrají do verzovacího systému.
 
-Při prvním spuštění se citelně dlouho stahují závislosti Expo pro sestavení aplikace.
+Při prvním spuštění se citelně dlouho stahují závislosti Expo pro sestavení aplikace, následující sestavení jsou rychlá.
 
 \section{Publikování}
 
@@ -57,6 +57,10 @@ Publikování aplikace bylo zkomplikováno globální situací spojenou s COVID-
 \end{figure}
 
 Autor aplikaci tedy otestoval sám vytvoření APK pro platformu Android a přes TestFlight na zařízeních s iOS.
+
+Pro testování na platformě Android byla využita schopnost systému spouštět soubory z jiných zdrojů, než oficiálních distribučních kanálů. Autor práce tedy vložil tyto soubory na disky zařízení a aplikaci následně spustil.
+
+Pro testování na platformě iOS bylo nutno využít TestFlight z absence jiných možností řešení nasazení aplikace. Artefakty sestavení ve formátu .ipa nejdou samy o sobě přímo nahrát do obchodu App Store a oficiální i komunitní dokumentace je ve způsobu řešení těchto problémů značně neaktuální. Pro nasazení je nutné využít aplikaci Transporter dostupnost z App Store na plaftormě macOS. Artefakt se napáruje pomocí bundle ID vytvořené za pomocí nástroje Expo na správný záznam v App Store. Nahraný artefakt se následně zpracovává a v rámci minut bude dostupný pro nasazení pomocí TestFlight. Po zpracování je možné nahranou verzi aplikace testovat po dobu 90 dní. Pro získání aplikace k otestování je nutno vygenerovat si pozvánku nebo kód pro betatest.
 
 \section{Testování}
 Pro testování byla využita následující zařízení:
