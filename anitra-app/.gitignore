@@ -13,4 +13,5 @@ web-report/
 # macOS
 .DS_Store
 build.sh
+build_ios.sh
 *.jks

@@ -81,13 +81,15 @@ export default class ContextMenu extends React.Component<ContextMenuProps> {
                             this.button('search', 'Zoom to my location', async () => { await this.actions.zoomToMyLocation(); })
                         }
 
-                        {LocationStore.isLocationUpdateRunning() && !LocationStore.isTrackRecordRunning() &&
+                        {/*{LocationStore.isLocationUpdateRunning() && !LocationStore.isTrackRecordRunning() &&
                             this.button('location-arrow', 'Show and record track', async () => { await this.actions.startTrackRecord(); })
-                        }
+                        }*/}
 
+                        {/*
                         {LocationStore.isLocationUpdateRunning() && LocationStore.isTrackRecordRunning() &&
                             this.button('location-arrow', 'Stop recording track', async () => { await this.actions.stopTrackRecord(); })
                         }
+                        */}
 
                         {LocationStore.isLocationUpdateRunning() &&
                             this.button('location-arrow', 'Stop displaying location', async () => { await this.actions.stopLocationUpdates(); })
