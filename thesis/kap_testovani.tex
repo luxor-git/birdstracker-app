@@ -24,15 +24,15 @@ turtle build:android \
 
 Vývojář pravděpodobně soubory pro kryptografický podpis aplikace v této fázi nemá. Stačí tedy pouze zavolat následující ukázku kódu.
 
-\begin{lstlisting}[language=Bash, caption=Sestavení na Android]
-turtle build:android
+\begin{lstlisting}[language=Bash, caption=Vygenerování klíčů pro Android]
+expo build:android
 \end{lstlisting}
 
 Turtle automaticky uživateli vygeneruje soubory pro kryptografický podpis aplikace, nebo umožní vývojáři dodat vlastní. Po vygenerování klíčů je podstatné si soubory i heslo zálohovat na bezpečné místo, jelikož by bez těchto údajů nešlo aplikaci aktualizovat. Po vygenerování a zálohování těchto údajů lze spustit ukázku kódu \ref{androidbuild} a podepsaný soubor ve formátu \emph{.aab} se uloží do výchozí složky pro sestavené Expo aplikace, nebo do složky, kterou uživatel specifikuje.
 
 Sestavení artefaktu pro iOS je poněkud komplikovanější záležitostí. Zprvu je nutné napsat, že sestavení pro iOS je možné jen na zařízeních s operačním systémem MacOS. Pro instalaci je taktéž potřeba více softwarových nástrojů. Zprvopočátku je potřeba nainstalovat Xcode, prostředí pro vývoj iOS aplikací, a CLI nástroje pro Xcode. Pro instalaci se také předpokládá, že bude nainstalovaný balíčkový manažer Homebrew, kterým se nainstaluje ekosystém Fastlane. Fastlane je sada CLI nástrojů, která zjednodušuje proces vydání aplikací pro iOS i Android. Pro sestavení Android aplikací není povinná, ale iOS aplikace bez tohoto nástroje TurtleCLI sestavit nedovolí.
 
-\begin{lstlisting}[language=Bash, caption=Sestavení na Android]
+\begin{lstlisting}[language=Bash, caption=Sestavení na iOS včetně vygenerování klíčů]
 xcode-select --install #nainstaluje CLI nastroje Xcode 
 brew install fastlane #nainstaluje Fastlane
 fastlane init
@@ -41,13 +41,13 @@ expo fetch:ios:certs # vyexpoertuje klice
 turtle build:ios
 \end{lstlisting}
 
-Po spuštění \emph{expo build:ios} Expo CLI umožní vygenerovat distribuční certifikát, notifikační certifikát a profil fondu zařízení, které svazují testovací zařízení s autorizovanými vývojáři. Aplikaci se také vytvoří bundle ID, které slouží pro její unikátní identifikaci. Podstatné je si tyto certifikáty opět zálohovat, stejně tak vygenerované heslo k P12 distribučnímu certifikátu. Expo tyto soubory vytvoří v lokální složce, je potřeba zajistit, že se omylem nenahrají do verzovacího systému.
+Po spuštění \emph{expo build:ios} Expo CLI umožní vygenerovat distribuční certifikát, notifikační certifikát a profil fondu zařízení, které svazují testovací zařízení s autorizovanými vývojáři. Aplikaci se také vytvoří bundle ID, které slouží pro její unikátní identifikaci. Podstatné je si tyto certifikáty opět zálohovat, stejně jak vygenerované heslo k P12 distribučnímu certifikátu. Expo tyto soubory vytvoří v lokální složce a je potřeba zajistit, že se omylem nenahrají do verzovacího systému.
 
-Při prvním spuštění se citelně dlouho stahují závislosti Expo pro sestavení aplikace, následující sestavení jsou rychlá.
+Při prvním spuštění se citelně dlouho stahují závislosti Expo pro sestavení aplikace a následující sestavení jsou rychlá.
 
 \section{Publikování}
 
-Publikování aplikace bylo zkomplikováno globální situací spojenou s COVID-19. I interní testovací verze aplikací nebylo možné ani po třech týdnech publikovat, nebylo tedy možné aplikaci efektivně distribuovat vybraným testovacím uživatelům.
+Publikování aplikace bylo zkomplikováno globální situací spojenou s COVID-19. Interní testovací verze nebylo možné publikovat ani po třech týdnech a aplikace nemohla být distribuovaná testovacím uživatelům.
 
 \begin{figure}[H]
 	\begin{center}
@@ -56,11 +56,11 @@ Publikování aplikace bylo zkomplikováno globální situací spojenou s COVID-
 	\caption[Varování před publikováním aplikace na Google Play]{Varování před publikováním aplikace na Google Play -- zdroj: Google Inc.}
 \end{figure}
 
-Autor aplikaci tedy otestoval sám vytvoření APK pro platformu Android a přes TestFlight na zařízeních s iOS.
+Autor aplikaci tedy otestoval sám vytvoření spustitelného souboru APK pro platformu Android a interním testováním přes TestFlight na zařízeních s iOS.
 
 Pro testování na platformě Android byla využita schopnost systému spouštět soubory z jiných zdrojů, než oficiálních distribučních kanálů. Autor práce tedy vložil tyto soubory na disky zařízení a aplikaci následně spustil.
 
-Pro testování na platformě iOS bylo nutno využít TestFlight z absence jiných možností řešení nasazení aplikace. Artefakty sestavení ve formátu .ipa nejdou samy o sobě přímo nahrát do obchodu App Store a oficiální i komunitní dokumentace je ve způsobu řešení těchto problémů značně neaktuální. Pro nasazení je nutné využít aplikaci Transporter dostupnost z App Store na plaftormě macOS. Artefakt se napáruje pomocí bundle ID vytvořené za pomocí nástroje Expo na správný záznam v App Store. Nahraný artefakt se následně zpracovává a v rámci minut bude dostupný pro nasazení pomocí TestFlight. Po zpracování je možné nahranou verzi aplikace testovat po dobu 90 dní. Pro získání aplikace k otestování je nutno vygenerovat si pozvánku nebo kód pro betatest.
+Pro testování na platformě iOS bylo nutno využít TestFlight z absence jiných možností řešení nasazení aplikace. Artefakty sestavení ve formátu .ipa nejdou samy o sobě přímo nahrát do obchodu App Store a oficiální i komunitní dokumentace je ve způsobu řešení těchto problémů značně neaktuální. Pro nasazení je nutné využít aplikaci Transporter dostupnost z App Store na platformě macOS. Artefakt se napáruje na správný záznam v App Store pomocí bundle ID, které bylo vytvořeno nástrojem Expo. Nahraný artefakt se následně zpracovává a v rámci minut bude dostupný pro nasazení pomocí TestFlight. Po zpracování je možné nahranou verzi aplikace testovat po dobu 90 dní. Pro získání aplikace k otestování je nutné vygenerovat si pozvánku nebo kód pro betatest.
 
 \section{Testování}
 Pro testování byla využita následující zařízení:
@@ -70,7 +70,7 @@ Pro testování byla využita následující zařízení:
 	\item Android tablet nVidia Shield.
 \end{itemize}
 
-Zařízení byla vybrána z dostupnosti, všechna zařízení jsou fyzická. Zařízení taktéž vcelku dobře reprezentují rozsah používaných zařízení potenciálními uživateli i uživateli mobilních zařízení obecně.
+Zařízení byla vybrána podle dostupnosti a všechna jsou fyzická. Vybrané přístroje dobře reprezentují rozsah používaných zařízení potenciálními uživateli i uživateli mobilních aplikací obecně. Od testování na reprezentativním telefonu se systémem Android muselo být odstoupeno kvůli nedostatku času.
 
 Na každém zařízení byla aplikace nainstalována a byl proveden následující zjednodušený testovací scénář:
 
@@ -86,7 +86,7 @@ Na každém zařízení byla aplikace nainstalována a byl proveden následujíc
 	\item odnačtení trasy trackeru.
 \end{itemize}
 
-Cílem tohoto scénáře bylo prověřit hlavní funkce aplikace v logické návaznosti. Výsledek totoho testovacího scénáře je uveden v následující tabulce. Za neúspěch je považováno nemožnost dokončení testovacího scénáře, např. pádem aplikace, nedokončeným načítáním či jakékoliv jiné situace, která znemnožní dokončení akce.
+Cílem tohoto scénáře bylo prověřit hlavní funkce aplikace v logické návaznosti. Výsledek testovacího scénáře je uveden v následující tabulce. Za neúspěch je považována nemožnost dokončení testovacího scénáře, způsobená například pádem aplikace, nedokončeným načítáním, či jakoukoliv jinou situací, která znemožní dokončení akce.
 
 \begin{table}[H]
 	\begin{tabularx}{\textwidth}{|X|X|X|X|}
