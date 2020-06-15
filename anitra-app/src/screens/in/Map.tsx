@@ -6,7 +6,6 @@ import { SearchBar, Button, Icon } from 'react-native-elements';
 import { UrlTile, Marker, Polyline } from 'react-native-maps';
 import { observable, ObservableMap, computed, action, get } from 'mobx';
 import { observer } from 'mobx-react';
-import { ScreenOrientation } from 'expo';
 import LoadingOverlay from '../../components/LoadingOverlay';
 import LayersOverlay from '../../components/LayersOverlay';
 import TrackingOverlay from '../../components/TrackingOverlay';

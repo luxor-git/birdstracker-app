@@ -216,7 +216,9 @@ class PersistentStorage
     public async deleteSafe()
     {
         for (let i of DELETE_AFTER_LOG_OFF) {
-            await FileSystem.deleteAsync(i);
+            if ((await FileSystem.getInfoAsync(i)).exists) {
+                await FileSystem.deleteAsync(i);
+            }
         }
     }
 
