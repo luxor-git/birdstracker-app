@@ -14,7 +14,7 @@ Anitra Wildlife Tracking app is a companion app to the Anitra web application an
 Instalation for development purposes is described below. Pre-requisites are an installation of NPM and Node.js and either MS Windows or MacOS. For Android development, an installation of Android studio is necessary (for VM management and Android SDKs). For iOS development, xcode must be installed.
 
 1. Clone this repo using git clone `git clone https://github.com/luxor-git/birdstracker-app`
-2. Naviate to directory `./anitra-app/`
+2. Navigate to directory `./anitra-app/`
 3. Run `npm install`
 4. Run `expo run android` or `expo run ios`
 5. Application should now be running in development mode, live-reloading when necessary
