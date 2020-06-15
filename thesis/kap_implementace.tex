@@ -2,13 +2,13 @@
 
 \chapter{Implementace}
 
-Kapitola implementace se věnuje konkrétním akcím vedoucím k vytvoření spustitelného aplikačního artefaktu. V jednotlivých podkapitolách budou uvedeny využité prostředky, konkrétní kroky a jejich výstupy. Některé z těchto kroků jsou použitelné pro všechny Expo projekty a některé úsudky lze využit při vytváření vlastních Expo projektů. Za zmínku zde také stojí kapitola Implementace off-line map, ve které je popsán způsob jak zajistit funkční off-line mapy pro Expo projekty, pro co neexistují zatím žádné komunitní knihovny nebo Expo-nativní způsoby řešení.
+Kapitola implementace se věnuje konkrétním akcím vedoucím k vytvoření spustitelného aplikačního artefaktu. V jednotlivých podkapitolách budou uvedeny využité prostředky, konkrétní kroky a jejich výstupy. Některé z těchto kroků jsou použitelné pro všechny Expo projekty a některé úsudky lze využít při vytváření vlastních Expo projektů. Za zmínku zde také stojí kapitola Implementace off-line map, ve které je popsán způsob jak zajistit funkční off-line mapy pro Expo projekty, pro co neexistují zatím žádné komunitní knihovny nebo Expo-nativní způsoby řešení.
 
 \section{Vývojové prostředí}
 
 % https://www.techopedia.com/definition/16376/development-environment
 
-Vývojové prostředí je kolekce procedur a nástroj pro vývoj, testování a ladění aplikací nebo programů \cite{technopediaDevEnv}. Termín vývojové prostředí se používá v synonymu s termínem IDE, integrovaným vývojový prostředím, což je softwarový nástroj pro psaní, stestavení, testování a ladění programů. Do tohoto termínu taktéž lze zahrnout i nástroje co IDE samotné využívá pro setavení artefaktů.
+Vývojové prostředí je kolekce procedur a nástroj pro vývoj, testování a ladění aplikací nebo programů \cite{technopediaDevEnv}. Termín vývojové prostředí se používá v synonymu s termínem IDE, integrovaným vývojový prostředím, což je softwarový nástroj pro psaní, sestavení, testování a ladění programů. Do tohoto termínu taktéž lze zahrnout i nástroje co IDE samotné využívá pro setavení artefaktů.
 
 Pro vývoj aplikace byly zvoleny následující nástroje vývojového prostředí:
 
@@ -20,9 +20,9 @@ Pro vývoj aplikace byly zvoleny následující nástroje vývojového prostřed
 	\item XCode pro správu iOS virtuálních strojů (pouze na MacOS).
 \end{itemize}
 
-Další klíčový softwarový nástroj je taktéž instalace Node.js a balíčkovacího nástroje NPM, bez kterých by vývoj Expo aplikce nemožný. Text této práce se jejich instalaci nevěnuje a předpokládá, že již nainstalované jsou. Instalace na běžných a aktuálních verzích OS není problémem.
+Dalším klíčovým softwarovým nástrojem je taktéž instalace Node.js a balíčkovacího nástroje NPM, bez kterých by byl vývoj Expo aplikace nemožný. Text této práce se jejich instalaci nevěnuje a předpokládá, že již nainstalované jsou. Instalace na běžných a aktuálních verzích OS není problémem.
 
-Do pojmu vývojové prostředí se zahrnují i izolovaná prostředí, ve kterém běží testovací nebo produkční instance aplikace (resp. datového zdroje), v tomto případě platformy Anitra. Pro vývoj této aplikace nebylo toto rozlišení nutné a vyvílejo se přímo na produkční verzi platformy Anitra.
+Do pojmu vývojové prostředí se zahrnují i izolovaná prostředí, ve kterém běží testovací nebo produkční instance aplikace (resp. datového zdroje), v tomto případě platformy Anitra. Pro vývoj této aplikace nebylo toto rozlišení nutné a vyvíjelo se přímo na produkční verzi platformy Anitra.
 
 \subsection{Vytvoření projektu}
 
@@ -35,11 +35,11 @@ expo init mobilni-aplikace
 
 První řádek nainstaluje \emph{expo-cli}, nástroje pro vytváření, správu, spouštění a sestavení Expo projektů. Druhý příkaz vytvoří nový expo projekt \emph{mobilni-aplikace} v aktuální složce uživatele.
 
-Z předpřipraveného kódu je dobré zminit vstupní bod aplikace \emph{App.tsx}, ve kterém je připravená ukázková komponenta. Z tohoto vstupního bodu se implementují navigátory zmíněné v kapitole Implementace navigátorů.
+Z předpřipraveného kódu je dobré zmínit vstupní bod aplikace \emph{App.tsx}, ve kterém je připravená ukázková komponenta. Z tohoto vstupního bodu se implementují navigátory zmíněné v kapitole Implementace navigátorů.
 
-\section{Implementace uložišť a entit}
+\section{Implementace úložišť a entit}
 
-Implementace uložišť a entit byla vytvořena dle návrhu aplikace. Bylo vytvořeno více entit, než bylo plánováno, aby celá aplikace komunikovala za pomocí typovaných objektů a tím se zjednodušil proces ladění v aplikaci i urychlil vývoj. Pro entity bylo využito rozhraní, aby entity pro funkce ukládání měly stejnou signaturu a bylo je možné používat ve stylu OOP bez složitých konstrukcí. V ukázce kódu uvedené níže je ukázáno rozhraní, které musí implementovat všechny entity a entity, které mají být uložitelné na disk.
+Implementace úložišť a entit byla vytvořena dle návrhu aplikace. Bylo vytvořeno více entit, než bylo plánováno, aby celá aplikace komunikovala za pomocí typovaných objektů a tím se zjednodušil proces ladění v aplikaci i urychlil vývoj. Pro entity bylo využito rozhraní, aby entity pro funkce ukládání měly stejnou signaturu a bylo je možné používat ve stylu OOP bez složitých konstrukcí. V ukázce kódu uvedené níže je ukázáno rozhraní, které musí implementovat všechny entity a entity, které mají být uložitelné na disk.
 
 \begin{lstlisting}[language=JavaScript, caption=Ukázka entity]
 export interface IEntity {
@@ -58,11 +58,11 @@ export interface ISerializableEntity extends IEntity {
 };
 \end{lstlisting}
 
-Implementace uložišť samotných spočívá v implementaci tří částí -- v komunikaci se serverem, transformaci dat od serveru a uložení těchto dat na disk. Pro komunikaci se serverem pomocí HTTP Rest API byla zvolena knihovna \emph{axios}, která se běžně používá v JavaScriptových projektech pro abstrakci rozdílů mezi jednotlivými klienty. Knihovna dále umožňuje jednodušší přístup např. k hlavičkám HTTP dotazu a je tedy jednoduché se např. oproti vzdálenému serveru autentifikovat. Axios očekává na vstupu objekt obsahující výčet parametrů a na výstupu vrací tělo dotazu zformátované do správného formátu (např. když server vrací JSON odpověď, Axios z vráceného textu správně složí JSON).
+Implementace úložišť samotných spočívá v implementaci tří částí -- v komunikaci se serverem, transformaci dat od serveru a uložení těchto dat na disk. Pro komunikaci se serverem pomocí HTTP Rest API byla zvolena knihovna \emph{axios}, která se běžně používá v JavaScriptových projektech pro abstrakci rozdílů mezi jednotlivými klienty. Knihovna dále umožňuje jednodušší přístup např. k hlavičkám HTTP dotazu a je tedy jednoduché se např. oproti vzdálenému serveru autentifikovat. Axios očekává na vstupu objekt obsahující výčet parametrů a na výstupu vrací tělo dotazu zformátované do správného formátu (např. když server vrací JSON odpověď, Axios z vráceného textu správně složí JSON).
 
 Transformace dat ze serveru spočívá v převodu klíčů a hodnot vrácených ze serveru do předem zmíněných entit. Entity v aplikaci neobsahují celá data, ale pouze výčet, který aplikace skutečně potřebuje. Tímto se šetří nejen místo na disku, ale i doba serializace a deserializace entit při čtení z disku. V API nejde stanovit, jaká pole dotazovatel vyžaduje a filtrování je tedy nutno provést až na koncovém bodu procesu, tedy v mobilní aplikaci.
 
-Pro uložení dat byla využita součást Expo \emph{expo-file-system}, která abstrahuje od jednotlivých souborových systémů operačních systémů. Nevýhodou tohoto systému je neobratnost při zakládání složek, složky se musí vytvářet dopředu a nelze je vytvořit při zápisu souboru. Podstatnější nevýhodou je nutnost serializovat obsah souboru do textu, nejedná se tedy o příliš vhodnou metodu ukládání např. obrazových dat kvůli nutnosti převést binární data na textový formát např. Base64. Alternativní řešení pro Expo neexistuje. Ukázka práce se souborovým systémem je v následující ukázce kódu.
+Pro uložení dat byla využita součást Expo \emph{expo-file-system}, která abstrahuje od jednotlivých souborových systémů operačních systémů. Nevýhodou tohoto systému je neobratnost při zakládání složek, složky se musí vytvářet dopředu a nelze je vytvořit při zápisu souboru. Podstatnější nevýhodou je nutnost serializovat obsah souboru do textu, a nejedná se tedy o příliš vhodnou metodu ukládání např. obrazových dat kvůli nutnosti převést binární data na textový formát např. Base64. Alternativní řešení pro Expo neexistuje. Ukázka práce se souborovým systémem je v následující ukázce kódu.
 
 \begin{lstlisting}[language=JavaScript, caption=Ukázka entity]
 import * as FileSystem from 'expo-file-system';
@@ -74,7 +74,7 @@ Do proměnné string se asynchronně zapíše obsah souboru v cestě, v případ
 
 \section{Implementace obrazovek}
 
-Implementace obrazovek byla nejdelší částí tvorby aplikace a nejnáročnější na testování. Obrazovky jsou React komponenty umístěny ihned pod navigátorem. V jejich životním cyklu se vytváří subkomponenty, získávají data z uložišť a pomocí událostí komunikují s uložišti. Obrazovky jsou spolu se subkomponentami zodpovědné za správu interakcí s uživatelem.
+Implementace obrazovek byla nejdelší částí tvorby aplikace a nejnáročnější na testování. Obrazovky jsou React komponenty umístěny ihned pod navigátorem. V jejich životním cyklu se vytváří subkomponenty, získávají data z úložišť a pomocí událostí komunikují s úložišti. Obrazovky jsou spolu se subkomponentami zodpovědné za správu interakcí s uživatelem.
 
 Níže je uvedena ukázková implementace obrazovky AuthLoading, která rozhoduje o přesměrování uživatele po zapnutí aplikace, pokud je přihlášen či ne.
 
@@ -123,9 +123,9 @@ const styles = StyleSheet.create({
 
 \end{lstlisting}
 
-V ukázce lze vidět několik podstatných částí. V první části jsou importy závislostí, kde veškeré obrazovky potřebují naimportovat alespoň závislost \emph{React} z knihovny React. Na druhém řádku lze vidět import typických ovládacích prvků a utilit pro obrazovku či subkomponentu. StyleSheet je způsob zapsání stylu pro ReactNative, ukázka způsobu zápisu stylů se nachází v objektu \emph{styles} na konci ukázky kódu. Text je komponenta, která umožňuje zobrazení stylovaného textu a jako jediná může obsahovat čistý text. Komponenta View rámcově odpovídá funkci tagu \emph{div} v HTML a je pouze prázdným kontejnerem pro ostatní komponenty, ale může být stylována. Následně je vidět import \emph{MaterialIndicator} z knihovny \emph{react-native-indicators}, externí komponenty, která zobrazuje načítací spinner, aby UI nevypadala neresponzivně. Následně je importováno uložiště pro autentifikaci a seznam konstant obsahující styl aplikace.
+V ukázce lze vidět několik podstatných částí. V první části jsou importy závislostí, kde veškeré obrazovky potřebují naimportovat alespoň závislost \emph{React} z knihovny React. Na druhém řádku lze vidět import typických ovládacích prvků a utilit pro obrazovku či subkomponentu. StyleSheet je způsob zapsání stylu pro ReactNative, ukázka způsobu zápisu stylů se nachází v objektu \emph{styles} na konci ukázky kódu. Text je komponenta, která umožňuje zobrazení stylovaného textu a jako jediná může obsahovat čistý text. Komponenta View rámcově odpovídá funkci tagu \emph{div} v HTML a je pouze prázdným kontejnerem pro ostatní komponenty, ale může být stylována. Následně je vidět import \emph{MaterialIndicator} z knihovny \emph{react-native-indicators}, externí komponenty, která zobrazuje načítací spinner, aby UI nevypadala neresponzivně. Následně je importováno úložiště pro autentifikaci a seznam konstant obsahující styl aplikace.
 
-Samotná obrazovka začíná na řádku 8, kde se nachází definice třídy komponenty. Na řádku devět se nachází metoda komponenty, ve které se volá uložiště Auth pro ověření, zda je uživatel autorizovaný a případně se přenaviguje na správnou obrazovku. Vysoce podstatná je metoda \emph{componentDidMount} na řádku 18, která se spustí po načtení komponenty a volá již zmiňovanou funkci na ověření přihlášení. Metoda render vrací JSX obrazovky, tedy strukturu všech subkomponent. Na konci je již zmiňovaný objekt styles, obsahující styly.
+Samotná obrazovka začíná na řádku 8, kde se nachází definice třídy komponenty. Na řádku devět se nachází metoda komponenty, ve které se volá úložiště Auth pro ověření, zda je uživatel autorizovaný, a případně se přenaviguje na správnou obrazovku. Vysoce podstatná je metoda \emph{componentDidMount} na řádku 18, která se spustí po načtení komponenty a volá již zmiňovanou funkci na ověření přihlášení. Metoda render vrací JSX obrazovky, tedy strukturu všech subkomponent. Na konci je již zmiňovaný objekt styles, obsahující styly.
 
 Tato obrazovka je reprezentativní pro všechny obrazovky, s výjimkou hlavní mapy.
 
@@ -148,7 +148,7 @@ Pro hlavní část této obrazovky, tedy mapy, byla využita knihovna \emph{reac
 </MapView>
 \end{lstlisting}
 
-Ukáza ilustruje způsob umístění v mapě (parametr coordinate), způsob vybrání ikony pro obě platformy (parametr icon a image) a nastavení zIndexu, který určuje pořadí vykreslování komponent vzájemně se překrývajících. Komponenta Callout obsahuje již zmiňované infowindow, které obsahuje subkomponentu MarkerPosition.
+Ukázka ilustruje způsob umístění v mapě (parametr coordinate), způsob vybrání ikony pro obě platformy (parametr icon a image) a nastavení zIndexu, který určuje pořadí vykreslování komponent vzájemně se překrývajících. Komponenta Callout obsahuje již zmiňované infowindow, které obsahuje subkomponentu MarkerPosition.
 
 Pro implementaci vyjížděcího menu pro filtry byla využita komponenta \emph{rn-sliding-up-panel}, která plně splina zadání z kapitoly návrh. Detaily implementace lze zobrazit v příloze, jelikož jsou příliš dlouhé pro ukázky v textu této práce.
 
@@ -159,7 +159,7 @@ Pro implementaci vyjížděcího menu pro filtry byla využita komponenta \emph{
 	\caption[Výsledek implementace hlavní mapy]{Výsledek implementace hlavní mapy -- zdroj: autor}
 \end{figure}
 
-Výsledek implementace mapy je srovnatelý s drátěným modelem představeným v kapitole návrh.
+Výsledek implementace mapy je srovnatelný s drátěným modelem představeným v kapitole Návrh.
 
 \section{Implementace subkomponent}
 
@@ -167,7 +167,7 @@ Subkomponenty byly vytvořeny pro splnění mapové koncepce, tedy pro jednotliv
 
 \subsection{Implementace off-line map}
 
-Pro implementace off-line map bylo nutno vytvořit dvě komponenty. První komponentou jsou off-line mapy samotné, druhou komponentou způsob, jak vybrat rozsah, který má být stáhnut.
+Pro implementace off-line map bylo nutno vytvořit dvě komponenty. První komponentou jsou off-line mapy samotné, druhou komponentou způsob, jak vybrat rozsah, který má být stažen.
 
 Off-line schopnost map je umožněna díky následujícím klíčovým možnostem: možnost načítat tzv. tile mapy (mapy uložené ve formátu obrázků s jednoznačným indexem v dimenzích x, y a z) a URI, které využívá Expo i pro ukládání souborů. Pro mapy je tedy jedno, zda načítají jednotlivé mapové čtverečky z disku, či přímo ze vzdáleného mapového serveru.
 
@@ -180,11 +180,11 @@ import { UrlTile } from 'react-native-maps';
 
 Do urlTemplate se místo vzdáleného zdroje doplní část kódu, která obsahuje parametry pro jednotlivé dimenze mapy ve formátu \emph{\{z\}/\{x\}/\{y\}.png}. Každý mapový čtvereček je následně načítán z disku. Toto chování je vhodné zapnout pouze v případě že uživatel není připojený k síti, či na přímé vyžádání uživatele.
 
-Z časových nedostatků nebylo možno vytvořit komfortní uživatelský nástroj pro výběr off-line map, ale pouze rudimentární. Z kontextového menu uživatel zapne dialog zadávání bodů, čímž se uloží příznak do aplikace, že uživatel vybírá off-line region. Uživatel je následně instruován, aby klikal do mapy.
+Kvůli nedostatku času nebylo možné vytvořit komfortní uživatelský nástroj pro výběr off-line map, a vznikl proto pouze rudimentární. Z kontextového menu uživatel zapne dialog zadávání bodů, čímž se uloží příznak do aplikace, že uživatel vybírá off-line region. Uživatel je následně instruován, aby klikal do mapy.
 
 \section{Implementace navigátorů}
 
-Pro implementaci navigátorů byla vybrána již zmiňovaná standardní knihovna \emph{react-navigation}. Pro instalaci je využitý balíčkovací nástroj NPM.
+Pro implementaci navigátorů byla vybrána již zmiňovaná standardní knihovna\linebreak \emph{react-navigation}, pro instalaci je využitý balíčkovací nástroj NPM.
 
 \begin{lstlisting}[language=Bash, caption=Instalace react-navigation]
 npm install react-navigation
@@ -198,7 +198,7 @@ import { createSwitchNavigator, createAppContainer, NavigationContainerComponent
 import { createStackNavigator } from 'react-navigation-stack';
 \end{lstlisting}
 
-Importováním těchto závislostí půjde vytvořit switch navigátor, hlavní navigační kontejner aplikace a stack navigátor. Následně je nutno naimportovat komponenty obrazovek následujícím způsobem.
+Importováním těchto závislostí půjde vytvořit switch navigátor, hlavní navigační kontejner aplikace a stack navigátor. Následně je nutné naimportovat komponenty obrazovek následujícím způsobem.
 
 \begin{lstlisting}[language=JavaScript, caption=Import obrazovek pro hlavní navigátor]
 import Welcome from './src/screens/auth/Welcome'; // naimportuje komponentu obrazovky Welcome
@@ -247,7 +247,7 @@ export default class App extends React.Component
 }
 \end{lstlisting}
 
-V ukázce kódu se vytváří komponenta App, která je vstupním bodem aplikace. V komponentě App se nachází fragment, který je kolekcí různých React komponent a sám nemá v uživatelském rozhraní žádnou funkci. Následně se vytvořený AppContainer využije přímo v komponentě a jeho vykresleným obsahem se stávají různé obrazovky specifikované v předchozích ukázkách kódu. Ačkoliv se nejedná přímo o funkce navigátoru, na stejné úrovni se také nachází komponenta FlashMessage, která zajistí, že se tzv. flash zprávy vygenerované v aplikaci zobrazují napříč všemi obrazovkami z jednoho místa (tedy bez duplikace kódu). Nejedná se tedy o funkci navigátoru, ale pouze o komponentu, kterou je vhodno umístit na nejvyšší úroveň kvůli prevenci duplikaci kódu a jedná se o vhodnou ukázku, co lze na stejnou úroveň jako kontejner navigátorů vložit.
+V ukázce kódu se vytváří komponenta App, která je vstupním bodem aplikace. V komponentě App se nachází fragment, který je kolekcí různých React komponent a sám nemá v uživatelském rozhraní žádnou funkci. Následně se vytvořený AppContainer využije přímo v komponentě a jeho vykresleným obsahem se stávají různé obrazovky specifikované v předchozích ukázkách kódu. Ačkoliv se nejedná přímo o funkce navigátoru, na stejné úrovni se také nachází komponenta FlashMessage, která zajistí, že se tzv. flash zprávy vygenerované v aplikaci zobrazují napříč všemi obrazovkami z jednoho místa (tedy bez duplikace kódu). Nejedná se tedy o funkci navigátoru, ale pouze o komponentu, kterou je vhodné umístit na nejvyšší úroveň kvůli prevenci duplikaci kódu a jedná se o vhodnou ukázku, co lze na stejnou úroveň jako kontejner navigátorů vložit.
 
 Pro přenavigování lze využít v jakékoliv komponentě umístěné pod AppContainerem (resp. pod jakýmkoliv navigátorem) funkcí uvedenou níže.
 
@@ -276,7 +276,7 @@ function navigate(routeName, params) {
 
 \section{Implementace push notifikací}
 
-Jednou z mnoha výhod platformy Expo je jednoduchost napojení aplikačních push notifikací. Není potřeba využívat různé poskytovatele pro různé platformy, Expo zajistí doručení na jakékoliv zařízení, které se k notifikacím registruje. Výhodou také je jednoduchost celého systému, kde stačí aby se zařízení pouze oznámilo serveru svým identifikátorem a následně lze notifikace volat za pomocí REST API Expo. Celý proces je velmi jednoduchý na implementování v mobilní aplikaci i ve zdroji notifikací. Získání notifikací na straně aplikace lze docílit následujícím způsobem.
+Jednou z mnoha výhod platformy Expo je jednoduchost napojení aplikačních push notifikací. Není potřeba využívat různé poskytovatele pro různé platformy, Expo zajistí doručení na jakékoliv zařízení, které se k notifikacím registruje. Výhodou také je jednoduchost celého systému, kde stačí aby se zařízení pouze oznámilo serveru svým identifikátorem a následně lze notifikace volat za pomocí REST API Expo. Celý proces je velmi jednoduchý na implementaci v mobilní aplikaci i ve zdroji notifikací. Získání notifikací na straně aplikace lze docílit následujícím způsobem.
 
 \begin{lstlisting}[language=JavaScript, caption=Expo notifikace]
 import { Notifications } from 'expo';
@@ -293,7 +293,7 @@ if (finalStatus !== 'granted') {
 const token = await Notifications.getExpoPushTokenAsync();
 \end{lstlisting}
 
-Pro notifikace je nutno získat uživatelovo svolení. Pokud svolení dá, Expo vrátí textový token, který se následně dá použít pro poslání notifikace na konkrétní zařízení. Pro zjednodušení práce s větším počtem stejných notifikací je možnost vytvářet skupiny příjemců, aplikace tohoto nevyužívá. Kód pro generování zpráv na straně serveru není součástí této práce a je pouze obsažen ve webovém backendu aplikace Anitra.
+Pro notifikace je třeba získat svolení uživatele. Pokud svolení dá, Expo vrátí textový token, který se následně dá použít k poslání notifikace na konkrétní zařízení. Pro zjednodušení práce s větším počtem stejných notifikací je možnost vytvářet skupiny příjemců, aplikace ji nevyužívá. Kód pro generování zpráv na straně serveru není součástí této práce a je pouze obsažen ve webovém backendu aplikace Anitra.
 
 % \section{Sestavení pomocí TurtleCLI}
 

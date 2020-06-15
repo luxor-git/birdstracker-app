@@ -19,11 +19,11 @@ Jednotlivá kritéria jsou rozebrána níže.
 
 \subsection{Podpora více platforem}
 
-Podpora platforem iOS a Android je kritickým požadavkem aplikace vycházející z analýzy požadavků. Technologie musí podporovat, ideálně platformně nezávisle abstrahovat, přístup k zdrojům souborového systému, přístup k vzdáleným zdrojům pomocí protokolu HTTP, umožnit vytvářet mapové aplikace, bezpečně uložit uživatelské přihlašovací údaje. Technologie by neměla vyžadovat platformně závislý nativní kód.
+Podpora platforem iOS a Android je kritickým požadavkem aplikace vycházející z analýzy požadavků. Technologie musí podporovat a abstrahovat nezávisle na platformě, přístup k zdrojům souborového systému, přístup k vzdáleným zdrojům pomocí protokolu HTTP, umožnit vytvářet mapové aplikace a bezpečně uložit uživatelské přihlašovací údaje. Technologie by neměla vyžadovat platformně závislý nativní kód.
 
 \subsection{Rychlost vývoje}
 
-Rychlost vývoje je obtížně kvantifikovatelnou veličinou. Do rychlosti vývoje lze zahrnout mnoho aspektů a záleží, z jakého pohledu se na problematiku pohlíží. Z pohledu řízení projektu se může např. jednat o počet dostupných vývojářů a doba adaptace na technologii. Z pohledu programátora se může jednat o kvalitu a dostupnost vývojových nástrojů, dostupnost knihoven, přehlednosti kódu, dostupné funkce programovacího jazyka technologie. Z pohledu údržby se může jednat o očekávanou životnost technologie nebo dostupnosti testovacích nástrojů. Kombinací těchto aspektů může vzniknout více či méně subjektivní hodnocení, jak rychlý by měl vývoj s pomocí danou technologií být. Neexistuje žádná konkrétní metodika, která by se snažila tento jev kvantifikovat, ale existují názory mezi odbornou veřejností, které technologie se považují za vhodné pro rapidní vývoj. Pro tuto práci, z hlediska časového, bude nutné vybrat technologii, která naplňujne co nejvíce kritérií pro rapidní vývoj.
+Rychlost vývoje je obtížně kvantifikovatelnou veličinou. Do rychlosti vývoje lze zahrnout mnoho aspektů a záleží, z jakého pohledu se na problematiku pohlíží. Z pohledu řízení projektu se může např. jednat o počet dostupných vývojářů a doba adaptace na technologii. Z pohledu programátora se může jednat o kvalitu a dostupnost vývojových nástrojů, dostupnost knihoven, přehlednosti kódu, dostupné funkce programovacího jazyka technologie. Z pohledu údržby se může jednat o očekávanou životnost technologie nebo dostupnosti testovacích nástrojů. Kombinací těchto aspektů může vzniknout více či méně subjektivní hodnocení, jak rychlý by měl vývoj s pomocí danou technologií být. Neexistuje žádná konkrétní metodika, která by se snažila tento jev kvantifikovat, ale existují názory mezi odbornou veřejností, které technologie se považují za vhodné pro rapidní vývoj. Pro tuto práci, z hlediska časového, bude nutné vybrat technologii, která naplňuje co nejvíce kritérií pro rapidní vývoj.
 
 \subsection{Velikost komunity}
 
@@ -31,7 +31,7 @@ Velikost komunity určuje dvě podstatné věci -- životnost technologie a mno�
 
 \subsection{Programovací jazyk}
 
-Programovací jazyk technologie je taktéž podstatný faktor. Standardní knihovny některých jazyků mají mnoho dostupných funkcí, které urychlují nebo komplikují vývoj. např. již předpřipravené metody pro HTTP komunikaci. Některé jazyky mohou těžit i z vlastností dané svým paradigmatem, např. funkcionální jazyky mohou být vhodnější pro paralelní zpracování. Aspekty paralelního nebo asynchronního zpracování jsou pro mobilní aplikace podstatné z důvodu nezamknutí vykreslovacího vlánka pro uživatelské rozhraní z důvodu uživatelského komfortu.
+Programovací jazyk technologie je taktéž podstatný faktor. Standardní knihovny některých jazyků mají mnoho dostupných funkcí, které urychlují nebo komplikují vývoj. např. již předpřipravené metody pro HTTP komunikaci. Některé jazyky mohou těžit i z vlastností dané svým paradigmatem, např. funkcionální jazyky mohou být vhodnější pro paralelní zpracování. Aspekty paralelního nebo asynchronního zpracování jsou pro mobilní aplikace podstatné z důvodu nezamknutí vykreslovacího vlákna pro uživatelské rozhraní z důvodu uživatelského komfortu.
 
 \subsection{Vytváření uživatelského rozhraní}
 
@@ -39,7 +39,7 @@ Aspekty vytváření uživatelského rozhraní spočívají především v možn
 
 \subsection{Hotové komponenty}
 
-Hotové komponenty umožňují se při vývoji věnovat pouze řešení potřebných doménových problémů, namísto vytváření od základu nových komponent a s tím spojené testování. Důsledkem je využívání specifického portfolia komponent, na kterých může vývojář nabrat znalosti a použít je na dalším projektu využívající stejnou technologii, případně vývojář již zkušenosti mít může, tím vývoj výrazně urychlit. Hotové komponenty jsou obrovskou výhodou v rapidním prototypování, protože mohou aplikaci již ve fázi prototypu poskytnout určitou představu o finální funkčnosti.
+Hotové komponenty umožňují se při vývoji věnovat pouze řešení potřebných doménových problémů, namísto vytváření od základu nových komponent a s tím spojené testování. Důsledkem je využívání specifického portfolia komponent, na kterých může vývojář nabrat znalosti a použít je na dalším projektu využívající stejnou technologii, případně vývojář již zkušenosti mít může, což projekt výrazně urychlí. Hotové komponenty jsou obrovskou výhodou v rapidním prototypování, protože mohou aplikaci již ve fázi prototypu poskytnout určitou představu o finální funkčnosti.
 
 \section{Výběr technologie}
 
@@ -47,13 +47,13 @@ Pro užší posouzení byly vybrány následující technologie: React Native, X
 
 \begin{figure}[h]
 	\includegraphics[width=\linewidth]{img/google_trends.png}
-	\caption[Srovnání trendů technologií pro mobilní vývoj]{Srovnání trendů v období 1. 1. 2016 až 11. 4. 2020; červená křivka -- React Native, modrá křivka -- Xamarin, žlutá křivka -- Flutter; -- Zdroj: Google Trends}
+	\caption[Srovnání trendů technologií pro mobilní vývoj]{Srovnání trendů v období 1. 1. 2016 až 11. 4. 2020; červená křivka -- React Native, modrá křivka -- Xamarin, žlutá křivka -- Flutter; zdroj: Google Trends}
 	\label{fig:gtrends}
 \end{figure}
 
 \subsection{Hodnocení React Native}
 
-React Native je framework pro vytváření nativních mobilních aplikací s JS frameworkem React \cite{novick2017react}. React Native je komplexněji uveden v následujích kapitolách. Tento framework byl vybrán k posouzení především kvůli obrovské komunitě a prověřenosti. Nespornou výhodou frameworku využití jazyku JavaScript, který je třetím nejvíce vyhledávaným programovacím jazykem \cite{Carbonnelle2020}. JavaScript (resp. EcmaScript) je uveden v následujících kapitolách a nebudou zde jeho výhody rozvedeny. Pod pojmem React Native je zde brána v potaz nadstavba Expo, která dále abstrahuje od nativního kódu.
+React Native je framework pro vytváření nativních mobilních aplikací s JS frameworkem React \cite{novick2017react}. React Native je komplexněji uveden v následujících kapitolách. Tento framework byl vybrán k posouzení především kvůli obrovské komunitě a prověřenosti. Nespornou výhodou frameworku využití jazyku JavaScript, který je třetím nejvíce vyhledávaným programovacím jazykem \cite{Carbonnelle2020}. JavaScript (resp. EcmaScript) je uveden v následujících kapitolách a nebudou zde jeho výhody rozvedeny. Pod pojmem React Native je zde brána v potaz nadstavba Expo, která dále abstrahuje od nativního kódu.
 
 \begin{table}[H]
 	\begin{tabularx}{\textwidth}{| X | X | X |}
@@ -73,14 +73,14 @@ React Native je framework pro vytváření nativních mobilních aplikací s JS 
 		Hotové komponenty               & 1 & 24299 balíčků k 11. 4. 2020  \\
 		\hline
 	\end{tabularx}
-	\caption{Hodnocení React Native}
+	\caption[Hodnocení React Native]{Hodnocení React Native -- zdroj: autor}
 \end{table}
 
 \subsection{Hodnocení Xamarin}
 
 % https://dotnet.microsoft.com/apps/xamarin
 
-Xamarin je rozšíření platformy .NET pro vývoj multiplatformních aplikací nejen pro mobilní zařízení \cite{microsoftXamarin}. Xamarin je postavený nad návrhovým vzorem Model-View-ViewModel, který odděluje uživatelské rozhraní, data a aplikační logiku do separátních vrstev. Uživatelské rozhraní je možno vytvářet deklarativně v jazyku XAML, případně v přímo v jazyku C\#. Změny v uživatelském rozhraní se zajišťují pomocí tzv. data bindingu, tedy navázání proměnné v uživatelském rozhraní s proměnnou ve view modelu. Za Xamarinem stojí technologický gigant Microsoft a je z vybraných technologií nejstarší.
+Xamarin je rozšíření platformy .NET pro vývoj multiplatformních aplikací nejen pro mobilní zařízení \cite{microsoftXamarin}. Xamarin je postavený nad návrhovým vzorem Model-View-ViewModel, který odděluje uživatelské rozhraní, data a aplikační logiku do separátních vrstev. Uživatelské rozhraní je možné vytvářet deklarativně v jazyku XAML, případně v přímo v jazyku C\#. Změny v uživatelském rozhraní se zajišťují pomocí tzv. data bindingu, tedy navázání proměnné v uživatelském rozhraní s proměnnou ve view modelu. Za Xamarinem stojí technologický gigant Microsoft a je z vybraných technologií nejstarší.
 
 \begin{table}[H]
 	\begin{tabularx}{\textwidth}{| X | X | X |}
@@ -100,7 +100,7 @@ Xamarin je rozšíření platformy .NET pro vývoj multiplatformních aplikací 
 		Hotové komponenty               & 4 & komponenty nejsou udržované a se současnými verzemi bývají nekompatibilní \\
 		\hline
 	\end{tabularx}
-	\caption{Hodnocení Xamarin}
+	\caption[Hodnocení Xamarin]{Hodnocení Xamarin -- zdroj: autor}
 \end{table}
 
 \subsection{Hodnocení Flutter}
@@ -118,7 +118,7 @@ Flutter je SDK od společnosti Google sloužící pro vytváření "nádherných
 		\hline
 		Rychlost vývoje                 & 1 & vývoj je rapidní díky poskytnutým nástrojům         \\
 		\hline
-		Velikost komunity a dokumentace & 3 & technologie je ve fázi nástupu, dokumentace nebývá aktuální a komuntní návody chybí         \\
+		Velikost komunity a dokumentace & 3 & technologie je ve fázi nástupu, dokumentace nebývá aktuální a komunitní návody chybí         \\
 		\hline
 		Programovací jazyk              & 4 & Dart není příliš známý \\
 		\hline
@@ -127,14 +127,14 @@ Flutter je SDK od společnosti Google sloužící pro vytváření "nádherných
 		Hotové komponenty               & 3 & 8450 balíčků k 11. 4. 2020 \\
 		\hline    
 	\end{tabularx}
-	\caption{Hodnocení Flutter}
+	\caption[Hodnocení Flutter]{Hodnocení Flutter -- zdroj: autor}
 \end{table}
 
 \textbf{Výhody}
 \begin{itemize}
 	\item dynamická technologie,
 	\item vysoce kvalitní vývojářské nástroje,
-	\item vývíjeno stejnou společností, která stojí za OS Android,
+	\item vyvíjeno stejnou společností, která stojí za OS Android,
 	\item vysoká míra optimalizace,
 	\item možnost vytvářet i webové aplikace.
 \end{itemize}
@@ -142,15 +142,15 @@ Flutter je SDK od společnosti Google sloužící pro vytváření "nádherných
 \textbf{Nevýhody}
 \begin{itemize}
 	\item relativně obskurní jazyk Dart,
-	\item nížký počet aktuálních návodů,
-	\item nížký počet relevantních komponent,
+	\item nedostatečný počet aktuálních návodů,
+	\item nízký počet relevantních komponent,
 	\item obtížnější zprovoznění + velikost SDK,
 	\item komunita nemá stále stejnou velikost jak komunita React a React Native.
 \end{itemize}
 
 \subsection{Vybraná technologie}
 
-Pro řešení práce byla vybraná technologie React Native (resp. Expo -- viz. níže), jelikož ze srování vyšla nejlépe. Dále bylo rozhodnuto o využití nadstavby TypeScript na JS a správce stavů MobX. Popis technologie je uveden v další kapitole.
+Pro řešení práce byla vybrána technologie React Native (resp. Expo -- viz. níže), jelikož ze srování vyšla nejlépe. Dále bylo rozhodnuto o využití nadstavby TypeScript na JS a správce stavů MobX. Popis technologie je uveden v další kapitole.
 
 \section{React Native}
 
@@ -163,15 +163,15 @@ Technologie React Native je postavena na mnoha dílčích částech, které se m
 % https://github.com/nodejs/node-v0.x-archive/tags?after=v0.0.4
 % https://github.com/angular/angular.js/releases?after=v0.9.4
 
-JavaScript je multiparadigmatický interpretovaný slabě typovaný programovací jazyk určen primárně pro webové prohlížeče. JavaScript vznikl v roce 1995 Brendanem Eichem pod firmou Netscape. Cílem bylo přidat interaktivitu do čistě statických webových stránek a reagovat tedy na interakci uživatele i jinak, než jen přenačtením celé stránky \cite{Hamilton2008}. S obrovským rozvojem domacích počítačů přišel i rozvoj internetu a internetových prohlížečů.
+JavaScript je multiparadigmatický interpretovaný slabě typovaný programovací jazyk určen primárně pro webové prohlížeče. JavaScript vznikl v roce 1995 Brendanem Eichem pod firmou Netscape. Cílem bylo přidat interaktivitu do čistě statických webových stránek a reagovat tedy na interakci uživatele i jinak, než jen přenačtením celé stránky \cite{Hamilton2008}. S obrovským rozvojem domácích počítačů přišel i rozvoj internetu a internetových prohlížečů.
 
 Od již zmíněného roku 1995 do roku 2004 byl trh webových prohlížečů dominován verzemi prohlížeče Internet Explorer od firmy Microsoft, která přišla s vlastní implementací JavaScriptu, tzv. JScriptem. Kvůli nespolupráci mezi vývojáři různých implementací vznikaly v jazyku nekonzistence mezi prohlížeči, ale i přesto se jazyk určitým směrem ubíral.
 
-V roce 2005 byl zaveden termín AJAX \cite{Garrett2005}, který znamenal obrovskou změnu v interaktivitě webových aplikací. Zkratka AJAX, neboli Asynchronous JavaScript and XML byla revoluční ve změně komunikace serveru s JavaScriptem. JavaScript dříve obdržoval fragmenty HTML od serveru a tím aktualizoval stránku, případně se stránka po každé významné interakci uživatele překreslila sama. AJAX zavedl možnost jak na pozadí získat z určitých vstupů určité výstupy v lépe strojově zpracovatelném formátu. S tímto revolučním nápadem začaly vznikat první JavaScript knihovny a frameworky pro interaktivní webové \emph{aplikace}, např. dodnes používaná knihovna jQuery.
+V roce 2005 byl zaveden termín AJAX \cite{Garrett2005}, který znamenal obrovskou změnu v interaktivitě webových aplikací. Zkratka AJAX, neboli Asynchronous JavaScript and XML byla revoluční ve změně komunikace serveru s JavaScriptem. JavaScript dříve získaval fragmenty HTML od serveru a tím aktualizoval stránku, případně se stránka po každé významné interakci uživatele překreslila sama. AJAX zavedl možnost jak na pozadí získat z určitých vstupů určité výstupy v lépe strojově zpracovatelném formátu. S tímto revolučním nápadem začaly vznikat první JavaScript knihovny a frameworky pro interaktivní webové \emph{aplikace}, např. dodnes používaná knihovna jQuery.
 
-Dalším podstaným krokem byl vývoj webového prohlížeče Google Chrome, resp. jeho JavaScript interpreteru V8. V8 je open-source JS interpreter s just-in-time kompilací, který byl revoluční primárně ve své rychlosti. Tento interpreter byl také zařazený i do aplikací mimo webové prohlížeče, čímž se případy užití pro jazyk výrazně rozšířily. Tímto byl položen v roce 2009 základ node.js \cite{satheesh2015web} a jeho ekosystém NPM, který je rozveden níže.
+Dalším podstatným krokem byl vývoj webového prohlížeče Google Chrome, resp. jeho JavaScript interpreteru V8. V8 je open-source JS interpreter s just-in-time kompilací, který byl revoluční primárně ve své rychlosti. Tento interpreter byl také zařazený i do aplikací mimo webové prohlížeče, čímž se případy užití pro jazyk výrazně rozšířily. Tímto byl položen v roce 2009 základ node.js \cite{satheesh2015web} a jeho ekosystém NPM, který je rozveden níže.
 
-Dalším milníkem podstatným pro tuto práci je rozšíření frameworků pro single-page aplikace, které emulují chování běžných nativních aplikací v prohlížeči. Aplikace fungují na komponentovém systému a aktualizují se při změně dat, aniž by se přenačítala celá webová stránka. Uživatelům se tedy načte jedna stránka a veškeré následné překreslování uživatelského rozhraní má na starosti JavaScript \cite{fink2014pro}. Aplikace jsou tedy uživatelsky i programátorsky komfortnější a jejich vývoj je značně rychlejší. Aplikace tohoto typu se rozšiřují od roku 2010 a první úspěšným frameworkem byl Angular.js.
+Dalším milníkem podstatným pro tuto práci je rozšíření frameworků pro single-page aplikace, které emulují chování běžných nativních aplikací v prohlížeči. Aplikace fungují na komponentovém systému a aktualizují se při změně dat, aniž by se znovu načítala celá webová stránka. Uživatelům se tedy načte jedna stránka a veškeré následné překreslování uživatelského rozhraní má na starosti JavaScript \cite{fink2014pro}. Aplikace jsou tedy uživatelsky i programátorsky komfortnější a jejich vývoj je značně rychlejší. Aplikace tohoto typu se rozšiřují od roku 2010 a první úspěšným frameworkem byl Angular.js.
 
 %https://tc39.es/ecma262/#sec-overview
 
@@ -181,9 +181,9 @@ S příchodem node.js ekosystému vznikl v JS světě koncept NPM balíčků. Ba
 
 \subsection{TypeScript}
 
-TypeScript je nadmnožninou jazyka ECMAScript. TypeScript rozšiřuje jazyk o kontrolu typů a běžné konstrukty známé z jiných jazyků \cite{freeman2019essential} (např. rozhraní). Jazyk je plně kompabitilní s ES, ale samotný TypeScript není přímo většinou interpeterů spustitelný. Při sestavování projektů s TypeScriptem se využívá tzv. transpilace, převedení z jednoho programovacího jazyka do druhého. TypeScript vyšel v roce 2012 pod křídly firmy Microsoft a je aktivně vyvíjen dodnes.
+TypeScript je nadmnožinou jazyka ECMAScript. TypeScript rozšiřuje jazyk o kontrolu typů a běžné konstrukty známé z jiných jazyků \cite{freeman2019essential} (např. rozhraní). Jazyk je plně kompatibilní s ES, ale samotný TypeScript není přímo většinou interpreterů spustitelný. Při sestavování projektů s TypeScriptem se využívá tzv. transpilace, převedení z jednoho programovacího jazyka do druhého. TypeScript vyšel v roce 2012 pod křídly firmy Microsoft a je aktivně vyvíjen dodnes.
 
-TypeScript se běžně využívá ve větších projektech především kvůli prevenci chyb a zvýšení přehlednosti kódu. Vývojová prostředí taktéž lépe rozumí typovaným jazykům a tímto se může i zrychlit vývoj. Zaintegrovat TypeScript do existujícího projektu také není problém, jelikož jakýkoliv validní kód v ES je validní kód v TypeScript.
+TypeScript se běžně využívá ve větších projektech především kvůli prevenci chyb a zvýšení přehlednosti kódu. Vývojová prostředí taktéž lépe rozumí typovaným jazykům a tímto se může i zrychlit vývoj. Integrovat TypeScript do existujícího projektu také není problém, jelikož jakýkoliv validní kód v ES je validní kód v TypeScript.
 
 \subsection{React}
 
@@ -237,11 +237,11 @@ Příklad využívá slabého typování JS, stačí tedy pouze aby sayHello byl
 
 Komponenty mohou samozřejmě být výrazně komplexnější, např. mohou obsahovat funkce vracející JSX a tím být výrazně přehlednější. Mimo JSX mohou obsahovat metody a atributy pro práci s daty, např. pro získání dat ze serveru nebo k vyfiltrování dat. Tyto funkce mutují stav komponenty pomocí funkce  \verb|setState|, která mění stav komponenty ( \verb|this.props.*| v ukázce) a zároveň zajistí její překreslení, pokud je to nutné. Změna jména by tedy mohla být docílena i zavoláním \verb|this.setSate({name: 'svete'});| z metody v komponentě.
 
-React aplikce se ale nemusí skládat jen z komponent, modulární systém nového JS umožňuje jednoduše zakomponovat do aplikace i kód mimo komponenty. Komponenty ale stále zůstanou centrálním bodem aplikace a je tedy výhodné aplikaci strukturovat do většího počtu malých komponent kvůli přehlednosti, testovatelnosti a znovupoužitelnosti.
+React aplikace se ale nemusí skládat jen z komponent, modulární systém nového JS umožňuje jednoduše zakomponovat do aplikace i kód mimo komponenty. Komponenty ale stále zůstanou centrálním bodem aplikace a je tedy výhodné aplikaci strukturovat do většího počtu malých komponent kvůli přehlednosti, testovatelnosti a znovupoužitelnosti.
 
 \subsection{React Native}
 
-React Native je framework pro vytváření mobilních aplikací postavený nad knihovnou React \cite{novick2017react}, opět od společnosti Facebook. React Native, na rozdíl např. od progresivních webových aplikací se chová jako nativní aplikace -- aplikace je vykreslovaná nativním kódem a nemá omezení typická pro webové aplikace, např. v přístupu k určitým API. Rozdílem od čistého Reactu je omezený výběr komponent a výrazně odlišný způsob jejich stylování. Zatímco v React je možno využít plného rozsahu CSS a všech HTML elementů, v React Native jsou v základu poskytnuty jen určité komponenty, nejpodstnější z nich jsou View, Text a Image. View je kontejnerovým prvkem, který nemá žádné specifikované využití. Používá se často pro držení jiných komponentů či stylování. Text je jediná komponenta, která může obsahovat text. Image je komponenta obsahující obrázek z lokálního nebo vzdáleného zdroje. Jsou poskytnuty i další komponenty pro formulářová pole (TextInput, Button, Picker), indikátory aktivity a seznamy. Jiné komponenty se dají složit z těchto základních komponent, jejich událostí a jejich stylů. Konkrétní příklady jsou uvedeny dále v práci. 
+React Native je framework pro vytváření mobilních aplikací postavený nad knihovnou React \cite{novick2017react}, opět od společnosti Facebook. React Native, na rozdíl např. od progresivních webových aplikací se chová jako nativní aplikace -- aplikace je vykreslovaná nativním kódem a nemá omezení typická pro webové aplikace, např. v přístupu k určitým API. Rozdílem od čistého Reactu je omezený výběr komponent a výrazně odlišný způsob jejich stylování. Zatímco v React je možno využít plného rozsahu CSS a všech HTML elementů, v React Native jsou v základu poskytnuty jen určité komponenty, nejpodstatnější z nich jsou View, Text a Image. View je kontejnerovým prvkem, který nemá žádné specifikované využití. Používá se často pro držení jiných komponentů či stylování. Text je jediná komponenta, která může obsahovat text. Image je komponenta obsahující obrázek z lokálního nebo vzdáleného zdroje. Jsou poskytnuty i další komponenty pro formulářová pole (TextInput, Button, Picker), indikátory aktivity a seznamy. Jiné komponenty se dají složit z těchto základních komponent, jejich událostí a jejich stylů. Konkrétní příklady jsou uvedeny dále v práci. 
 
 React Native umožňuje psát nativní kód a mnoho komponent této skutečnosti využívá. Nevýhodou tohoto přístupu je, že nativní kód se musí psát v Javě pro Android a v jazyce Swift pro iOS. Tímto vzniká prakticky vzato duplicita kódu a dvojnásobná nutnost testovat.
 
@@ -251,7 +251,7 @@ MobX je knihovna pro reaktivní správu stavu aplikace \cite{podila2018mobx}, č
 
 \subsection{Expo}
 
-Expo je součástí nástrojů a služeb postavených nad React Native a nativními platformami sloužící k vývoji, sestavení, nasazení a rychlé iteraci iOS, Android a webových aplikací s jednotným zdrojovým kódem \cite{Vatne2020}. Expo je abstrakce oddělující React Native kompletně od nativního kódu a tedy od nutnosti vyvíjet i ReactNative aplikace ve třech jazycích (JS pro ReactNative, Java pro Android a Swift pro iOS). Expo poskytuje většinu API pro běžné mobilní aplikace (podstatnou výjimkou je Bluetooth a nákupy v aplikaci), nástroje pro rapidní vývoj a cloudovou infrastrukturu pro sestavení artefaktů, není tedy nutné pro sestavení např. iOS aplikace vlastnit stroj s operačním systémem MacOS. Nástroje pro rapidní vývoj jsou obrovské plus platformy Expo -- aplikační kód se odešle se na servery Expo jedním příkazem (viz ukázka kódu \ref{expostart}), uživateli se vygeneruje QR kód pro oskenování mobilní aplikací a aplikaci je možné spustit na jakémkoliv zařízení za pomocí speciální aplikace. Z tohoto zařízení je v realném čase možné sledovat běh událostí a ladících zpráv na stroji vývojáře. 
+Expo je součástí nástrojů a služeb postavených nad React Native a nativními platformami sloužící k vývoji, sestavení, nasazení a rychlé iteraci iOS, Android a webových aplikací s jednotným zdrojovým kódem \cite{Vatne2020}. Expo je abstrakce oddělující React Native kompletně od nativního kódu a tedy od nutnosti vyvíjet i ReactNative aplikace ve třech jazycích (JS pro ReactNative, Java pro Android a Swift pro iOS). Expo poskytuje většinu API pro běžné mobilní aplikace (podstatnou výjimkou je Bluetooth a nákupy v aplikaci), nástroje pro rapidní vývoj a cloudovou infrastrukturu pro sestavení artefaktů, není tedy nutné pro sestavení např. iOS aplikace vlastnit stroj s operačním systémem MacOS. Nástroje pro rapidní vývoj jsou obrovské plus platformy Expo -- aplikační kód se odešle se na servery Expo jedním příkazem (viz ukázka kódu \ref{expostart}), uživateli se vygeneruje QR kód pro oskenování mobilní aplikací a aplikaci je možné spustit na jakémkoliv zařízení za pomocí speciální aplikace. Z tohoto zařízení je v reálném čase možné sledovat běh událostí a ladících zpráv na stroji vývojáře. 
 
 Mezi nevýhody Expo se udává následující \cite{Ovchinnikova2020}:
 
@@ -261,7 +261,7 @@ Mezi nevýhody Expo se udává následující \cite{Ovchinnikova2020}:
 	\item aplikace jsou výrazně větší (min. 25 MB),
 	\item push notifikace jsou možné pouze přes infrastrukturu Expo,
 	\item minimální podporovaná verze je Android 5 a iOS 10,
-	\item zdlouhavé čekaní na sestavení ve veřejné infrastruktuře.
+	\item zdlouhavé čekání na sestavení ve veřejné infrastruktuře.
 \end{itemize}
 
 Mezi tyto nedostatky se uvádí i nemožnost využívat nativní knihovny, ale zde těžko posoudit, zda se jedná o výhodu nebo nevýhodu. Expo slibuje některé z těchto problémů vyřešit, ale jedná se o dlouhodobé problémy a žádné odhadované datum řešení není stanoveno. Pro některé případy užití tedy Expo není vhodné (např. pokud je potřeba přístup k Bluetooth).
@@ -297,7 +297,7 @@ TurtleCLI je nástroj pro sestavení Expo aplikací z příkazové řádky \cite
 
 Možnosti sestavení aplikací Expo jsou tedy dvojího typu, cloudové služby poskytované od Expo a TurtleCLI na vlastní infrastruktuře. Expo poskytuje cloudové služby zdarma ve variantě Community a placené prioritní zpracování ve variantě nazývané Priority \cite{expoDevServices}.
 
-Autor práce vybral tuto technologi z důvodu vysoké vytíženosti veřejné infrastruktury společnosti Expo (varianta nazývaná Community), kde jeho build ve frontě čekal v jednotkách hodin, než se dostal na řadu. Společnost Expo nabízí placenou variantu svých služeb, ve kterých avizuje výrazně vyšší rychlost odbavení, než u varianty zdarma a nástroje pro týmovou práci. Za značnou nevýhodu se taktéž může brát fakt, že kód je vždy odesílán třetí straně k sestavení, což pro mnoho firem může být nepřípustné. Oproti tomu provozování na vlastní infrastruktuře skýtá mnoho potenciálních výhod, za zmínku stojí jednodušší napojení na firemní CI procesy, testovací infrastrukturu, rapidní nasazení mnoha paralelních větví do testovacích kanálů, jednodušší napojení sestavení na jiné akce. Níže je uvedena tabulka popisující podstatné rozdíly mezi jednotlivými způsoby sestavení Expo aplikací. 
+Autor práce vybral tuto technologii z důvodu vysoké vytíženosti veřejné infrastruktury společnosti Expo (varianta nazývaná Community), kde jeho build ve frontě čekal v jednotkách hodin, než se dostal na řadu. Společnost Expo nabízí placenou variantu svých služeb, ve kterých avizuje výrazně vyšší rychlost odbavení, než u varianty zdarma a nástroje pro týmovou práci. Za značnou nevýhodu se taktéž může brát fakt, že kód je vždy odesílán třetí straně k sestavení, což pro mnoho firem může být nepřípustné. Oproti tomu provozování na vlastní infrastruktuře skýtá i mnoho potenciálních výhod. Za zmínku stojí jednodušší napojení na firemní CI procesy, testovací infrastrukturu, rapidní nasazení mnoha paralelních větví do testovacích kanálů a jednodušší napojení sestavení na jiné akce. Níže je uvedena tabulka popisující podstatné rozdíly mezi jednotlivými způsoby sestavení Expo aplikací. 
 
 \begin{table}[H]
 	\begin{tabularx}{\textwidth}{|X|X|X|X|}
@@ -313,5 +313,5 @@ Autor práce vybral tuto technologi z důvodu vysoké vytíženosti veřejné in
 		Provázanost s Expo               & vždy              & vždy          & žádná \\     
 		\hline             
 	\end{tabularx}
-	\caption{Srovnání možností sestavení Expo aplikace}
+	\caption[Srovnání možností sestavení Expo aplikace]{Srovnání možností sestavení Expo aplikace -- zdroj: expo.io, autor}
 \end{table}
