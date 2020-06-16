@@ -8,7 +8,6 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "4": "0.0.0",
     "@react-native-community/async-storage": "github:react-native-community/async-storage",
     "@react-native-community/masked-view": "0.1.6",
     "@react-native-community/netinfo": "5.5.1",
@@ -17,6 +16,7 @@
     "expo-background-fetch": "~8.1.0",
     "expo-image-picker": "~8.1.0",
     "expo-location": "~8.1.0",
+    "expo-screen-orientation": "~1.0.0",
     "expo-secure-store": "~8.1.0",
     "expo-task-manager": "~8.1.0",
     "mobx": "^5.15.4",
@@ -45,8 +45,7 @@
     "react-navigation": "^4.1.1",
     "react-navigation-drawer": "^2.3.4",
     "react-navigation-stack": "^2.1.1",
-    "rn-sliding-up-panel": "^2.4.0",
-    "expo-screen-orientation": "~1.0.0"
+    "rn-sliding-up-panel": "^2.4.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.11",
